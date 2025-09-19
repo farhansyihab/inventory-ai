@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
+         bootstrap="bootstrap.php"
+         colors="true"
+         verbose="true"
+         stopOnFailure="false"
+         stopOnError="false"
+         executionOrder="random"
+         resolveDependencies="true">
+    
+    <testsuites>
+        <testsuite name="Unit Tests">
+            <directory>Unit</directory>
+        </testsuite>
+        <testsuite name="Integration Tests">
+            <directory>Integration</directory>
+        </testsuite>
+        <testsuite name="Functional Tests">
+            <directory>Functional</directory>
+        </testsuite>
+        <testsuite name="All Tests">
+            <directory>Unit</directory>
+            <directory>Integration</directory>
+            <directory>Functional</directory>
+        </testsuite>
+    </testsuites>
+    
+    <coverage>
+        <include>
+            <directory>../src</directory>
+        </include>
+        <exclude>
+            <directory>../src/Config</directory>
+            <directory>../src/Migration</directory>
+        </exclude>
+        <report>
+            <html outputDirectory="tests/coverage"/>
+            <text outputFile="tests/coverage.txt"/>
+        </report>
+    </coverage>
+    
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="MONGODB_URI" value="mongodb://localhost:27017"/>
+        <env name="MONGODB_DB" value="inventory_ai_test"/>
+        <env name="JWT_SECRET" value="test-jwt-secret-key-for-testing-only"/>
+        <env name="LOG_LEVEL" value="DEBUG"/>
+    </php>
+    
+    <logging>
+        <testdoxHtml outputFile="tests/testdox.html"/>
+        <junit outputFile="tests/junit.xml"/>
+    </logging>
+</phpunit>
