@@ -4,7 +4,7 @@ composer dump-autoload -o
 echo ""
 echo ""
 
-echo "=== hp final_test.php ==="
+echo "===final_test.php ==="
 echo ""
 php final_test.php
 echo ""
