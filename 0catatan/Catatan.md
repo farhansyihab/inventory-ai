@@ -58,40 +58,37 @@ JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 ```
 json
 {
-    "name": "farhan/inventory-ai",
-    "description": "Inventory Management System with AI Integration",
+    "name": "haidar/inventory-ai",
+    "description": "Inventory AI backend with PHP and MongoDB",
     "type": "project",
     "require": {
-        "php": "^8.3|^8.4",
-        "mongodb/mongodb": "^2.1",
-        "firebase/php-jwt": "^6.8",
-        "vlucas/phpdotenv": "^5.5"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^9.6",
-        "squizlabs/php_codesniffer": "^3.7"
+        "php": "^8.2",
+        "mongodb/mongodb": "^1.19",
+        "vlucas/phpdotenv": "^5.6",
+        "firebase/php-jwt": "^6.10",
+        "psr/log": "^3.0"
     },
     "autoload": {
         "psr-4": {
             "App\\": "src/"
-        },
-        "files": [
-            "src/Config/MongoDBManager.php",
-            "src/Repository/UserRepository.php"
-        ]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5",
+        "squizlabs/php_codesniffer": "^3.10"
     },
     "scripts": {
-        "test": "echo 'Tests coming soon...'",
-        "lint": "echo 'Linting coming soon...'",
-        "check": ["@lint", "@test"],
-        "create-indexes": "php scripts/create-indexes.php",
-        "dump-autoload": "composer dump-autoload -o"
+        "test": "phpunit --colors=always --bootstrap vendor/autoload.php tests",
+        "lint": "phpcs --standard=PSR12 src tests",
+        "fix": "phpcbf --standard=PSR12 src tests"
     },
-    "config": {
-        "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
-        }
-    }
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }
 
 
@@ -307,11 +304,15 @@ try {
         ['key' => ['createdAt' => 1]]
     ];
     
-    $collection = MongoDBManager::getCollection('users');
-    $result = $collection->createIndexes($indexes);
+    $result = MongoDBManager::createIndexes('users', $indexes);
     
-    echo "✅ User indexes created successfully\n";
-    echo "Indexes: " . json_encode($result, JSON_PRETTY_PRINT) . "\n";
+    if ($result['success']) {
+        echo "✅ User indexes created successfully\n";
+        echo "Indexes: " . json_encode($result['indexes'], JSON_PRETTY_PRINT) . "\n";
+    } else {
+        echo "❌ Error creating indexes: " . $result['error'] . "\n";
+        exit(1);
+    }
     
     echo "✅ All indexes created successfully!\n";
     
@@ -368,29 +369,86 @@ class ExampleTest extends TestCase
 }
 ```
 
+9. ***test_mongodb_manager.php***
+```
+php
+<?php
+require_once 'vendor/autoload.php';
+
+use App\Config\MongoDBManager;
+
+echo "=== Testing Enhanced MongoDBManager ===\n";
+
+MongoDBManager::initialize();
+
+// Test basic connectivity
+echo 'Ping: ' . (MongoDBManager::ping() ? '✅' : '❌') . PHP_EOL;
+
+// Test collection existence
+echo 'Collection exists (users): ' . (MongoDBManager::collectionExists('users') ? '✅' : '❌') . PHP_EOL;
+
+// Test stats
+$stats = MongoDBManager::getStats();
+echo 'DB Stats: ' . ($stats['success'] ? '✅' : '❌') . PHP_EOL;
+
+// Test server version
+$version = MongoDBManager::getServerVersion();
+echo 'Server Version: ' . ($version['success'] ? '✅' : '❌') . PHP_EOL;
+
+// Test connection info
+$info = MongoDBManager::getConnectionInfo();
+echo 'Connection Info: ✅' . PHP_EOL;
+print_r($info);
+
+echo "=== Test Complete ===\n";
+?>
+```
+
+10. ***pengetesan.sh***
+```
+bash
+echo "=== Composer dump-autoload ==="
+echo ""
+composer dump-autoload -o
+echo ""
+echo ""
+
+echo "===final_test.php ==="
+echo ""
+php final_test.php
+echo ""
+echo ""
+
+echo "=== ./testing.sh ==="
+echo ""
+./testing.sh
+```
+
 ## File-file di folder public:
 1. ***public/index.php*** (updated)
 ```
 php
 <?php
-require_once '../vendor/autoload.php';
+declare(strict_types=1);
 
-// Load environment variables
+require_once __DIR__ . '/../vendor/autoload.php';
+
+// Load environment variables early
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
+$dotenv->safeLoad(); // safeLoad to avoid exception in CI if no .env
 
-// Initialize error handling
-$errorHandler = new App\Middleware\ErrorHandler(null, $_ENV['APP_ENV'] === 'development');
+// Initialize error handling (display errors only in development)
+$errorHandler = new App\Middleware\ErrorHandler(null, ($_ENV['APP_ENV'] ?? 'production') === 'development');
 $errorHandler->register();
 
-// Initialize MongoDB Manager with logger
+// Initialize Logger and Mongo
 $logger = new App\Utility\Logger();
 App\Config\MongoDBManager::initialize($logger);
 
 // Initialize Router
 $router = new App\Utility\Router();
 
-// Define routes
+// Define routes (same as before)
 $router->get('/', function () {
     return [
         'status' => 'success',
@@ -413,47 +471,70 @@ $router->get('/health', function () {
     ];
 });
 
-// API Routes group
+// API group...
 $router->group('/api', function ($router) {
-    // Authentication routes (to be implemented)
     $router->post('/auth/register', 'App\Controller\AuthController@register');
     $router->post('/auth/login', 'App\Controller\AuthController@login');
-    
-    // User routes (to be implemented)
+
     $router->get('/users', 'App\Controller\UserController@listUsers');
     $router->get('/users/{id}', 'App\Controller\UserController@getUser');
     $router->post('/users', 'App\Controller\UserController@createUser');
-    
-    // Inventory routes (to be implemented)
+
     $router->get('/inventory', 'App\Controller\InventoryController@listItems');
 });
 
-// Set 404 handler
+// 404 handler
 $router->setNotFoundHandler(function () {
     http_response_code(404);
     return [
         'status' => 'error',
         'message' => 'Endpoint not found',
         'timestamp' => time(),
-        'documentation' => '/api/docs' // TODO: Add API documentation
+        'documentation' => '/api/docs'
     ];
 });
 
-// Dispatch the request
+// Dispatch
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-$path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
+$uri = $_SERVER['REQUEST_URI'] ?? '/';
 
-// Remove base path if using subdirectory
+// normalize path and remove query
+$parsed = parse_url($uri);
+$path = $parsed['path'] ?? '/';
+
+// Base path support (robust): strip base if present with exact prefix
 $basePath = '/inventory-ai';
-if (strpos($path, $basePath) === 0) {
-    $path = substr($path, strlen($basePath));
+if ($basePath !== '' && str_starts_with($path, $basePath)) {
+    $path = '/' . ltrim(substr($path, strlen($basePath)), '/');
 }
 
+// Security headers & CORS (adjust for prod allowed origins)
+header('Content-Type: application/json; charset=utf-8');
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: SAMEORIGIN');
+header('Referrer-Policy: no-referrer-when-downgrade');
+header('Access-Control-Allow-Origin: *'); // change in prod
+header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+
+// short-circuit OPTIONS
+if ($method === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
+
+// dispatch and handle result
 $response = $router->dispatch($method, $path);
 
-// Send response
-header('Content-Type: application/json');
+// If route returned array that contains 'statusCode', use it
+if (is_array($response) && isset($response['statusCode']) && is_int($response['statusCode'])) {
+    http_response_code($response['statusCode']);
+    unset($response['statusCode']);
+}
+
+// final output
 echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
 ```
 
 2. ***public/quick-test.php***
@@ -623,6 +704,7 @@ use Psr\Log\NullLogger;
 
 /**
  * MongoDBManager - Singleton pattern untuk MongoDB connection
+ * Versi improved dengan maintain compatibility dan tambahan fitur
  */
 class MongoDBManager
 {
@@ -715,6 +797,228 @@ class MongoDBManager
             'client_status' => self::$client ? 'initialized' : 'not_initialized',
             'database_status' => self::$database ? 'initialized' : 'not_initialized'
         ];
+    }
+
+    /**
+     * Create indexes untuk collection tertentu
+     * Improved method dengan better error handling dan logging
+     */
+    public static function createIndexes(string $collectionName, array $indexes): array
+    {
+        try {
+            $collection = self::getCollection($collectionName);
+            $result = $collection->createIndexes($indexes);
+            
+            if (self::$logger) {
+                self::$logger->info('MongoDB indexes created', [
+                    'collection' => $collectionName,
+                    'indexes_count' => count($indexes),
+                    'result' => $result
+                ]);
+            }
+            
+            return [
+                'success' => true,
+                'result' => $result,
+                'indexes' => array_map(fn($index) => $index['key'] ?? $index, $indexes)
+            ];
+            
+        } catch (MongoDBException $e) {
+            if (self::$logger) {
+                self::$logger->error('MongoDB createIndexes failed', [
+                    'collection' => $collectionName,
+                    'exception' => $e->getMessage(),
+                    'indexes' => $indexes
+                ]);
+            }
+            
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+                'collection' => $collectionName
+            ];
+        }
+    }
+
+    /**
+     * Get database statistics
+     */
+    public static function getStats(): array
+    {
+        try {
+            $stats = self::getDatabase()->command(['dbStats' => 1])->toArray()[0];
+            return [
+                'success' => true,
+                'stats' => $stats
+            ];
+        } catch (MongoDBException $e) {
+            if (self::$logger) {
+                self::$logger->error('MongoDB getStats failed', ['exception' => $e->getMessage()]);
+            }
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Get collection statistics
+     */
+    public static function getCollectionStats(string $collectionName): array
+    {
+        try {
+            $collection = self::getCollection($collectionName);
+            $stats = $collection->aggregate([['$collStats' => ['storageStats' => []]]])->toArray();
+            return [
+                'success' => true,
+                'stats' => $stats[0] ?? []
+            ];
+        } catch (MongoDBException $e) {
+            if (self::$logger) {
+                self::$logger->error('MongoDB getCollectionStats failed', [
+                    'collection' => $collectionName,
+                    'exception' => $e->getMessage()
+                ]);
+            }
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Check if collection exists
+     */
+    public static function collectionExists(string $collectionName): bool
+    {
+        try {
+            $collections = self::getDatabase()->listCollections([
+                'filter' => ['name' => $collectionName]
+            ]);
+            return count(iterator_to_array($collections)) > 0;
+        } catch (MongoDBException $e) {
+            if (self::$logger) {
+                self::$logger->error('MongoDB collectionExists check failed', [
+                    'collection' => $collectionName,
+                    'exception' => $e->getMessage()
+                ]);
+            }
+            return false;
+        }
+    }
+
+    /**
+     * Drop collection safely
+     */
+    public static function dropCollection(string $collectionName): array
+    {
+        try {
+            $collection = self::getCollection($collectionName);
+            $result = $collection->drop();
+            
+            if (self::$logger) {
+                self::$logger->info('MongoDB collection dropped', [
+                    'collection' => $collectionName,
+                    'result' => $result
+                ]);
+            }
+            
+            return [
+                'success' => true,
+                'collection' => $collectionName
+            ];
+            
+        } catch (MongoDBException $e) {
+            if (self::$logger) {
+                self::$logger->error('MongoDB dropCollection failed', [
+                    'collection' => $collectionName,
+                    'exception' => $e->getMessage()
+                ]);
+            }
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Get server information
+     */
+    public static function getServerInfo(): array
+    {
+        try {
+            $info = self::getClient()->getManager()->getServers()[0]->getInfo();
+            return [
+                'success' => true,
+                'server_info' => $info
+            ];
+        } catch (MongoDBException $e) {
+            if (self::$logger) {
+                self::$logger->error('MongoDB getServerInfo failed', ['exception' => $e->getMessage()]);
+            }
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Get MongoDB server version
+     */
+    public static function getServerVersion(): array
+    {
+        try {
+            $buildInfo = self::getDatabase()->command(['buildInfo' => 1])->toArray()[0];
+            return [
+                'success' => true,
+                'version' => $buildInfo['version'] ?? 'unknown',
+                'version_array' => $buildInfo['versionArray'] ?? []
+            ];
+        } catch (MongoDBException $e) {
+            if (self::$logger) {
+                self::$logger->error('MongoDB getServerVersion failed', ['exception' => $e->getMessage()]);
+            }
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Flush semua koneksi dan reset state (utama untuk testing)
+     */
+    public static function reset(): void
+    {
+        self::$client = null;
+        self::$database = null;
+        
+        if (self::$logger) {
+            self::$logger->info('MongoDBManager reset');
+        }
+    }
+
+    /**
+     * Get logger instance
+     */
+    public static function getLogger(): LoggerInterface
+    {
+        if (self::$logger === null) {
+            self::initialize();
+        }
+        return self::$logger;
+    }
+
+    /**
+     * Set custom logger
+     */
+    public static function setLogger(LoggerInterface $logger): void
+    {
+        self::$logger = $logger;
     }
 }
 ```
@@ -1550,6 +1854,8 @@ namespace App\Service;
 /**
  * Base Service Interface
  * Provides common contract for all service classes
+ * 
+ * @template T Entity type
  */
 interface IService
 {
@@ -1558,6 +1864,7 @@ interface IService
      * 
      * @param string $id Entity ID
      * @return array|null Entity data or null if not found
+     * @throws \InvalidArgumentException If ID format is invalid
      */
     public function findById(string $id): ?array;
 
@@ -1565,8 +1872,9 @@ interface IService
      * Find entities by criteria
      * 
      * @param array $filter Query filter
-     * @param array $options Find options
+     * @param array $options Find options (sort, limit, skip, etc.)
      * @return array Array of entities
+     * @throws \RuntimeException If database operation fails
      */
     public function find(array $filter = [], array $options = []): array;
 
@@ -1575,7 +1883,8 @@ interface IService
      * 
      * @param array $data Entity data
      * @return array Created entity data with ID
-     * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException If validation fails
+     * @throws \RuntimeException If creation fails
      */
     public function create(array $data): array;
 
@@ -1585,6 +1894,8 @@ interface IService
      * @param string $id Entity ID
      * @param array $data Update data
      * @return bool True if update successful
+     * @throws \InvalidArgumentException If ID format is invalid or validation fails
+     * @throws \RuntimeException If update operation fails
      */
     public function update(string $id, array $data): bool;
 
@@ -1593,6 +1904,8 @@ interface IService
      * 
      * @param string $id Entity ID
      * @return bool True if delete successful
+     * @throws \InvalidArgumentException If ID format is invalid
+     * @throws \RuntimeException If delete operation fails
      */
     public function delete(string $id): bool;
 
@@ -1601,6 +1914,7 @@ interface IService
      * 
      * @param array $filter Query filter
      * @return int Number of matching entities
+     * @throws \RuntimeException If count operation fails
      */
     public function count(array $filter = []): int;
 
@@ -1609,9 +1923,18 @@ interface IService
      * 
      * @param array $data Entity data to validate
      * @return bool True if valid
-     * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException If validation fails with detailed errors
      */
     public function validate(array $data): bool;
+
+    /**
+     * Find one entity by criteria
+     * 
+     * @param array $filter Query filter
+     * @return array|null Entity data or null if not found
+     * @throws \RuntimeException If database operation fails
+     */
+    public function findOne(array $filter = []): ?array;
 }
 ```
 

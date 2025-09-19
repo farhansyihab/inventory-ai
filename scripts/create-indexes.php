@@ -16,11 +16,15 @@ try {
         ['key' => ['createdAt' => 1]]
     ];
     
-    $collection = MongoDBManager::getCollection('users');
-    $result = $collection->createIndexes($indexes);
+    $result = MongoDBManager::createIndexes('users', $indexes);
     
-    echo "✅ User indexes created successfully\n";
-    echo "Indexes: " . json_encode($result, JSON_PRETTY_PRINT) . "\n";
+    if ($result['success']) {
+        echo "✅ User indexes created successfully\n";
+        echo "Indexes: " . json_encode($result['indexes'], JSON_PRETTY_PRINT) . "\n";
+    } else {
+        echo "❌ Error creating indexes: " . $result['error'] . "\n";
+        exit(1);
+    }
     
     echo "✅ All indexes created successfully!\n";
     
