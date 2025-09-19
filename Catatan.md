@@ -369,7 +369,7 @@ class ExampleTest extends TestCase
 ```
 
 ## File-file di folder public:
-1. ***public/index.php**
+1. ***public/index.php*** (updated)
 ```
 php
 <?php
@@ -379,19 +379,81 @@ require_once '../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
+// Initialize error handling
+$errorHandler = new App\Middleware\ErrorHandler(null, $_ENV['APP_ENV'] === 'development');
+$errorHandler->register();
+
+// Initialize MongoDB Manager with logger
+$logger = new App\Utility\Logger();
+App\Config\MongoDBManager::initialize($logger);
+
+// Initialize Router
+$router = new App\Utility\Router();
+
+// Define routes
+$router->get('/', function () {
+    return [
+        'status' => 'success',
+        'message' => 'Inventory AI API is running!',
+        'timestamp' => time(),
+        'php_version' => PHP_VERSION,
+        'environment' => $_ENV['APP_ENV'] ?? 'not set',
+        'mongodb_connected' => App\Config\MongoDBManager::ping()
+    ];
+});
+
+$router->get('/health', function () {
+    return [
+        'status' => 'healthy',
+        'timestamp' => time(),
+        'services' => [
+            'mongodb' => App\Config\MongoDBManager::ping() ? 'connected' : 'disconnected',
+            'php' => 'running'
+        ]
+    ];
+});
+
+// API Routes group
+$router->group('/api', function ($router) {
+    // Authentication routes (to be implemented)
+    $router->post('/auth/register', 'App\Controller\AuthController@register');
+    $router->post('/auth/login', 'App\Controller\AuthController@login');
+    
+    // User routes (to be implemented)
+    $router->get('/users', 'App\Controller\UserController@listUsers');
+    $router->get('/users/{id}', 'App\Controller\UserController@getUser');
+    $router->post('/users', 'App\Controller\UserController@createUser');
+    
+    // Inventory routes (to be implemented)
+    $router->get('/inventory', 'App\Controller\InventoryController@listItems');
+});
+
+// Set 404 handler
+$router->setNotFoundHandler(function () {
+    http_response_code(404);
+    return [
+        'status' => 'error',
+        'message' => 'Endpoint not found',
+        'timestamp' => time(),
+        'documentation' => '/api/docs' // TODO: Add API documentation
+    ];
+});
+
+// Dispatch the request
+$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+$path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
+
+// Remove base path if using subdirectory
+$basePath = '/inventory-ai';
+if (strpos($path, $basePath) === 0) {
+    $path = substr($path, strlen($basePath));
+}
+
+$response = $router->dispatch($method, $path);
+
+// Send response
 header('Content-Type: application/json');
-
-$response = [
-    'status' => 'success',
-    'message' => 'Inventory AI API is running!',
-    'timestamp' => time(),
-    'php_version' => PHP_VERSION,
-    'mongodb_extension' => extension_loaded('mongodb') ? 'loaded' : 'not loaded',
-    'environment' => $_ENV['APP_ENV'] ?? 'not set'
-];
-
-echo json_encode($response, JSON_PRETTY_PRINT);
-?>
+echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 ```
 
 2. ***public/quick-test.php***
@@ -1377,3 +1439,809 @@ server {
     }    
 }
 ```
+
+## ***3 file paling critical*** untuk melengkapi Phase 1:
+### 1\. **Logger Utility** (`src/Utility/Logger.php`)
+```
+php
+<?php
+declare(strict_types=1);
+
+namespace App\Utility;
+
+use Psr\Log\AbstractLogger;
+use Psr\Log\LogLevel;
+
+/**
+ * Simple file logger implementing PSR-3 LoggerInterface
+ */
+class Logger extends AbstractLogger
+{
+    private string $logFile;
+    private string $defaultLevel;
+
+    public function __construct(?string $logFile = null, string $defaultLevel = LogLevel::INFO)
+    {
+        $this->logFile = $logFile ?? __DIR__ . '/../../logs/app.log';
+        $this->defaultLevel = $defaultLevel;
+        
+        // Ensure log directory exists
+        $logDir = dirname($this->logFile);
+        if (!is_dir($logDir)) {
+            mkdir($logDir, 0755, true);
+        }
+    }
+
+    /**
+     * Logs with an arbitrary level.
+     *
+     * @param mixed $level
+     * @param string|\Stringable $message
+     * @param array $context
+     * @return void
+     */
+    public function log($level, string|\Stringable $message, array $context = []): void
+    {
+        $timestamp = date('Y-m-d H:i:s');
+        $level = strtoupper((string) $level);
+        $contextStr = !empty($context) ? json_encode($context, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : '';
+        
+        $logMessage = sprintf(
+            "[%s] %s: %s %s\n",
+            $timestamp,
+            $level,
+            (string) $message,
+            $contextStr
+        );
+
+        file_put_contents($this->logFile, $logMessage, FILE_APPEND | LOCK_EX);
+    }
+
+    /**
+     * Quick debug log
+     */
+    public function debug(string $message, array $context = []): void
+    {
+        $this->log(LogLevel::DEBUG, $message, $context);
+    }
+
+    /**
+     * Quick info log
+     */
+    public function info(string $message, array $context = []): void
+    {
+        $this->log(LogLevel::INFO, $message, $context);
+    }
+
+    /**
+     * Quick error log
+     */
+    public function error(string $message, array $context = []): void
+    {
+        $this->log(LogLevel::ERROR, $message, $context);
+    }
+
+    /**
+     * Quick warning log
+     */
+    public function warning(string $message, array $context = []): void
+    {
+        $this->log(LogLevel::WARNING, $message, $context);
+    }
+
+    /**
+     * Get log file path
+     */
+    public function getLogFile(): string
+    {
+        return $this->logFile;
+    }
+}
+```
+
+### 2\. **Service Interface** (`src/Service/IService.php`)
+```
+php
+<?php
+declare(strict_types=1);
+
+namespace App\Service;
+
+/**
+ * Base Service Interface
+ * Provides common contract for all service classes
+ */
+interface IService
+{
+    /**
+     * Find entity by ID
+     * 
+     * @param string $id Entity ID
+     * @return array|null Entity data or null if not found
+     */
+    public function findById(string $id): ?array;
+
+    /**
+     * Find entities by criteria
+     * 
+     * @param array $filter Query filter
+     * @param array $options Find options
+     * @return array Array of entities
+     */
+    public function find(array $filter = [], array $options = []): array;
+
+    /**
+     * Create new entity
+     * 
+     * @param array $data Entity data
+     * @return array Created entity data with ID
+     * @throws \InvalidArgumentException
+     */
+    public function create(array $data): array;
+
+    /**
+     * Update entity by ID
+     * 
+     * @param string $id Entity ID
+     * @param array $data Update data
+     * @return bool True if update successful
+     */
+    public function update(string $id, array $data): bool;
+
+    /**
+     * Delete entity by ID
+     * 
+     * @param string $id Entity ID
+     * @return bool True if delete successful
+     */
+    public function delete(string $id): bool;
+
+    /**
+     * Count entities by criteria
+     * 
+     * @param array $filter Query filter
+     * @return int Number of matching entities
+     */
+    public function count(array $filter = []): int;
+
+    /**
+     * Validate entity data
+     * 
+     * @param array $data Entity data to validate
+     * @return bool True if valid
+     * @throws \InvalidArgumentException
+     */
+    public function validate(array $data): bool;
+}
+```
+
+### 3\. **Error Handling Middleware** (`src/Middleware/ErrorHandler.php`)
+```
+php
+<?php
+declare(strict_types=1);
+
+namespace App\Middleware;
+
+use Psr\Log\LoggerInterface;
+use App\Utility\Logger as AppLogger;
+
+/**
+ * Global Error Handler Middleware
+ */
+class ErrorHandler
+{
+    private LoggerInterface $logger;
+    private bool $displayErrors;
+
+    public function __construct(?LoggerInterface $logger = null, bool $displayErrors = false)
+    {
+        $this->logger = $logger ?? new AppLogger();
+        $this->displayErrors = $displayErrors;
+    }
+
+    /**
+     * Register error handlers
+     */
+    public function register(): void
+    {
+        set_error_handler([$this, 'handleError']);
+        set_exception_handler([$this, 'handleException']);
+        register_shutdown_function([$this, 'handleShutdown']);
+    }
+
+    /**
+     * Handle PHP errors
+     */
+    public function handleError(int $errno, string $errstr, string $errfile, int $errline): bool
+    {
+        $errorType = $this->getErrorType($errno);
+        
+        $this->logger->error("PHP {$errorType}: {$errstr} in {$errfile}:{$errline}", [
+            'errno' => $errno,
+            'errfile' => $errfile,
+            'errline' => $errline
+        ]);
+
+        // Don't execute PHP internal error handler
+        return true;
+    }
+
+    /**
+     * Handle uncaught exceptions
+     */
+    public function handleException(\Throwable $exception): void
+    {
+        $this->logger->error("Uncaught Exception: " . $exception->getMessage(), [
+            'exception' => get_class($exception),
+            'file' => $exception->getFile(),
+            'line' => $exception->getLine(),
+            'trace' => $exception->getTraceAsString()
+        ]);
+
+        $this->sendErrorResponse($exception);
+    }
+
+    /**
+     * Handle shutdown errors (fatal errors)
+     */
+    public function handleShutdown(): void
+    {
+        $error = error_get_last();
+        
+        if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+            $this->logger->error("Shutdown Error: {$error['message']} in {$error['file']}:{$error['line']}", [
+                'type' => $error['type'],
+                'file' => $error['file'],
+                'line' => $error['line']
+            ]);
+
+            $exception = new \ErrorException(
+                $error['message'], 0, $error['type'], $error['file'], $error['line']
+            );
+            
+            $this->sendErrorResponse($exception);
+        }
+    }
+
+    /**
+     * Send appropriate error response
+     */
+    private function sendErrorResponse(\Throwable $exception): void
+    {
+        if (headers_sent()) {
+            return;
+        }
+
+        http_response_code(500);
+        header('Content-Type: application/json');
+
+        $response = [
+            'status' => 'error',
+            'message' => 'Internal Server Error',
+            'timestamp' => time()
+        ];
+
+        if ($this->displayErrors) {
+            $response['error'] = [
+                'message' => $exception->getMessage(),
+                'type' => get_class($exception),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine()
+            ];
+        }
+
+        echo json_encode($response, JSON_PRETTY_PRINT);
+        exit;
+    }
+
+    /**
+     * Convert error number to error type name
+     */
+    private function getErrorType(int $errno): string
+    {
+        $errorTypes = [
+            E_ERROR => 'E_ERROR',
+            E_WARNING => 'E_WARNING',
+            E_PARSE => 'E_PARSE',
+            E_NOTICE => 'E_NOTICE',
+            E_CORE_ERROR => 'E_CORE_ERROR',
+            E_CORE_WARNING => 'E_CORE_WARNING',
+            E_COMPILE_ERROR => 'E_COMPILE_ERROR',
+            E_COMPILE_WARNING => 'E_COMPILE_WARNING',
+            E_USER_ERROR => 'E_USER_ERROR',
+            E_USER_WARNING => 'E_USER_WARNING',
+            E_USER_NOTICE => 'E_USER_NOTICE',
+            E_STRICT => 'E_STRICT',
+            E_RECOVERABLE_ERROR => 'E_RECOVERABLE_ERROR',
+            E_DEPRECATED => 'E_DEPRECATED',
+            E_USER_DEPRECATED => 'E_USER_DEPRECATED'
+        ];
+
+        return $errorTypes[$errno] ?? "E_UNKNOWN ($errno)";
+    }
+
+    /**
+     * Set whether to display errors in response
+     */
+    public function setDisplayErrors(bool $displayErrors): void
+    {
+        $this->displayErrors = $displayErrors;
+    }
+}
+```
+
+## 🚀 File phase 1: Router dan BaseController
+
+### 1\. **Router Utility** (`src/Utility/Router.php`)
+```
+php
+<?php
+declare(strict_types=1);
+
+namespace App\Utility;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+/**
+ * Simple Router implementation for HTTP request routing
+ */
+class Router
+{
+    private array $routes = [];
+    private array $routeGroups = [];
+    private $notFoundHandler;
+    private $currentGroupPrefix = '';
+
+    // HTTP Methods
+    public const METHOD_GET = 'GET';
+    public const METHOD_POST = 'POST';
+    public const METHOD_PUT = 'PUT';
+    public const METHOD_DELETE = 'DELETE';
+    public const METHOD_PATCH = 'PATCH';
+    public const METHOD_OPTIONS = 'OPTIONS';
+
+    public function __construct()
+    {
+        // Initialize with common HTTP methods
+        $this->routes = [
+            self::METHOD_GET => [],
+            self::METHOD_POST => [],
+            self::METHOD_PUT => [],
+            self::METHOD_DELETE => [],
+            self::METHOD_PATCH => [],
+            self::METHOD_OPTIONS => [],
+        ];
+    }
+
+    /**
+     * Add a route for GET method
+     */
+    public function get(string $path, $handler): self
+    {
+        return $this->addRoute(self::METHOD_GET, $path, $handler);
+    }
+
+    /**
+     * Add a route for POST method
+     */
+    public function post(string $path, $handler): self
+    {
+        return $this->addRoute(self::METHOD_POST, $path, $handler);
+    }
+
+    /**
+     * Add a route for PUT method
+     */
+    public function put(string $path, $handler): self
+    {
+        return $this->addRoute(self::METHOD_PUT, $path, $handler);
+    }
+
+    /**
+     * Add a route for DELETE method
+     */
+    public function delete(string $path, $handler): self
+    {
+        return $this->addRoute(self::METHOD_DELETE, $path, $handler);
+    }
+
+    /**
+     * Add a route for PATCH method
+     */
+    public function patch(string $path, $handler): self
+    {
+        return $this->addRoute(self::METHOD_PATCH, $path, $handler);
+    }
+
+    /**
+     * Add a route for OPTIONS method
+     */
+    public function options(string $path, $handler): self
+    {
+        return $this->addRoute(self::METHOD_OPTIONS, $path, $handler);
+    }
+
+    /**
+     * Add a route for any HTTP method
+     */
+    public function any(string $path, $handler): self
+    {
+        foreach ($this->routes as $method => $_) {
+            $this->addRoute($method, $path, $handler);
+        }
+        return $this;
+    }
+
+    /**
+     * Add a route with custom HTTP method
+     */
+    public function addRoute(string $method, string $path, $handler): self
+    {
+        $method = strtoupper($method);
+        $path = $this->currentGroupPrefix . $this->normalizePath($path);
+
+        if (!isset($this->routes[$method])) {
+            $this->routes[$method] = [];
+        }
+
+        $this->routes[$method][$path] = $handler;
+        return $this;
+    }
+
+    /**
+     * Group routes with a common prefix
+     */
+    public function group(string $prefix, callable $callback): self
+    {
+        $previousGroupPrefix = $this->currentGroupPrefix;
+        $this->currentGroupPrefix .= $this->normalizePath($prefix);
+        
+        $callback($this);
+        
+        $this->currentGroupPrefix = $previousGroupPrefix;
+        return $this;
+    }
+
+    /**
+     * Set 404 Not Found handler
+     */
+    public function setNotFoundHandler(callable $handler): self
+    {
+        $this->notFoundHandler = $handler;
+        return $this;
+    }
+
+    /**
+     * Dispatch the request to appropriate handler
+     */
+    public function dispatch(string $method, string $path)
+    {
+        $method = strtoupper($method);
+        $path = $this->normalizePath($path);
+
+        // Check if method exists
+        if (!isset($this->routes[$method])) {
+            return $this->handleNotFound();
+        }
+
+        // Exact match
+        if (isset($this->routes[$method][$path])) {
+            return $this->executeHandler($this->routes[$method][$path]);
+        }
+
+        // Pattern matching with parameters
+        foreach ($this->routes[$method] as $routePath => $handler) {
+            if ($this->matchRoute($routePath, $path, $params)) {
+                return $this->executeHandler($handler, $params);
+            }
+        }
+
+        return $this->handleNotFound();
+    }
+
+    /**
+     * Execute the route handler
+     */
+    private function executeHandler($handler, array $params = [])
+    {
+        if (is_callable($handler)) {
+            return call_user_func_array($handler, $params);
+        }
+
+        if (is_string($handler) && strpos($handler, '@') !== false) {
+            [$controller, $method] = explode('@', $handler, 2);
+            $controllerInstance = new $controller();
+            
+            if (method_exists($controllerInstance, $method)) {
+                return call_user_func_array([$controllerInstance, $method], $params);
+            }
+        }
+
+        throw new \RuntimeException("Invalid route handler");
+    }
+
+    /**
+     * Check if route path matches request path
+     */
+    private function matchRoute(string $routePath, string $requestPath, ?array &$params): bool
+    {
+        $params = [];
+        
+        // Convert route pattern to regex
+        $pattern = preg_replace('/\{(\w+)\}/', '(?P<$1>[^/]+)', $routePath);
+        $pattern = "#^$pattern$#";
+        
+        if (preg_match($pattern, $requestPath, $matches)) {
+            // Extract named parameters
+            foreach ($matches as $key => $value) {
+                if (is_string($key)) {
+                    $params[$key] = $value;
+                }
+            }
+            return true;
+        }
+        
+        return false;
+    }
+
+    /**
+     * Handle 404 Not Found
+     */
+    private function handleNotFound()
+    {
+        if ($this->notFoundHandler) {
+            return $this->executeHandler($this->notFoundHandler);
+        }
+
+        http_response_code(404);
+        return [
+            'status' => 'error',
+            'message' => 'Not Found',
+            'timestamp' => time()
+        ];
+    }
+
+    /**
+     * Normalize path by ensuring it starts with slash and doesn't end with slash
+     */
+    private function normalizePath(string $path): string
+    {
+        $path = '/' . trim($path, '/');
+        return $path === '/' ? $path : rtrim($path, '/');
+    }
+
+    /**
+     * Get all registered routes
+     */
+    public function getRoutes(): array
+    {
+        return $this->routes;
+    }
+
+    /**
+     * Clear all routes
+     */
+    public function clearRoutes(): void
+    {
+        $this->routes = [
+            self::METHOD_GET => [],
+            self::METHOD_POST => [],
+            self::METHOD_PUT => [],
+            self::METHOD_DELETE => [],
+            self::METHOD_PATCH => [],
+            self::METHOD_OPTIONS => [],
+        ];
+        $this->currentGroupPrefix = '';
+    }
+}
+```
+
+### 2\. **Base Controller** (`src/Controller/BaseController.php`)
+```
+php
+<?php
+declare(strict_types=1);
+
+namespace App\Controller;
+
+use App\Utility\Logger;
+use Psr\Http\Message\ResponseInterface;
+
+/**
+ * Base Controller with common functionality for all controllers
+ */
+abstract class BaseController
+{
+    protected Logger $logger;
+    protected array $requestData = [];
+
+    public function __construct(?Logger $logger = null)
+    {
+        $this->logger = $logger ?? new Logger();
+        $this->parseRequestData();
+    }
+
+    /**
+     * Parse request data from JSON input or form data
+     */
+    protected function parseRequestData(): void
+    {
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+        
+        // Parse JSON data
+        if (strpos($contentType, 'application/json') !== false) {
+            $jsonInput = file_get_contents('php://input');
+            $data = json_decode($jsonInput, true);
+            
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $this->requestData = $data;
+            }
+        } 
+        // Parse form data
+        else {
+            $this->requestData = $_POST;
+        }
+
+        // Merge with query parameters
+        $this->requestData = array_merge($this->requestData, $_GET);
+    }
+
+    /**
+     * Get request data by key with optional default value
+     */
+    protected function getRequestValue(string $key, $default = null)
+    {
+        return $this->requestData[$key] ?? $default;
+    }
+
+    /**
+     * Send JSON response
+     */
+    protected function jsonResponse(array $data, int $statusCode = 200): void
+    {
+        http_response_code($statusCode);
+        header('Content-Type: application/json');
+        
+        echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    /**
+     * Send success response
+     */
+    protected function successResponse(array $data = [], string $message = 'Success', int $statusCode = 200): void
+    {
+        $response = [
+            'status' => 'success',
+            'message' => $message,
+            'timestamp' => time(),
+            'data' => $data
+        ];
+
+        $this->jsonResponse($response, $statusCode);
+    }
+
+    /**
+     * Send error response
+     */
+    protected function errorResponse(string $message, array $errors = [], int $statusCode = 400): void
+    {
+        $response = [
+            'status' => 'error',
+            'message' => $message,
+            'timestamp' => time(),
+            'errors' => $errors
+        ];
+
+        $this->jsonResponse($response, $statusCode);
+    }
+
+    /**
+     * Send not found response
+     */
+    protected function notFoundResponse(string $message = 'Resource not found'): void
+    {
+        $this->errorResponse($message, [], 404);
+    }
+
+    /**
+     * Send unauthorized response
+     */
+    protected function unauthorizedResponse(string $message = 'Unauthorized'): void
+    {
+        $this->errorResponse($message, [], 401);
+    }
+
+    /**
+     * Send validation error response
+     */
+    protected function validationErrorResponse(array $errors, string $message = 'Validation failed'): void
+    {
+        $this->errorResponse($message, $errors, 422);
+    }
+
+    /**
+     * Get authenticated user ID (to be implemented with JWT)
+     */
+    protected function getAuthUserId(): ?string
+    {
+        // TODO: Implement JWT authentication
+        return null;
+    }
+
+    /**
+     * Check if user is authenticated
+     */
+    protected function isAuthenticated(): bool
+    {
+        // TODO: Implement authentication check
+        return $this->getAuthUserId() !== null;
+    }
+
+    /**
+     * Validate required fields in request data
+     */
+    protected function validateRequiredFields(array $fields): array
+    {
+        $errors = [];
+
+        foreach ($fields as $field) {
+            if (!isset($this->requestData[$field]) || empty($this->requestData[$field])) {
+                $errors[$field] = "The {$field} field is required";
+            }
+        }
+
+        return $errors;
+    }
+
+    /**
+     * Log controller action
+     */
+    protected function logAction(string $action, array $context = []): void
+    {
+        $this->logger->info("Controller Action: {$action}", array_merge([
+            'controller' => static::class,
+            'action' => $action,
+            'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown'
+        ], $context));
+    }
+
+    /**
+     * Get pagination parameters from request
+     */
+    protected function getPaginationParams(): array
+    {
+        $page = max(1, (int) $this->getRequestValue('page', 1));
+        $limit = max(1, min(100, (int) $this->getRequestValue('limit', 20)));
+        $offset = ($page - 1) * $limit;
+
+        return [
+            'page' => $page,
+            'limit' => $limit,
+            'offset' => $offset
+        ];
+    }
+
+    /**
+     * Get sorting parameters from request
+     */
+    protected function getSortingParams(): array
+    {
+        $sortBy = $this->getRequestValue('sort_by', 'createdAt');
+        $sortOrder = strtolower($this->getRequestValue('sort_order', 'desc'));
+        
+        if (!in_array($sortOrder, ['asc', 'desc'])) {
+            $sortOrder = 'desc';
+        }
+
+        return [
+            'sort_by' => $sortBy,
+            'sort_order' => $sortOrder
+        ];
+    }
+}
+```
+
