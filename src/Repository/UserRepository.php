@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\Config\MongoDBManager;  // <- TAMBAH INI
+use App\Config\MongoDBManager;
 use App\Model\User;
 use MongoDB\Collection;
 use MongoDB\BSON\ObjectId;
@@ -12,35 +12,37 @@ use MongoDB\Driver\Exception\Exception as MongoException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use InvalidArgumentException;
+use Throwable;
 
 /**
- * UserRepository dengan DI support dan domain-centric approach
+ * UserRepository - DI-friendly, domain-centric, safe update/create
  */
 class UserRepository implements IRepository
 {
     private Collection $collection;
     private LoggerInterface $logger;
 
-/**
- *     public function __construct(Collection $collection, ?LoggerInterface $logger = null)
- *  {
- *      $this->collection = $collection;
- *      $this->logger = $logger ?? new NullLogger();
- *  }
- */
-
-    public function __construct(?\MongoDB\Collection $collection = null)
+    public function __construct(?Collection $collection = null, ?LoggerInterface $logger = null)
     {
         $this->collection = $collection ?? MongoDBManager::getCollection('users');
-    }    
+        $this->logger = $logger ?? new NullLogger();
+    }
 
     public function findById(string $id): ?array
     {
         try {
-            $document = $this->collection->findOne(['_id' => new ObjectId($id)]);
+            $objectId = new ObjectId($id);
+            $document = $this->collection->findOne(['_id' => $objectId]);
             return $document ? $this->documentToArray($document) : null;
         } catch (MongoException $e) {
             $this->logger->error('UserRepository.findById failed', [
+                'id' => $id,
+                'exception' => $e->getMessage()
+            ]);
+            return null;
+        } catch (Throwable $e) {
+            // e.g. invalid ObjectId string
+            $this->logger->warning('UserRepository.findById invalid id or unexpected', [
                 'id' => $id,
                 'exception' => $e->getMessage()
             ]);
@@ -53,11 +55,9 @@ class UserRepository implements IRepository
         try {
             $cursor = $this->collection->find($filter, $options);
             $results = [];
-            
             foreach ($cursor as $document) {
                 $results[] = $this->documentToArray($document);
             }
-            
             return $results;
         } catch (MongoException $e) {
             $this->logger->error('UserRepository.find failed', [
@@ -71,19 +71,18 @@ class UserRepository implements IRepository
     public function create(array $data): string
     {
         try {
-            // Ensure timestamps
-            $data['createdAt'] = $data['createdAt'] ?? new UTCDateTime();
-            $data['updatedAt'] = $data['updatedAt'] ?? new UTCDateTime();
+            // Normalize timestamps -> ensure UTCDateTime
+            $data['createdAt'] = $this->normalizeToUTCDateTime($data['createdAt'] ?? null);
+            $data['updatedAt'] = $this->normalizeToUTCDateTime($data['updatedAt'] ?? null);
 
             $result = $this->collection->insertOne($data);
-            
             $insertedId = (string) $result->getInsertedId();
-            
+
             $this->logger->info('User created', [
                 'id' => $insertedId,
                 'username' => $data['username'] ?? 'unknown'
             ]);
-            
+
             return $insertedId;
         } catch (MongoException $e) {
             $this->logger->error('UserRepository.create failed', [
@@ -97,24 +96,40 @@ class UserRepository implements IRepository
     public function update(string $id, array $data): bool
     {
         try {
+            // remove _id to avoid immutable id update error
+            if (isset($data['_id'])) {
+                unset($data['_id']);
+            }
+
+            // set/update updatedAt and normalize any DateTime fields to UTCDateTime
             $data['updatedAt'] = new UTCDateTime();
-            
+            foreach ($data as $k => $v) {
+                if ($v instanceof \DateTime) {
+                    $data[$k] = new UTCDateTime($v->getTimestamp() * 1000);
+                }
+            }
+
             $result = $this->collection->updateOne(
                 ['_id' => new ObjectId($id)],
                 ['$set' => $data]
             );
-            
+
             $success = $result->getMatchedCount() > 0;
-            
             if ($success) {
                 $this->logger->info('User updated', ['id' => $id]);
             } else {
                 $this->logger->warning('User update not found', ['id' => $id]);
             }
-            
+
             return $success;
         } catch (MongoException $e) {
             $this->logger->error('UserRepository.update failed', [
+                'id' => $id,
+                'exception' => $e->getMessage()
+            ]);
+            return false;
+        } catch (Throwable $e) {
+            $this->logger->error('UserRepository.update unexpected error', [
                 'id' => $id,
                 'exception' => $e->getMessage()
             ]);
@@ -127,14 +142,16 @@ class UserRepository implements IRepository
         try {
             $result = $this->collection->deleteOne(['_id' => new ObjectId($id)]);
             $success = $result->getDeletedCount() > 0;
-            
-            if ($success) {
-                $this->logger->info('User deleted', ['id' => $id]);
-            }
-            
+            if ($success) $this->logger->info('User deleted', ['id' => $id]);
             return $success;
         } catch (MongoException $e) {
             $this->logger->error('UserRepository.delete failed', [
+                'id' => $id,
+                'exception' => $e->getMessage()
+            ]);
+            return false;
+        } catch (Throwable $e) {
+            $this->logger->error('UserRepository.delete unexpected', [
                 'id' => $id,
                 'exception' => $e->getMessage()
             ]);
@@ -145,7 +162,7 @@ class UserRepository implements IRepository
     public function count(array $filter = []): int
     {
         try {
-            return $this->collection->countDocuments($filter);
+            return (int) $this->collection->countDocuments($filter);
         } catch (MongoException $e) {
             $this->logger->error('UserRepository.count failed', [
                 'filter' => $filter,
@@ -169,9 +186,8 @@ class UserRepository implements IRepository
         }
     }
 
-    /**
-     * Domain-centric methods
-     */
+    /* ---------------- Domain-centric helpers ---------------- */
+
     public function findUserById(string $id): ?User
     {
         $document = $this->findById($id);
@@ -182,7 +198,7 @@ class UserRepository implements IRepository
     {
         try {
             $document = $this->collection->findOne(['username' => $username]);
-            return $document ? User::fromDocument($document) : null;
+            return $document ? User::fromDocument((array)$document) : null;
         } catch (MongoException $e) {
             $this->logger->error('UserRepository.findUserByUsername failed', [
                 'username' => $username,
@@ -196,7 +212,7 @@ class UserRepository implements IRepository
     {
         try {
             $document = $this->collection->findOne(['email' => $email]);
-            return $document ? User::fromDocument($document) : null;
+            return $document ? User::fromDocument((array)$document) : null;
         } catch (MongoException $e) {
             $this->logger->error('UserRepository.findUserByEmail failed', [
                 'email' => $email,
@@ -210,18 +226,18 @@ class UserRepository implements IRepository
     {
         try {
             $document = $user->toDocument();
-            
+
             if ($user->getId() === null) {
-                // Create new user
                 return $this->create($document);
             } else {
-                // Update existing user
+                // remove _id before update to prevent MongoDB error
+                if (isset($document['_id'])) unset($document['_id']);
                 $success = $this->update($user->getId(), $document);
                 return $success ? $user->getId() : '';
             }
         } catch (MongoException $e) {
             $this->logger->error('UserRepository.saveUser failed', [
-                'user' => (string) $user,
+                'user' => (string)$user,
                 'exception' => $e->getMessage()
             ]);
             throw new InvalidArgumentException('Failed to save user: ' . $e->getMessage(), 0, $e);
@@ -230,40 +246,38 @@ class UserRepository implements IRepository
 
     public function deleteUser(User $user): bool
     {
-        if ($user->getId() === null) {
-            return false;
-        }
-        
+        if ($user->getId() === null) return false;
         return $this->delete($user->getId());
     }
 
-    /**
-     * Convert MongoDB document to array
-     */
+    /* ---------------- internal helpers ---------------- */
+
     private function documentToArray($document): array
     {
         $array = (array) $document;
-        
-        // Convert ObjectId to string
+
         if (isset($array['_id']) && $array['_id'] instanceof ObjectId) {
             $array['_id'] = (string) $array['_id'];
         }
-        
-        // Convert UTCDateTime to DateTime
+
         if (isset($array['createdAt']) && $array['createdAt'] instanceof UTCDateTime) {
             $array['createdAt'] = $array['createdAt']->toDateTime();
         }
-        
+
         if (isset($array['updatedAt']) && $array['updatedAt'] instanceof UTCDateTime) {
             $array['updatedAt'] = $array['updatedAt']->toDateTime();
         }
-        
+
         return $array;
     }
 
-    /**
-     * Create indexes for users collection
-     */
+    private function normalizeToUTCDateTime($value): UTCDateTime
+    {
+        if ($value instanceof UTCDateTime) return $value;
+        if ($value instanceof \DateTime) return new UTCDateTime($value->getTimestamp() * 1000);
+        return new UTCDateTime();
+    }
+
     public function createIndexes(): array
     {
         $indexes = [
@@ -272,7 +286,7 @@ class UserRepository implements IRepository
             ['key' => ['role' => 1]],
             ['key' => ['createdAt' => 1]]
         ];
-        
+
         try {
             $result = $this->collection->createIndexes($indexes);
             $this->logger->info('User indexes created');

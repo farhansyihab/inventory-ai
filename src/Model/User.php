@@ -27,7 +27,7 @@ class User
 
     public const VALID_ROLES = [
         self::ROLE_ADMIN,
-        self::ROLE_MANAGER, 
+        self::ROLE_MANAGER,
         self::ROLE_STAFF
     ];
 
@@ -107,7 +107,7 @@ class User
     /**
      * Convert to document format untuk MongoDB
      */
-    public function toDocument(): array
+   public function toDocument(): array
     {
         $document = [
             'username' => $this->username,
@@ -119,7 +119,12 @@ class User
         ];
 
         if ($this->id !== null) {
-            $document['_id'] = new ObjectId($this->id);
+            // try-catch in case id is not valid hex
+            try {
+                $document['_id'] = new ObjectId($this->id);
+            } catch (\Throwable $e) {
+                // ignore: let repository decide how to handle a bad id format
+            }
         }
 
         return $document;
@@ -136,12 +141,9 @@ class User
 
         $id = null;
         if (isset($document->_id)) {
-            $id = $document->_id instanceof ObjectId 
-                ? (string) $document->_id 
-                : $document->_id;
+            $id = $document->_id instanceof ObjectId ? (string) $document->_id : (string) $document->_id;
         }
 
-        // Handle various date formats
         $createdAt = self::parseDate($document->createdAt ?? null);
         $updatedAt = self::parseDate($document->updatedAt ?? null);
 
@@ -161,19 +163,35 @@ class User
      */
     private static function parseDate($dateValue): DateTime
     {
+        // UTCDateTime -> DateTime
         if ($dateValue instanceof UTCDateTime) {
             return $dateValue->toDateTime();
         }
 
+        // already DateTime
         if ($dateValue instanceof DateTime) {
             return $dateValue;
         }
 
+        // numeric timestamp - detect ms vs s
         if (is_numeric($dateValue)) {
-            return new DateTime('@' . ($dateValue / 1000));
+            $num = (int)$dateValue;
+            // heuristics: > 1e12 likely milliseconds (year ~ 2001+ in ms), >1e9 seconds
+            if ($num > 1000000000000) { // ms
+                $seconds = intdiv($num, 1000);
+            } elseif ($num > 1000000000) { // probably seconds
+                $seconds = $num;
+            } else {
+                // fallback: treat as seconds
+                $seconds = $num;
+            }
+            $dt = new DateTime();
+            $dt->setTimestamp($seconds);
+            return $dt;
         }
 
-        if (is_string($dateValue)) {
+        // string parse
+        if (is_string($dateValue) && $dateValue !== '') {
             return new DateTime($dateValue);
         }
 
@@ -225,4 +243,19 @@ class User
             $this->role
         );
     }
+
+   /**
+     * Clean, serializable array useful for APIs / logging
+     */
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'username' => $this->username,
+            'email' => $this->email,
+            'role' => $this->role,
+            'createdAt' => $this->createdAt->format(DATE_ATOM),
+            'updatedAt' => $this->updatedAt->format(DATE_ATOM),
+        ];
+    }    
 }
