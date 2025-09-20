@@ -5,6 +5,7 @@ namespace App\Utility;
 
 use Psr\Log\AbstractLogger;
 use Psr\Log\LogLevel;
+use Stringable;
 
 /**
  * Simple file logger implementing PSR-3 LoggerInterface
@@ -30,21 +31,22 @@ class Logger extends AbstractLogger
      * Logs with an arbitrary level.
      *
      * @param mixed $level
-     * @param string|\Stringable $message
+     * @param string|Stringable $message
      * @param array $context
      * @return void
      */
-    public function log($level, string|\Stringable $message, array $context = []): void
+    public function log($level, string|Stringable $message, array $context = []): void
     {
         $timestamp = date('Y-m-d H:i:s');
         $level = strtoupper((string) $level);
+        $message = (string) $message;
         $contextStr = !empty($context) ? json_encode($context, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : '';
         
         $logMessage = sprintf(
             "[%s] %s: %s %s\n",
             $timestamp,
             $level,
-            (string) $message,
+            $message,
             $contextStr
         );
 
@@ -54,7 +56,7 @@ class Logger extends AbstractLogger
     /**
      * Quick debug log
      */
-    public function debug(string $message, array $context = []): void
+    public function debug(string|Stringable $message, array $context = []): void
     {
         $this->log(LogLevel::DEBUG, $message, $context);
     }
@@ -62,7 +64,7 @@ class Logger extends AbstractLogger
     /**
      * Quick info log
      */
-    public function info(string $message, array $context = []): void
+    public function info(string|Stringable $message, array $context = []): void
     {
         $this->log(LogLevel::INFO, $message, $context);
     }
@@ -70,7 +72,7 @@ class Logger extends AbstractLogger
     /**
      * Quick error log
      */
-    public function error(string $message, array $context = []): void
+    public function error(string|Stringable $message, array $context = []): void
     {
         $this->log(LogLevel::ERROR, $message, $context);
     }
@@ -78,7 +80,7 @@ class Logger extends AbstractLogger
     /**
      * Quick warning log
      */
-    public function warning(string $message, array $context = []): void
+    public function warning(string|Stringable $message, array $context = []): void
     {
         $this->log(LogLevel::WARNING, $message, $context);
     }

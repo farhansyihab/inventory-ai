@@ -1,5 +1,5 @@
 {
-    "name": "haidar/inventory-ai",
+    "name": "farhan/inventory-ai",
     "description": "Inventory AI backend with PHP and MongoDB",
     "type": "project",
     "require": {
