@@ -670,3 +670,17 @@
 [2025-09-21 10:08:56] INFO: TOTAL: 6 PASSED, 0 FAILED 
 [2025-09-21 10:08:56] INFO: ============================================================ 
 [2025-09-21 10:08:56] INFO: 🎉 ALL TESTS PASSED! 
+[2025-09-21 12:08:39] INFO: MongoDB client initialized 
+[2025-09-21 12:08:39] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-21 12:08:39] INFO: Test environment setup completed 
+[2025-09-21 12:08:39] INFO: Starting comprehensive tests... 
+[2025-09-21 12:08:39] INFO: Running: MongoDB Connection Test 
+[2025-09-21 12:08:39] INFO: ✓ MongoDB Connection Test (162.65 ms) 
+[2025-09-21 12:08:39] INFO: Running: User Model Validation 
+[2025-09-21 12:21:02] INFO: MongoDB client initialized 
+[2025-09-21 12:21:02] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-21 12:21:02] INFO: Test environment setup completed 
+[2025-09-21 12:21:02] INFO: Starting comprehensive tests... 
+[2025-09-21 12:21:02] INFO: Running: MongoDB Connection Test 
+[2025-09-21 12:21:02] INFO: ✓ MongoDB Connection Test (140.32 ms) 
+[2025-09-21 12:21:02] INFO: Running: User Model Validation 

@@ -42,10 +42,10 @@ src/
 - ✅ RESTful API endpoints ✅
 - ✅ JWT Token management ✅
 
-### ⏳ **YANG MASIH DALAM RENCANA PHASE 2:**
+### ⏳ **YANG MASIH DALAM PROSES PHASE 2:**
 
-1. **Inventory Management** - ❌ Belum mulai
-    - InventoryRepository
+1. **Inventory Management** - ⏳ Proses
+    - InventoryRepository ✅
     - InventoryService
     - InventoryController
     - CRUD operations
