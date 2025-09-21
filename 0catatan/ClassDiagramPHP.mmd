@@ -24,6 +24,37 @@ classDiagram
         +findOne(array filter = []) array|null
     }
 
+    class IAuthService {
+        <<interface>>
+        +register(array userData) array
+        +login(string username, string password) array
+        +refreshToken(string refreshToken) array
+        +logout(string refreshToken) bool
+        +verifyCredentials(string username, string password) array|false
+        +changePassword(string userId, string currentPassword, string newPassword) bool
+    }
+
+    class ITokenService {
+        <<interface>>
+        +generateAccessToken(array user) string
+        +generateRefreshToken(array user) string
+        +verifyAccessToken(string token) array|false
+        +verifyRefreshToken(string token) array|false
+        +revokeRefreshToken(string token) bool
+        +isRefreshTokenRevoked(string token) bool
+        +getAccessTokenExpiry() int
+        +getRefreshTokenExpiry() int
+    }
+
+    class ITokenRepository {
+        <<interface>>
+        +storeRefreshToken(string tokenHash, string userId, DateTime expiresAt) bool
+        +revokeRefreshToken(string tokenHash) bool
+        +isRefreshTokenRevoked(string tokenHash) bool
+        +findRefreshToken(string tokenHash) array|null
+        +cleanupExpiredTokens() int
+    }
+
     %% ========== Concrete Implementations ==========
     class UserRepository {
         +findUserById(string id) User|null
@@ -32,6 +63,16 @@ classDiagram
         +saveUser(User user) string
         +deleteUser(User user) bool
         +createIndexes() array
+        -documentToArray(mixed document) array
+        -normalizeToUTCDateTime(mixed value) UTCDateTime
+    }
+
+    class MongoTokenRepository {
+        +storeRefreshToken(string tokenHash, string userId, DateTime expiresAt) bool
+        +revokeRefreshToken(string tokenHash) bool
+        +isRefreshTokenRevoked(string tokenHash) bool
+        +findRefreshToken(string tokenHash) array|null
+        +cleanupExpiredTokens() int
     }
 
     class MongoDBManager {
@@ -45,15 +86,41 @@ classDiagram
         +createIndexes(string collectionName, array indexes) array
         +collectionExists(string collectionName) bool
         +getStats() array
+        +getCollectionStats(string collectionName) array
+        +dropCollection(string collectionName) array
         +getServerInfo() array
         +getServerVersion() array
         +reset() void
+        +getLogger() LoggerInterface
+        +setLogger(LoggerInterface logger) void
     }
 
     class UserService {
         +findByUsername(string username) array|null
         +findByEmail(string email) array|null
         -convertToArray(array userData) array
+    }
+
+    class AuthService {
+        +register(array userData) array
+        +login(string username, string password) array
+        +refreshToken(string refreshToken) array
+        +logout(string refreshToken) bool
+        +verifyCredentials(string username, string password) array|false
+        +changePassword(string userId, string currentPassword, string newPassword) bool
+        +validatePasswordStrength(string password) array
+        -generateTokens(array user) array
+    }
+
+    class JwtTokenService {
+        +generateAccessToken(array user) string
+        +generateRefreshToken(array user) string
+        +verifyAccessToken(string token) array|false
+        +verifyRefreshToken(string token) array|false
+        +revokeRefreshToken(string token) bool
+        +isRefreshTokenRevoked(string token) bool
+        +getAccessTokenExpiry() int
+        +getRefreshTokenExpiry() int
     }
 
     class BaseController {
@@ -76,13 +143,137 @@ classDiagram
         #getSortingParams() array
     }
 
-    %% ========== Existing Relationships ==========
+    class AuthController {
+        -authService AuthService
+        -userService UserService
+        +register() void
+        +login() void
+        +refreshToken() void
+        +logout() void
+        +profile() void
+        +changePassword() void
+    }
+
+    class UserController {
+        -userService UserService
+        +listUsers() void
+        +getUser(string id) void
+        +createUser() void
+        +updateUser(string id) void
+        +deleteUser(string id) void
+    }
+
+    class ErrorHandler {
+        -logger LoggerInterface
+        -displayErrors bool
+        +register() void
+        +handleError(int errno, string errstr, string errfile, int errline) bool
+        +handleException(Throwable exception) void
+        +handleShutdown() void
+        -sendErrorResponse(Throwable exception) void
+        -getErrorType(int errno) string
+        +setDisplayErrors(bool displayErrors) void
+    }
+
+    class Router {
+        -routes array
+        -routeGroups array
+        -notFoundHandler callable
+        -currentGroupPrefix string
+        +get(string path, mixed handler) self
+        +post(string path, mixed handler) self
+        +put(string path, mixed handler) self
+        +delete(string path, mixed handler) self
+        +patch(string path, mixed handler) self
+        +options(string path, mixed handler) self
+        +any(string path, mixed handler) self
+        +addRoute(string method, string path, mixed handler) self
+        +group(string prefix, callable callback) self
+        +setNotFoundHandler(callable handler) self
+        +dispatch(string method, string path) mixed
+        -executeHandler(mixed handler, array params = []) mixed
+        -matchRoute(string routePath, string requestPath, array& params) bool
+        -handleNotFound() mixed
+        -normalizePath(string path) string
+        +getRoutes() array
+        +clearRoutes() void
+    }
+
+    class Logger {
+        -logFile string
+        -defaultLevel string
+        +log(mixed level, string|Stringable message, array context = []) void
+        +debug(string|Stringable message, array context = []) void
+        +info(string|Stringable message, array context = []) void
+        +error(string|Stringable message, array context = []) void
+        +warning(string|Stringable message, array context = []) void
+        +getLogFile() string
+    }
+
+    class User {
+        -id string|null
+        -username string
+        -email string
+        -passwordHash string
+        -role string
+        -createdAt DateTime
+        -updatedAt DateTime
+        +__construct(string username, string email, string passwordHash, string role = 'staff', string id = null, DateTime createdAt = null, DateTime updatedAt = null)
+        +getId() string|null
+        +getUsername() string
+        +getEmail() string
+        +getPasswordHash() string
+        +getRole() string
+        +getCreatedAt() DateTime
+        +getUpdatedAt() DateTime
+        +setUsername(string username) void
+        +setEmail(string email) void
+        +setPasswordHash(string hash) void
+        +setRole(string role) void
+        +setUpdatedAt(DateTime updatedAt) void
+        +toDocument() array
+        +fromDocument(mixed document) User
+        -parseDate(mixed dateValue) DateTime
+        +validate() void
+        +isAdmin() bool
+        +isManager() bool
+        +isStaff() bool
+        +toArray() array
+        +__toString() string
+    }
+
+    %% ========== Relationships ==========
     IRepository <|.. UserRepository
     IService <|.. UserService
+    IAuthService <|.. AuthService
+    ITokenService <|.. JwtTokenService
+    ITokenRepository <|.. MongoTokenRepository
     
     UserRepository --> MongoDBManager : uses
+    MongoTokenRepository --> MongoDBManager : uses
+    
     UserService --> UserRepository : depends on
     UserService --> Logger : depends on
+    
+    AuthService --> UserService : depends on
+    AuthService --> ITokenService : depends on
+    AuthService --> Logger : depends on
+    
+    JwtTokenService --> ITokenRepository : depends on
+    JwtTokenService --> Logger : depends on
+    
+    AuthController --> AuthService : depends on
+    AuthController --> UserService : depends on
+    AuthController --> BaseController : extends
+    
+    UserController --> UserService : depends on
+    UserController --> BaseController : extends
+    
+    BaseController --> Logger : depends on
+    
+    ErrorHandler --> LoggerInterface : depends on
+    
+    Router --> Logger : depends on (in index.php)
 
     %% ========== Planned Components (Belum Diimplementasi) ==========
     class IUserRepository {
@@ -105,25 +296,10 @@ classDiagram
         <<interface>>
     }
 
-    class ITokenRepository {
-        <<interface>>
-        +storeRefreshToken(string tokenHash, string userId, DateTime expires)
-        +revoke(string tokenHash)
-        +find(string tokenHash)
-    }
-
     class IHashService {
         <<interface>>
         +hash(string password): string
         +verify(string password, string hash): bool
-    }
-
-    class ITokenService {
-        <<interface>>
-        +generateAccessToken(array user): string
-        +generateRefreshToken(array user): string
-        +verifyAccessToken(string token): array|false
-        +revokeRefreshToken(string refreshToken)
     }
 
     class AIStrategy {
@@ -134,9 +310,7 @@ classDiagram
     class MongoInventoryRepository
     class MongoCategoryRepository
     class MongoSupplierRepository
-    class MongoTokenRepository
     class BcryptHashService
-    class JwtTokenService
     class Phi3Strategy
     class DeepSeekStrategy
     class OllamaStrategy
@@ -145,18 +319,10 @@ classDiagram
     IInventoryRepository <|.. MongoInventoryRepository
     ICategoryRepository <|.. MongoCategoryRepository
     ISupplierRepository <|.. MongoSupplierRepository
-    ITokenRepository <|.. MongoTokenRepository
     IHashService <|.. BcryptHashService
-    ITokenService <|.. JwtTokenService
     AIStrategy <|.. Phi3Strategy
     AIStrategy <|.. DeepSeekStrategy
     AIStrategy <|.. OllamaStrategy
-
-    class AuthService {
-        +login(array credentials)
-        +refresh(string refreshToken)
-        +logout(string refreshToken)
-    }
 
     class InventoryService {
         +createItem(array dto)
@@ -178,11 +344,9 @@ classDiagram
         +analyzeInventory(array items)
     }
 
-    class UserController
     class InventoryController
     class CategoryController
     class SupplierController
-    class AuthController
 
     class AuthMiddleware {
         +verifyAccessToken(req,res,next)
@@ -192,23 +356,6 @@ classDiagram
     }
     class Validator {
         +validate(array schema, array data)
-    }
-
-    class User {
-        +string id
-        +string username
-        +string email
-        +string passwordHash
-        +string role
-        +DateTime createdAt
-        +DateTime updatedAt
-        +toDocument() array
-        +fromDocument(array document) User
-        +validate() void
-        +isAdmin() bool
-        +isManager() bool
-        +isStaff() bool
-        +toArray() array
     }
 
     class InventoryItem {
@@ -228,26 +375,16 @@ classDiagram
     class Supplier
     class AuditLog
 
-    %% ========== Relationships ==========
-    UserController --> UserService
+    %% ========== Future Relationships ==========
     InventoryController --> InventoryService
     CategoryController --> CategoryService
     SupplierController --> SupplierService
-    AuthController --> AuthService
 
     InventoryService --> IInventoryRepository
     InventoryService --> ICategoryRepository
     InventoryService --> ISupplierRepository
     InventoryService --> AIService
     InventoryService --> AuditLogService
-
-    AuthService --> IUserRepository
-    AuthService --> ITokenService
-    AuthService --> ITokenRepository
-
-    UserService --> IUserRepository
-    UserService --> IHashService
-    UserService --> ITokenService
 
     AIService --> AIStrategy
 
@@ -259,9 +396,9 @@ classDiagram
     MongoInventoryRepository --> MongoDBManager
     MongoCategoryRepository --> MongoDBManager
     MongoSupplierRepository --> MongoDBManager
-    MongoTokenRepository --> MongoDBManager
 
     %% ========== Utility Dependencies ==========
-    UserService --> Logger
     InventoryService --> Logger
-    AuthService --> Logger
+    CategoryService --> Logger
+    SupplierService --> Logger
+    AIService --> Logger

@@ -34,7 +34,7 @@ src/
 - ✅ Automated index creation ✅
     
 
-### Phase 2: Core Features - COMPLETED ✅
+### Phase 2: Core Features - RUNNING ⏳
 
 - ✅ Authentication System (JWT) dengan AuthService ✅
 - ✅ User Management dengan UserService ✅
@@ -42,11 +42,25 @@ src/
 - ✅ RESTful API endpoints ✅
 - ✅ JWT Token management ✅
 
+### ⏳ **YANG MASIH DALAM RENCANA PHASE 2:**
+
+1. **Inventory Management** - ❌ Belum mulai
+    - InventoryRepository
+    - InventoryService
+    - InventoryController
+    - CRUD operations
+        
+2. **AI Integration** - ❌ Belum mulai
+    - AI Strategy interface
+    - Ollama connector
+    - AI integration dengan inventory
+    - Analysis endpoints
+
 ### Phase 3: Advanced Features - PLANNED 📅
-- 📅 Category Management
-- 📅 Supplier Management  
-- 📅 Reporting System
-- 📅 Deployment Preparation
+  - 📅 Category Management
+  - 📅 Supplier Management  
+  - 📅 Reporting System
+  - 📅 Deployment Preparation
 
 ## 🚀 Quick Start
 
