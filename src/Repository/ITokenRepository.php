@@ -1,62 +1,54 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Repository;
 
-use App\Model\User;
+use DateTime;
 
 /**
- * src/Repository/ITokenRepository.php
- * Interface untuk JWT Token Service
- * Interface untuk contract Token Repository (refresh tokens management)
+ * Interface untuk Token Repository
+ * Menangani penyimpanan dan manajemen refresh tokens
  */
-interface ITokenService
+interface ITokenRepository
 {
     /**
-     * Generate access token untuk user
+     * Store refresh token hash
      * 
-     * @param array $user Data user
-     * @return string JWT token
+     * @param string $tokenHash Hash dari refresh token
+     * @param string $userId User ID pemilik token
+     * @param DateTime $expiresAt Waktu kadaluarsa token
+     * @return bool True jika berhasil disimpan
      */
-    public function generateAccessToken(array $user): string;
-
-    /**
-     * Generate refresh token untuk user
-     * 
-     * @param array $user Data user
-     * @return string Refresh token
-     */
-    public function generateRefreshToken(array $user): string;
-
-    /**
-     * Verify dan decode access token
-     * 
-     * @param string $token JWT token
-     * @return array|false Decoded payload atau false jika invalid
-     */
-    public function verifyAccessToken(string $token): array|false;
-
-    /**
-     * Verify refresh token
-     * 
-     * @param string $token Refresh token
-     * @return array|false Decoded payload atau false jika invalid
-     */
-    public function verifyRefreshToken(string $token): array|false;
+    public function storeRefreshToken(string $tokenHash, string $userId, DateTime $expiresAt): bool;
 
     /**
      * Revoke refresh token
      * 
-     * @param string $token Refresh token
+     * @param string $tokenHash Hash dari refresh token
      * @return bool True jika berhasil di-revoke
      */
-    public function revokeRefreshToken(string $token): bool;
+    public function revokeRefreshToken(string $tokenHash): bool;
 
     /**
-     * Check jika refresh token sudah di-revoke
+     * Check if refresh token is revoked
      * 
-     * @param string $token Refresh token
-     * @return bool True jika sudah di-revoke
+     * @param string $tokenHash Hash dari refresh token
+     * @return bool True jika token di-revoke
      */
-    public function isRefreshTokenRevoked(string $token): bool;
+    public function isRefreshTokenRevoked(string $tokenHash): bool;
+
+    /**
+     * Find refresh token by hash
+     * 
+     * @param string $tokenHash Hash dari refresh token
+     * @return array|null Token data atau null jika tidak ditemukan
+     */
+    public function findRefreshToken(string $tokenHash): ?array;
+
+    /**
+     * Clean up expired refresh tokens
+     * 
+     * @return int Number of tokens cleaned up
+     */
+    public function cleanupExpiredTokens(): int;
 }
