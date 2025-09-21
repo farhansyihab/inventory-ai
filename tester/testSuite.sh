@@ -1,4 +1,7 @@
 #!/bin/bash
+echo "menuju root project"
+cd ..
+echo "posisi root project"
 echo "=== Inventory AI Comprehensive Test Suite ==="
 echo ""
 

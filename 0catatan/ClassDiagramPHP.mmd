@@ -1,0 +1,267 @@
+classDiagram
+    note for MongoDBManager "asalnya class MongoDBManager bernama MongoClientAdapter tapi nama class ini sudah ada di library mongodib"
+    %% ========== Interfaces / Abstractions ==========
+    class IRepository {
+        <<interface>>
+        +findById(string id) array|null
+        +find(array filter = [], array options = []) array
+        +create(array data) string
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter = []) int
+        +findOne(array filter = []) array|null
+    }
+
+    class IService {
+        <<interface>>
+        +findById(string id) array|null
+        +find(array filter = [], array options = []) array
+        +create(array data) array
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter = []) int
+        +validate(array data) bool
+        +findOne(array filter = []) array|null
+    }
+
+    %% ========== Concrete Implementations ==========
+    class UserRepository {
+        +findUserById(string id) User|null
+        +findUserByUsername(string username) User|null
+        +findUserByEmail(string email) User|null
+        +saveUser(User user) string
+        +deleteUser(User user) bool
+        +createIndexes() array
+    }
+
+    class MongoDBManager {
+        +initialize(LoggerInterface logger = null) void
+        +getClient() Client
+        +getDatabase() Database
+        +getCollection(string name) Collection
+        +ping() bool
+        +startSession() Session|null
+        +getConnectionInfo() array
+        +createIndexes(string collectionName, array indexes) array
+        +collectionExists(string collectionName) bool
+        +getStats() array
+        +getServerInfo() array
+        +getServerVersion() array
+        +reset() void
+    }
+
+    class UserService {
+        +findByUsername(string username) array|null
+        +findByEmail(string email) array|null
+        -convertToArray(array userData) array
+    }
+
+    class BaseController {
+        #logger Logger
+        #requestData array
+        +__construct(Logger logger = null)
+        #parseRequestData() void
+        #getRequestValue(string key, mixed default) mixed
+        #jsonResponse(array data, int statusCode = 200) void
+        #successResponse(array data = [], string message = 'Success', int statusCode = 200) void
+        #errorResponse(string message, array errors = [], int statusCode = 400) void
+        #notFoundResponse(string message = 'Resource not found') void
+        #unauthorizedResponse(string message = 'Unauthorized') void
+        #validationErrorResponse(array errors, string message = 'Validation failed') void
+        #getAuthUserId() string|null
+        #isAuthenticated() bool
+        #validateRequiredFields(array fields) array
+        #logAction(string action, array context = []) void
+        #getPaginationParams() array
+        #getSortingParams() array
+    }
+
+    %% ========== Existing Relationships ==========
+    IRepository <|.. UserRepository
+    IService <|.. UserService
+    
+    UserRepository --> MongoDBManager : uses
+    UserService --> UserRepository : depends on
+    UserService --> Logger : depends on
+
+    %% ========== Planned Components (Belum Diimplementasi) ==========
+    class IUserRepository {
+        <<interface>>
+        +findByUsername(string username)
+        +findByEmail(string email)
+    }
+
+    class IInventoryRepository {
+        <<interface>>
+        +findLowStock(int threshold)
+        +aggregate(array pipeline)
+    }
+
+    class ICategoryRepository {
+        <<interface>>
+    }
+
+    class ISupplierRepository {
+        <<interface>>
+    }
+
+    class ITokenRepository {
+        <<interface>>
+        +storeRefreshToken(string tokenHash, string userId, DateTime expires)
+        +revoke(string tokenHash)
+        +find(string tokenHash)
+    }
+
+    class IHashService {
+        <<interface>>
+        +hash(string password): string
+        +verify(string password, string hash): bool
+    }
+
+    class ITokenService {
+        <<interface>>
+        +generateAccessToken(array user): string
+        +generateRefreshToken(array user): string
+        +verifyAccessToken(string token): array|false
+        +revokeRefreshToken(string refreshToken)
+    }
+
+    class AIStrategy {
+        <<interface>>
+        +generate(string prompt): array
+    }
+
+    class MongoInventoryRepository
+    class MongoCategoryRepository
+    class MongoSupplierRepository
+    class MongoTokenRepository
+    class BcryptHashService
+    class JwtTokenService
+    class Phi3Strategy
+    class DeepSeekStrategy
+    class OllamaStrategy
+
+    IUserRepository <|.. UserRepository
+    IInventoryRepository <|.. MongoInventoryRepository
+    ICategoryRepository <|.. MongoCategoryRepository
+    ISupplierRepository <|.. MongoSupplierRepository
+    ITokenRepository <|.. MongoTokenRepository
+    IHashService <|.. BcryptHashService
+    ITokenService <|.. JwtTokenService
+    AIStrategy <|.. Phi3Strategy
+    AIStrategy <|.. DeepSeekStrategy
+    AIStrategy <|.. OllamaStrategy
+
+    class AuthService {
+        +login(array credentials)
+        +refresh(string refreshToken)
+        +logout(string refreshToken)
+    }
+
+    class InventoryService {
+        +createItem(array dto)
+        +updateItem(string id, array dto)
+        +deleteItem(string id)
+        +getItem(string id)
+        +listItems(array filter)
+        +getLowStock(int threshold)
+        +generateReport(string type)
+    }
+
+    class CategoryService
+    class SupplierService
+    class AuditLogService
+    class AIService {
+        -map<string, AIStrategy> strategies
+        +registerStrategy(string name, AIStrategy s)
+        +setStrategy(string name)
+        +analyzeInventory(array items)
+    }
+
+    class UserController
+    class InventoryController
+    class CategoryController
+    class SupplierController
+    class AuthController
+
+    class AuthMiddleware {
+        +verifyAccessToken(req,res,next)
+    }
+    class RoleMiddleware {
+        +requireRole(string role)
+    }
+    class Validator {
+        +validate(array schema, array data)
+    }
+
+    class User {
+        +string id
+        +string username
+        +string email
+        +string passwordHash
+        +string role
+        +DateTime createdAt
+        +DateTime updatedAt
+        +toDocument() array
+        +fromDocument(array document) User
+        +validate() void
+        +isAdmin() bool
+        +isManager() bool
+        +isStaff() bool
+        +toArray() array
+    }
+
+    class InventoryItem {
+        +string _id
+        +string name
+        +string description
+        +int quantity
+        +float price
+        +string categoryId
+        +string supplierId
+        +int minStock
+        +DateTime createdAt
+        +DateTime updatedAt
+    }
+
+    class Category
+    class Supplier
+    class AuditLog
+
+    %% ========== Relationships ==========
+    UserController --> UserService
+    InventoryController --> InventoryService
+    CategoryController --> CategoryService
+    SupplierController --> SupplierService
+    AuthController --> AuthService
+
+    InventoryService --> IInventoryRepository
+    InventoryService --> ICategoryRepository
+    InventoryService --> ISupplierRepository
+    InventoryService --> AIService
+    InventoryService --> AuditLogService
+
+    AuthService --> IUserRepository
+    AuthService --> ITokenService
+    AuthService --> ITokenRepository
+
+    UserService --> IUserRepository
+    UserService --> IHashService
+    UserService --> ITokenService
+
+    AIService --> AIStrategy
+
+    InventoryItem --> Category
+    InventoryItem --> Supplier
+    AuditLog --> User
+
+    %% ========== Dependencies on MongoDBManager ==========
+    MongoInventoryRepository --> MongoDBManager
+    MongoCategoryRepository --> MongoDBManager
+    MongoSupplierRepository --> MongoDBManager
+    MongoTokenRepository --> MongoDBManager
+
+    %% ========== Utility Dependencies ==========
+    UserService --> Logger
+    InventoryService --> Logger
+    AuthService --> Logger
