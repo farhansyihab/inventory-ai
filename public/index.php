@@ -51,6 +51,21 @@ $router->group('/api', function ($router) {
     $router->post('/users', 'App\Controller\UserController@createUser');
 
     $router->get('/inventory', 'App\Controller\InventoryController@listItems');
+
+    // Tambahkan routes authentication setelah health check
+    $router->post('/auth/register', 'App\Controller\AuthController@register');
+    $router->post('/auth/login', 'App\Controller\AuthController@login');
+    $router->post('/auth/refresh', 'App\Controller\AuthController@refreshToken');
+    $router->post('/auth/logout', 'App\Controller\AuthController@logout');
+    $router->get('/auth/profile', 'App\Controller\AuthController@profile');
+    $router->post('/auth/change-password', 'App\Controller\AuthController@changePassword');
+
+    // User management routes
+    $router->get('/users', 'App\Controller\UserController@listUsers');
+    $router->get('/users/{id}', 'App\Controller\UserController@getUser');
+    $router->post('/users', 'App\Controller\UserController@createUser');
+    $router->put('/users/{id}', 'App\Controller\UserController@updateUser');
+    $router->delete('/users/{id}', 'App\Controller\UserController@deleteUser');    
 });
 
 // 404 handler
