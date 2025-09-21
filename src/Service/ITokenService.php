@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Model\User;
-
 /**
  * Interface untuk JWT Token Service
  */
@@ -57,4 +55,14 @@ interface ITokenService
      * @return bool True jika sudah di-revoke
      */
     public function isRefreshTokenRevoked(string $token): bool;
+
+    /**
+     * Get access token expiration time in seconds
+     */
+    public function getAccessTokenExpiry(): int;
+
+    /**
+     * Get refresh token expiration time in seconds  
+     */
+    public function getRefreshTokenExpiry(): int;
 }
