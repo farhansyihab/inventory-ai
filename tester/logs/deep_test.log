@@ -1,0 +1,576 @@
+[2025-09-20 22:49:34] INFO: MongoDB client initialized 
+[2025-09-20 22:49:34] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-20 22:49:34] INFO: Test environment setup completed 
+[2025-09-20 22:49:34] INFO: Starting comprehensive tests... 
+[2025-09-20 22:49:34] INFO: Running: MongoDB Connection Test 
+[2025-09-20 22:49:34] INFO: ✓ MongoDB Connection Test (228.31 ms) 
+[2025-09-20 22:49:34] INFO: Running: User Model Validation 
+[2025-09-20 22:49:34] INFO: ✓ User Model Validation (233.54 ms) 
+[2025-09-20 22:49:34] INFO: Running: User Repository CRUD Operations 
+[2025-09-20 22:49:35] INFO: ✓ User Repository CRUD Operations (205.67 ms) 
+[2025-09-20 22:49:35] INFO: Running: User Service Integration 
+[2025-09-20 22:49:35] INFO: User created successfully {"userId":"68cf2f7f1b3f998e8b0be474"}
+[2025-09-20 22:49:35] INFO: User deleted successfully {"userId":"68cf2f7f1b3f998e8b0be474"}
+[2025-09-20 22:49:35] INFO: ✓ User Service Integration (202.17 ms) 
+[2025-09-20 22:49:35] INFO: Running: Error Handling 
+[2025-09-20 22:49:35] INFO: ✓ Error Handling (0.04 ms) 
+[2025-09-20 22:49:35] INFO: Running: Edge Cases 
+[2025-09-20 22:49:35] INFO: ✓ Edge Cases (397.51 ms) 
+[2025-09-20 22:49:35] INFO: 
+============================================================ 
+[2025-09-20 22:49:35] INFO: TEST SUMMARY 
+[2025-09-20 22:49:35] INFO: ============================================================ 
+[2025-09-20 22:49:35] INFO: MongoDB Connection Test                  ✓ PASS   (228.31ms)  
+[2025-09-20 22:49:35] INFO: User Model Validation                    ✓ PASS   (233.54ms)  
+[2025-09-20 22:49:35] INFO: User Repository CRUD Operations          ✓ PASS   (205.67ms)  
+[2025-09-20 22:49:35] INFO: User Service Integration                 ✓ PASS   (202.17ms)  
+[2025-09-20 22:49:35] INFO: Error Handling                           ✓ PASS   (0.04ms)    
+[2025-09-20 22:49:35] INFO: Edge Cases                               ✓ PASS   (397.51ms)  
+[2025-09-20 22:49:35] INFO: ============================================================ 
+[2025-09-20 22:49:35] INFO: TOTAL: 6 PASSED, 0 FAILED 
+[2025-09-20 22:49:35] INFO: ============================================================ 
+[2025-09-20 22:49:35] INFO: 🎉 ALL TESTS PASSED! 
+[2025-09-20 23:01:14] INFO: MongoDB client initialized 
+[2025-09-20 23:01:14] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-20 23:01:15] INFO: Test environment setup completed 
+[2025-09-20 23:01:15] INFO: Starting comprehensive tests... 
+[2025-09-20 23:01:15] INFO: Running: MongoDB Connection Test 
+[2025-09-20 23:01:15] INFO: ✓ MongoDB Connection Test (215.79 ms) 
+[2025-09-20 23:01:15] INFO: Running: User Model Validation 
+[2025-09-20 23:01:15] INFO: ✓ User Model Validation (230.48 ms) 
+[2025-09-20 23:01:15] INFO: Running: User Repository CRUD Operations 
+[2025-09-20 23:01:15] INFO: ✓ User Repository CRUD Operations (200.32 ms) 
+[2025-09-20 23:01:15] INFO: Running: User Service Integration 
+[2025-09-20 23:01:16] INFO: User created successfully {"userId":"68cf323c024575f27a01a7d4"}
+[2025-09-20 23:01:16] INFO: User deleted successfully {"userId":"68cf323c024575f27a01a7d4"}
+[2025-09-20 23:01:16] INFO: ✓ User Service Integration (202.21 ms) 
+[2025-09-20 23:01:16] INFO: Running: Error Handling 
+[2025-09-20 23:01:16] INFO: ✓ Error Handling (0.04 ms) 
+[2025-09-20 23:01:16] INFO: Running: Edge Cases 
+[2025-09-20 23:01:16] INFO: ✓ Edge Cases (397.57 ms) 
+[2025-09-20 23:01:16] INFO: 
+============================================================ 
+[2025-09-20 23:01:16] INFO: TEST SUMMARY 
+[2025-09-20 23:01:16] INFO: ============================================================ 
+[2025-09-20 23:01:16] INFO: MongoDB Connection Test                  ✓ PASS   (215.79ms)  
+[2025-09-20 23:01:16] INFO: User Model Validation                    ✓ PASS   (230.48ms)  
+[2025-09-20 23:01:16] INFO: User Repository CRUD Operations          ✓ PASS   (200.32ms)  
+[2025-09-20 23:01:16] INFO: User Service Integration                 ✓ PASS   (202.21ms)  
+[2025-09-20 23:01:16] INFO: Error Handling                           ✓ PASS   (0.04ms)    
+[2025-09-20 23:01:16] INFO: Edge Cases                               ✓ PASS   (397.57ms)  
+[2025-09-20 23:01:16] INFO: ============================================================ 
+[2025-09-20 23:01:16] INFO: TOTAL: 6 PASSED, 0 FAILED 
+[2025-09-20 23:01:16] INFO: ============================================================ 
+[2025-09-20 23:01:16] INFO: 🎉 ALL TESTS PASSED! 
+[2025-09-20 23:02:23] INFO: MongoDB client initialized 
+[2025-09-20 23:02:23] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-20 23:02:23] INFO: Test environment setup completed 
+[2025-09-20 23:02:23] INFO: Starting comprehensive tests... 
+[2025-09-20 23:02:23] INFO: Running: MongoDB Connection Test 
+[2025-09-20 23:02:24] INFO: ✓ MongoDB Connection Test (239.4 ms) 
+[2025-09-20 23:02:24] INFO: Running: User Model Validation 
+[2025-09-20 23:02:24] INFO: ✓ User Model Validation (230.56 ms) 
+[2025-09-20 23:02:24] INFO: Running: User Repository CRUD Operations 
+[2025-09-20 23:02:24] INFO: ✓ User Repository CRUD Operations (200.31 ms) 
+[2025-09-20 23:02:24] INFO: Running: User Service Integration 
+[2025-09-20 23:02:24] INFO: User created successfully {"userId":"68cf3280a062f07cb50a45d4"}
+[2025-09-20 23:02:24] INFO: User deleted successfully {"userId":"68cf3280a062f07cb50a45d4"}
+[2025-09-20 23:02:24] INFO: ✓ User Service Integration (199.79 ms) 
+[2025-09-20 23:02:24] INFO: Running: Error Handling 
+[2025-09-20 23:02:24] INFO: ✓ Error Handling (0.06 ms) 
+[2025-09-20 23:02:24] INFO: Running: Edge Cases 
+[2025-09-20 23:02:25] INFO: ✓ Edge Cases (399.76 ms) 
+[2025-09-20 23:02:25] INFO: 
+============================================================ 
+[2025-09-20 23:02:25] INFO: TEST SUMMARY 
+[2025-09-20 23:02:25] INFO: ============================================================ 
+[2025-09-20 23:02:25] INFO: MongoDB Connection Test                  ✓ PASS   (239.4ms)   
+[2025-09-20 23:02:25] INFO: User Model Validation                    ✓ PASS   (230.56ms)  
+[2025-09-20 23:02:25] INFO: User Repository CRUD Operations          ✓ PASS   (200.31ms)  
+[2025-09-20 23:02:25] INFO: User Service Integration                 ✓ PASS   (199.79ms)  
+[2025-09-20 23:02:25] INFO: Error Handling                           ✓ PASS   (0.06ms)    
+[2025-09-20 23:02:25] INFO: Edge Cases                               ✓ PASS   (399.76ms)  
+[2025-09-20 23:02:25] INFO: ============================================================ 
+[2025-09-20 23:02:25] INFO: TOTAL: 6 PASSED, 0 FAILED 
+[2025-09-20 23:02:25] INFO: ============================================================ 
+[2025-09-20 23:02:25] INFO: 🎉 ALL TESTS PASSED! 
+[2025-09-20 23:50:52] INFO: MongoDB client initialized 
+[2025-09-20 23:50:52] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-20 23:50:53] INFO: Test environment setup completed 
+[2025-09-20 23:50:53] INFO: Starting comprehensive tests... 
+[2025-09-20 23:50:53] INFO: Running: MongoDB Connection Test 
+[2025-09-20 23:50:53] INFO: ✓ MongoDB Connection Test (126.81 ms) 
+[2025-09-20 23:50:53] INFO: Running: User Model Validation 
+[2025-09-20 23:50:53] INFO: ✓ User Model Validation (230.96 ms) 
+[2025-09-20 23:50:53] INFO: Running: User Repository CRUD Operations 
+[2025-09-20 23:50:53] INFO: ✓ User Repository CRUD Operations (199.76 ms) 
+[2025-09-20 23:50:53] INFO: Running: User Service Integration 
+[2025-09-20 23:50:54] INFO: User created successfully {"userId":"68cf3dde72e274d0dd0c0a44"}
+[2025-09-20 23:50:54] INFO: User deleted successfully {"userId":"68cf3dde72e274d0dd0c0a44"}
+[2025-09-20 23:50:54] INFO: ✓ User Service Integration (201.99 ms) 
+[2025-09-20 23:50:54] INFO: Running: Error Handling 
+[2025-09-20 23:50:54] INFO: ✓ Error Handling (0.04 ms) 
+[2025-09-20 23:50:54] INFO: Running: Edge Cases 
+[2025-09-20 23:50:54] INFO: ✓ Edge Cases (397.25 ms) 
+[2025-09-20 23:50:54] INFO: 
+============================================================ 
+[2025-09-20 23:50:54] INFO: TEST SUMMARY 
+[2025-09-20 23:50:54] INFO: ============================================================ 
+[2025-09-20 23:50:54] INFO: MongoDB Connection Test                  ✓ PASS   (126.81ms)  
+[2025-09-20 23:50:54] INFO: User Model Validation                    ✓ PASS   (230.96ms)  
+[2025-09-20 23:50:54] INFO: User Repository CRUD Operations          ✓ PASS   (199.76ms)  
+[2025-09-20 23:50:54] INFO: User Service Integration                 ✓ PASS   (201.99ms)  
+[2025-09-20 23:50:54] INFO: Error Handling                           ✓ PASS   (0.04ms)    
+[2025-09-20 23:50:54] INFO: Edge Cases                               ✓ PASS   (397.25ms)  
+[2025-09-20 23:50:54] INFO: ============================================================ 
+[2025-09-20 23:50:54] INFO: TOTAL: 6 PASSED, 0 FAILED 
+[2025-09-20 23:50:54] INFO: ============================================================ 
+[2025-09-20 23:50:54] INFO: 🎉 ALL TESTS PASSED! 
+[2025-09-20 23:53:13] INFO: MongoDB client initialized 
+[2025-09-20 23:53:13] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-20 23:53:14] INFO: Test environment setup completed 
+[2025-09-20 23:53:14] INFO: Starting comprehensive tests... 
+[2025-09-20 23:53:14] INFO: Running: MongoDB Connection Test 
+[2025-09-20 23:53:14] INFO: ✓ MongoDB Connection Test (127.93 ms) 
+[2025-09-20 23:53:14] INFO: Running: User Model Validation 
+[2025-09-20 23:53:14] INFO: ✓ User Model Validation (231.1 ms) 
+[2025-09-20 23:53:14] INFO: Running: User Repository CRUD Operations 
+[2025-09-20 23:53:14] INFO: ✓ User Repository CRUD Operations (199.81 ms) 
+[2025-09-20 23:53:14] INFO: Running: User Service Integration 
+[2025-09-20 23:53:14] INFO: User created successfully {"userId":"68cf3e6a101f59972b0c34b4"}
+[2025-09-20 23:53:14] INFO: User deleted successfully {"userId":"68cf3e6a101f59972b0c34b4"}
+[2025-09-20 23:53:14] INFO: ✓ User Service Integration (201.16 ms) 
+[2025-09-20 23:53:14] INFO: Running: Error Handling 
+[2025-09-20 23:53:14] INFO: ✓ Error Handling (0.04 ms) 
+[2025-09-20 23:53:14] INFO: Running: Edge Cases 
+[2025-09-20 23:53:15] INFO: ✓ Edge Cases (401.12 ms) 
+[2025-09-20 23:53:15] INFO: 
+============================================================ 
+[2025-09-20 23:53:15] INFO: TEST SUMMARY 
+[2025-09-20 23:53:15] INFO: ============================================================ 
+[2025-09-20 23:53:15] INFO: MongoDB Connection Test                  ✓ PASS   (127.93ms)  
+[2025-09-20 23:53:15] INFO: User Model Validation                    ✓ PASS   (231.1ms)   
+[2025-09-20 23:53:15] INFO: User Repository CRUD Operations          ✓ PASS   (199.81ms)  
+[2025-09-20 23:53:15] INFO: User Service Integration                 ✓ PASS   (201.16ms)  
+[2025-09-20 23:53:15] INFO: Error Handling                           ✓ PASS   (0.04ms)    
+[2025-09-20 23:53:15] INFO: Edge Cases                               ✓ PASS   (401.12ms)  
+[2025-09-20 23:53:15] INFO: ============================================================ 
+[2025-09-20 23:53:15] INFO: TOTAL: 6 PASSED, 0 FAILED 
+[2025-09-20 23:53:15] INFO: ============================================================ 
+[2025-09-20 23:53:15] INFO: 🎉 ALL TESTS PASSED! 
+[2025-09-20 23:56:03] INFO: MongoDB client initialized 
+[2025-09-20 23:56:03] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-20 23:56:03] INFO: Test environment setup completed 
+[2025-09-20 23:56:03] INFO: Starting comprehensive tests... 
+[2025-09-20 23:56:03] INFO: Running: MongoDB Connection Test 
+[2025-09-20 23:56:03] INFO: ✓ MongoDB Connection Test (127.78 ms) 
+[2025-09-20 23:56:03] INFO: Running: User Model Validation 
+[2025-09-20 23:56:04] INFO: ✓ User Model Validation (232.55 ms) 
+[2025-09-20 23:56:04] INFO: Running: User Repository CRUD Operations 
+[2025-09-20 23:56:04] INFO: ✓ User Repository CRUD Operations (201.26 ms) 
+[2025-09-20 23:56:04] INFO: Running: User Service Integration 
+[2025-09-20 23:56:04] INFO: User created successfully {"userId":"68cf3f14b09960b57c0a08d4"}
+[2025-09-20 23:56:04] INFO: User deleted successfully {"userId":"68cf3f14b09960b57c0a08d4"}
+[2025-09-20 23:56:04] INFO: ✓ User Service Integration (200.3 ms) 
+[2025-09-20 23:56:04] INFO: Running: Error Handling 
+[2025-09-20 23:56:04] INFO: ✓ Error Handling (0.03 ms) 
+[2025-09-20 23:56:04] INFO: Running: Edge Cases 
+[2025-09-20 23:56:04] INFO: ✓ Edge Cases (396.53 ms) 
+[2025-09-20 23:56:04] INFO: 
+============================================================ 
+[2025-09-20 23:56:04] INFO: TEST SUMMARY 
+[2025-09-20 23:56:04] INFO: ============================================================ 
+[2025-09-20 23:56:04] INFO: MongoDB Connection Test                  ✓ PASS   (127.78ms)  
+[2025-09-20 23:56:04] INFO: User Model Validation                    ✓ PASS   (232.55ms)  
+[2025-09-20 23:56:04] INFO: User Repository CRUD Operations          ✓ PASS   (201.26ms)  
+[2025-09-20 23:56:04] INFO: User Service Integration                 ✓ PASS   (200.3ms)   
+[2025-09-20 23:56:04] INFO: Error Handling                           ✓ PASS   (0.03ms)    
+[2025-09-20 23:56:04] INFO: Edge Cases                               ✓ PASS   (396.53ms)  
+[2025-09-20 23:56:04] INFO: ============================================================ 
+[2025-09-20 23:56:04] INFO: TOTAL: 6 PASSED, 0 FAILED 
+[2025-09-20 23:56:04] INFO: ============================================================ 
+[2025-09-20 23:56:04] INFO: 🎉 ALL TESTS PASSED! 
+[2025-09-20 23:59:11] INFO: MongoDB client initialized 
+[2025-09-20 23:59:11] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-20 23:59:11] INFO: Test environment setup completed 
+[2025-09-20 23:59:11] INFO: Starting comprehensive tests... 
+[2025-09-20 23:59:11] INFO: Running: MongoDB Connection Test 
+[2025-09-20 23:59:12] INFO: ✓ MongoDB Connection Test (150.48 ms) 
+[2025-09-20 23:59:12] INFO: Running: User Model Validation 
+[2025-09-20 23:59:12] INFO: ✓ User Model Validation (232.31 ms) 
+[2025-09-20 23:59:12] INFO: Running: User Repository CRUD Operations 
+[2025-09-20 23:59:12] INFO: ✓ User Repository CRUD Operations (200.52 ms) 
+[2025-09-20 23:59:12] INFO: Running: User Service Integration 
+[2025-09-20 23:59:12] INFO: User created successfully {"userId":"68cf3fd07d63cf70f3023404"}
+[2025-09-20 23:59:12] INFO: User deleted successfully {"userId":"68cf3fd07d63cf70f3023404"}
+[2025-09-20 23:59:12] INFO: ✓ User Service Integration (201.48 ms) 
+[2025-09-20 23:59:12] INFO: Running: Error Handling 
+[2025-09-20 23:59:12] INFO: ✓ Error Handling (0.04 ms) 
+[2025-09-20 23:59:12] INFO: Running: Edge Cases 
+[2025-09-20 23:59:13] INFO: ✓ Edge Cases (399.12 ms) 
+[2025-09-20 23:59:13] INFO: 
+============================================================ 
+[2025-09-20 23:59:13] INFO: TEST SUMMARY 
+[2025-09-20 23:59:13] INFO: ============================================================ 
+[2025-09-20 23:59:13] INFO: MongoDB Connection Test                  ✓ PASS   (150.48ms)  
+[2025-09-20 23:59:13] INFO: User Model Validation                    ✓ PASS   (232.31ms)  
+[2025-09-20 23:59:13] INFO: User Repository CRUD Operations          ✓ PASS   (200.52ms)  
+[2025-09-20 23:59:13] INFO: User Service Integration                 ✓ PASS   (201.48ms)  
+[2025-09-20 23:59:13] INFO: Error Handling                           ✓ PASS   (0.04ms)    
+[2025-09-20 23:59:13] INFO: Edge Cases                               ✓ PASS   (399.12ms)  
+[2025-09-20 23:59:13] INFO: ============================================================ 
+[2025-09-20 23:59:13] INFO: TOTAL: 6 PASSED, 0 FAILED 
+[2025-09-20 23:59:13] INFO: ============================================================ 
+[2025-09-20 23:59:13] INFO: 🎉 ALL TESTS PASSED! 
+[2025-09-21 00:01:20] INFO: MongoDB client initialized 
+[2025-09-21 00:01:20] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-21 00:01:21] INFO: Test environment setup completed 
+[2025-09-21 00:01:21] INFO: Starting comprehensive tests... 
+[2025-09-21 00:01:21] INFO: Running: MongoDB Connection Test 
+[2025-09-21 00:01:21] INFO: ✓ MongoDB Connection Test (238.19 ms) 
+[2025-09-21 00:01:21] INFO: Running: User Model Validation 
+[2025-09-21 00:01:21] INFO: ✓ User Model Validation (231.18 ms) 
+[2025-09-21 00:01:21] INFO: Running: User Repository CRUD Operations 
+[2025-09-21 00:01:21] INFO: ✓ User Repository CRUD Operations (200.31 ms) 
+[2025-09-21 00:01:21] INFO: Running: User Service Integration 
+[2025-09-21 00:01:22] INFO: User created successfully {"userId":"68cf4052d9345c390f001554"}
+[2025-09-21 00:01:22] INFO: User deleted successfully {"userId":"68cf4052d9345c390f001554"}
+[2025-09-21 00:01:22] INFO: ✓ User Service Integration (202.98 ms) 
+[2025-09-21 00:01:22] INFO: Running: Error Handling 
+[2025-09-21 00:01:22] INFO: ✓ Error Handling (0.08 ms) 
+[2025-09-21 00:01:22] INFO: Running: Edge Cases 
+[2025-09-21 00:01:22] INFO: ✓ Edge Cases (398.84 ms) 
+[2025-09-21 00:01:22] INFO: 
+============================================================ 
+[2025-09-21 00:01:22] INFO: TEST SUMMARY 
+[2025-09-21 00:01:22] INFO: ============================================================ 
+[2025-09-21 00:01:22] INFO: MongoDB Connection Test                  ✓ PASS   (238.19ms)  
+[2025-09-21 00:01:22] INFO: User Model Validation                    ✓ PASS   (231.18ms)  
+[2025-09-21 00:01:22] INFO: User Repository CRUD Operations          ✓ PASS   (200.31ms)  
+[2025-09-21 00:01:22] INFO: User Service Integration                 ✓ PASS   (202.98ms)  
+[2025-09-21 00:01:22] INFO: Error Handling                           ✓ PASS   (0.08ms)    
+[2025-09-21 00:01:22] INFO: Edge Cases                               ✓ PASS   (398.84ms)  
+[2025-09-21 00:01:22] INFO: ============================================================ 
+[2025-09-21 00:01:22] INFO: TOTAL: 6 PASSED, 0 FAILED 
+[2025-09-21 00:01:22] INFO: ============================================================ 
+[2025-09-21 00:01:22] INFO: 🎉 ALL TESTS PASSED! 
+[2025-09-21 00:14:46] INFO: MongoDB client initialized 
+[2025-09-21 00:14:46] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-21 00:14:47] INFO: Test environment setup completed 
+[2025-09-21 00:14:47] INFO: Starting comprehensive tests... 
+[2025-09-21 00:14:47] INFO: Running: MongoDB Connection Test 
+[2025-09-21 00:14:47] INFO: ✓ MongoDB Connection Test (138.35 ms) 
+[2025-09-21 00:14:47] INFO: Running: User Model Validation 
+[2025-09-21 00:14:47] INFO: ✓ User Model Validation (228.76 ms) 
+[2025-09-21 00:14:47] INFO: Running: User Repository CRUD Operations 
+[2025-09-21 00:14:47] INFO: ✓ User Repository CRUD Operations (200.51 ms) 
+[2025-09-21 00:14:47] INFO: Running: User Service Integration 
+[2025-09-21 00:14:47] INFO: User created successfully {"userId":"68cf437755ae2ab2db098a24"}
+[2025-09-21 00:14:47] INFO: User deleted successfully {"userId":"68cf437755ae2ab2db098a24"}
+[2025-09-21 00:14:47] INFO: ✓ User Service Integration (201.63 ms) 
+[2025-09-21 00:14:47] INFO: Running: Error Handling 
+[2025-09-21 00:14:47] INFO: ✓ Error Handling (0.04 ms) 
+[2025-09-21 00:14:47] INFO: Running: Edge Cases 
+[2025-09-21 00:14:48] INFO: ✓ Edge Cases (400.06 ms) 
+[2025-09-21 00:14:48] INFO: 
+============================================================ 
+[2025-09-21 00:14:48] INFO: TEST SUMMARY 
+[2025-09-21 00:14:48] INFO: ============================================================ 
+[2025-09-21 00:14:48] INFO: MongoDB Connection Test                  ✓ PASS   (138.35ms)  
+[2025-09-21 00:14:48] INFO: User Model Validation                    ✓ PASS   (228.76ms)  
+[2025-09-21 00:14:48] INFO: User Repository CRUD Operations          ✓ PASS   (200.51ms)  
+[2025-09-21 00:14:48] INFO: User Service Integration                 ✓ PASS   (201.63ms)  
+[2025-09-21 00:14:48] INFO: Error Handling                           ✓ PASS   (0.04ms)    
+[2025-09-21 00:14:48] INFO: Edge Cases                               ✓ PASS   (400.06ms)  
+[2025-09-21 00:14:48] INFO: ============================================================ 
+[2025-09-21 00:14:48] INFO: TOTAL: 6 PASSED, 0 FAILED 
+[2025-09-21 00:14:48] INFO: ============================================================ 
+[2025-09-21 00:14:48] INFO: 🎉 ALL TESTS PASSED! 
+[2025-09-21 00:22:41] INFO: MongoDB client initialized 
+[2025-09-21 00:22:41] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-21 00:22:42] INFO: Test environment setup completed 
+[2025-09-21 00:22:42] INFO: Starting comprehensive tests... 
+[2025-09-21 00:22:42] INFO: Running: MongoDB Connection Test 
+[2025-09-21 00:22:42] INFO: ✓ MongoDB Connection Test (127.66 ms) 
+[2025-09-21 00:22:42] INFO: Running: User Model Validation 
+[2025-09-21 00:22:42] INFO: ✓ User Model Validation (231.8 ms) 
+[2025-09-21 00:22:42] INFO: Running: User Repository CRUD Operations 
+[2025-09-21 00:22:42] INFO: ✓ User Repository CRUD Operations (200.26 ms) 
+[2025-09-21 00:22:42] INFO: Running: User Service Integration 
+[2025-09-21 00:22:42] INFO: User created successfully {"userId":"68cf4552a1584350b00da174"}
+[2025-09-21 00:22:42] INFO: User deleted successfully {"userId":"68cf4552a1584350b00da174"}
+[2025-09-21 00:22:42] INFO: ✓ User Service Integration (200.6 ms) 
+[2025-09-21 00:22:42] INFO: Running: Error Handling 
+[2025-09-21 00:22:42] INFO: ✓ Error Handling (0.04 ms) 
+[2025-09-21 00:22:42] INFO: Running: Edge Cases 
+[2025-09-21 00:22:43] INFO: ✓ Edge Cases (399.39 ms) 
+[2025-09-21 00:22:43] INFO: 
+============================================================ 
+[2025-09-21 00:22:43] INFO: TEST SUMMARY 
+[2025-09-21 00:22:43] INFO: ============================================================ 
+[2025-09-21 00:22:43] INFO: MongoDB Connection Test                  ✓ PASS   (127.66ms)  
+[2025-09-21 00:22:43] INFO: User Model Validation                    ✓ PASS   (231.8ms)   
+[2025-09-21 00:22:43] INFO: User Repository CRUD Operations          ✓ PASS   (200.26ms)  
+[2025-09-21 00:22:43] INFO: User Service Integration                 ✓ PASS   (200.6ms)   
+[2025-09-21 00:22:43] INFO: Error Handling                           ✓ PASS   (0.04ms)    
+[2025-09-21 00:22:43] INFO: Edge Cases                               ✓ PASS   (399.39ms)  
+[2025-09-21 00:22:43] INFO: ============================================================ 
+[2025-09-21 00:22:43] INFO: TOTAL: 6 PASSED, 0 FAILED 
+[2025-09-21 00:22:43] INFO: ============================================================ 
+[2025-09-21 00:22:43] INFO: 🎉 ALL TESTS PASSED! 
+[2025-09-21 00:23:14] INFO: MongoDB client initialized 
+[2025-09-21 00:23:14] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-21 00:23:15] INFO: Test environment setup completed 
+[2025-09-21 00:23:15] INFO: Starting comprehensive tests... 
+[2025-09-21 00:23:15] INFO: Running: MongoDB Connection Test 
+[2025-09-21 00:23:15] INFO: ✓ MongoDB Connection Test (138.9 ms) 
+[2025-09-21 00:23:15] INFO: Running: User Model Validation 
+[2025-09-21 00:23:15] INFO: ✓ User Model Validation (230.39 ms) 
+[2025-09-21 00:23:15] INFO: Running: User Repository CRUD Operations 
+[2025-09-21 00:23:15] INFO: ✓ User Repository CRUD Operations (199.46 ms) 
+[2025-09-21 00:23:15] INFO: Running: User Service Integration 
+[2025-09-21 00:23:16] INFO: User created successfully {"userId":"68cf4574b66ddb1d17034d94"}
+[2025-09-21 00:23:16] INFO: User deleted successfully {"userId":"68cf4574b66ddb1d17034d94"}
+[2025-09-21 00:23:16] INFO: ✓ User Service Integration (202.22 ms) 
+[2025-09-21 00:23:16] INFO: Running: Error Handling 
+[2025-09-21 00:23:16] INFO: ✓ Error Handling (0.04 ms) 
+[2025-09-21 00:23:16] INFO: Running: Edge Cases 
+[2025-09-21 00:23:16] INFO: ✓ Edge Cases (398.47 ms) 
+[2025-09-21 00:23:16] INFO: 
+============================================================ 
+[2025-09-21 00:23:16] INFO: TEST SUMMARY 
+[2025-09-21 00:23:16] INFO: ============================================================ 
+[2025-09-21 00:23:16] INFO: MongoDB Connection Test                  ✓ PASS   (138.9ms)   
+[2025-09-21 00:23:16] INFO: User Model Validation                    ✓ PASS   (230.39ms)  
+[2025-09-21 00:23:16] INFO: User Repository CRUD Operations          ✓ PASS   (199.46ms)  
+[2025-09-21 00:23:16] INFO: User Service Integration                 ✓ PASS   (202.22ms)  
+[2025-09-21 00:23:16] INFO: Error Handling                           ✓ PASS   (0.04ms)    
+[2025-09-21 00:23:16] INFO: Edge Cases                               ✓ PASS   (398.47ms)  
+[2025-09-21 00:23:16] INFO: ============================================================ 
+[2025-09-21 00:23:16] INFO: TOTAL: 6 PASSED, 0 FAILED 
+[2025-09-21 00:23:16] INFO: ============================================================ 
+[2025-09-21 00:23:16] INFO: 🎉 ALL TESTS PASSED! 
+[2025-09-21 00:42:10] INFO: MongoDB client initialized 
+[2025-09-21 00:42:10] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-21 00:42:10] INFO: Test environment setup completed 
+[2025-09-21 00:42:10] INFO: Starting comprehensive tests... 
+[2025-09-21 00:42:10] INFO: Running: MongoDB Connection Test 
+[2025-09-21 00:42:10] INFO: ✓ MongoDB Connection Test (128.79 ms) 
+[2025-09-21 00:42:10] INFO: Running: User Model Validation 
+[2025-09-21 00:42:10] INFO: ✓ User Model Validation (230.23 ms) 
+[2025-09-21 00:42:10] INFO: Running: User Repository CRUD Operations 
+[2025-09-21 00:42:11] INFO: ✓ User Repository CRUD Operations (200.87 ms) 
+[2025-09-21 00:42:11] INFO: Running: User Service Integration 
+[2025-09-21 00:42:11] INFO: User created successfully {"userId":"68cf49e336a5dad97c08d944"}
+[2025-09-21 00:42:11] INFO: User deleted successfully {"userId":"68cf49e336a5dad97c08d944"}
+[2025-09-21 00:42:11] INFO: ✓ User Service Integration (200.96 ms) 
+[2025-09-21 00:42:11] INFO: Running: Error Handling 
+[2025-09-21 00:42:11] INFO: ✓ Error Handling (0.04 ms) 
+[2025-09-21 00:42:11] INFO: Running: Edge Cases 
+[2025-09-21 00:42:11] INFO: ✓ Edge Cases (397.01 ms) 
+[2025-09-21 00:42:11] INFO: 
+============================================================ 
+[2025-09-21 00:42:11] INFO: TEST SUMMARY 
+[2025-09-21 00:42:11] INFO: ============================================================ 
+[2025-09-21 00:42:11] INFO: MongoDB Connection Test                  ✓ PASS   (128.79ms)  
+[2025-09-21 00:42:11] INFO: User Model Validation                    ✓ PASS   (230.23ms)  
+[2025-09-21 00:42:11] INFO: User Repository CRUD Operations          ✓ PASS   (200.87ms)  
+[2025-09-21 00:42:11] INFO: User Service Integration                 ✓ PASS   (200.96ms)  
+[2025-09-21 00:42:11] INFO: Error Handling                           ✓ PASS   (0.04ms)    
+[2025-09-21 00:42:11] INFO: Edge Cases                               ✓ PASS   (397.01ms)  
+[2025-09-21 00:42:11] INFO: ============================================================ 
+[2025-09-21 00:42:11] INFO: TOTAL: 6 PASSED, 0 FAILED 
+[2025-09-21 00:42:11] INFO: ============================================================ 
+[2025-09-21 00:42:11] INFO: 🎉 ALL TESTS PASSED! 
+[2025-09-21 00:42:44] INFO: MongoDB client initialized 
+[2025-09-21 00:42:44] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-21 00:42:45] INFO: Test environment setup completed 
+[2025-09-21 00:42:45] INFO: Starting comprehensive tests... 
+[2025-09-21 00:42:45] INFO: Running: MongoDB Connection Test 
+[2025-09-21 00:42:45] INFO: ✓ MongoDB Connection Test (127.73 ms) 
+[2025-09-21 00:42:45] INFO: Running: User Model Validation 
+[2025-09-21 00:42:45] INFO: ✓ User Model Validation (232.08 ms) 
+[2025-09-21 00:42:45] INFO: Running: User Repository CRUD Operations 
+[2025-09-21 00:42:45] INFO: ✓ User Repository CRUD Operations (200.93 ms) 
+[2025-09-21 00:42:45] INFO: Running: User Service Integration 
+[2025-09-21 00:42:46] INFO: User created successfully {"userId":"68cf4a06e428691eb907a5f4"}
+[2025-09-21 00:42:46] INFO: User deleted successfully {"userId":"68cf4a06e428691eb907a5f4"}
+[2025-09-21 00:42:46] INFO: ✓ User Service Integration (203.36 ms) 
+[2025-09-21 00:42:46] INFO: Running: Error Handling 
+[2025-09-21 00:42:46] INFO: ✓ Error Handling (0.05 ms) 
+[2025-09-21 00:42:46] INFO: Running: Edge Cases 
+[2025-09-21 00:42:46] INFO: ✓ Edge Cases (397.32 ms) 
+[2025-09-21 00:42:46] INFO: 
+============================================================ 
+[2025-09-21 00:42:46] INFO: TEST SUMMARY 
+[2025-09-21 00:42:46] INFO: ============================================================ 
+[2025-09-21 00:42:46] INFO: MongoDB Connection Test                  ✓ PASS   (127.73ms)  
+[2025-09-21 00:42:46] INFO: User Model Validation                    ✓ PASS   (232.08ms)  
+[2025-09-21 00:42:46] INFO: User Repository CRUD Operations          ✓ PASS   (200.93ms)  
+[2025-09-21 00:42:46] INFO: User Service Integration                 ✓ PASS   (203.36ms)  
+[2025-09-21 00:42:46] INFO: Error Handling                           ✓ PASS   (0.05ms)    
+[2025-09-21 00:42:46] INFO: Edge Cases                               ✓ PASS   (397.32ms)  
+[2025-09-21 00:42:46] INFO: ============================================================ 
+[2025-09-21 00:42:46] INFO: TOTAL: 6 PASSED, 0 FAILED 
+[2025-09-21 00:42:46] INFO: ============================================================ 
+[2025-09-21 00:42:46] INFO: 🎉 ALL TESTS PASSED! 
+[2025-09-21 00:47:13] INFO: MongoDB client initialized 
+[2025-09-21 00:47:13] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-21 00:47:13] INFO: Test environment setup completed 
+[2025-09-21 00:47:13] INFO: Starting comprehensive tests... 
+[2025-09-21 00:47:13] INFO: Running: MongoDB Connection Test 
+[2025-09-21 00:47:13] INFO: ✓ MongoDB Connection Test (138.72 ms) 
+[2025-09-21 00:47:13] INFO: Running: User Model Validation 
+[2025-09-21 00:47:13] INFO: ✓ User Model Validation (230.57 ms) 
+[2025-09-21 00:47:13] INFO: Running: User Repository CRUD Operations 
+[2025-09-21 00:47:14] INFO: ✓ User Repository CRUD Operations (203.26 ms) 
+[2025-09-21 00:47:14] INFO: Running: User Service Integration 
+[2025-09-21 00:47:14] INFO: User created successfully {"userId":"68cf4b127ee5d4d3e103c1d4"}
+[2025-09-21 00:47:14] INFO: User deleted successfully {"userId":"68cf4b127ee5d4d3e103c1d4"}
+[2025-09-21 00:47:14] INFO: ✓ User Service Integration (201.73 ms) 
+[2025-09-21 00:47:14] INFO: Running: Error Handling 
+[2025-09-21 00:47:14] INFO: ✓ Error Handling (0.04 ms) 
+[2025-09-21 00:47:14] INFO: Running: Edge Cases 
+[2025-09-21 00:47:14] INFO: ✓ Edge Cases (396.37 ms) 
+[2025-09-21 00:47:14] INFO: 
+============================================================ 
+[2025-09-21 00:47:14] INFO: TEST SUMMARY 
+[2025-09-21 00:47:14] INFO: ============================================================ 
+[2025-09-21 00:47:14] INFO: MongoDB Connection Test                  ✓ PASS   (138.72ms)  
+[2025-09-21 00:47:14] INFO: User Model Validation                    ✓ PASS   (230.57ms)  
+[2025-09-21 00:47:14] INFO: User Repository CRUD Operations          ✓ PASS   (203.26ms)  
+[2025-09-21 00:47:14] INFO: User Service Integration                 ✓ PASS   (201.73ms)  
+[2025-09-21 00:47:14] INFO: Error Handling                           ✓ PASS   (0.04ms)    
+[2025-09-21 00:47:14] INFO: Edge Cases                               ✓ PASS   (396.37ms)  
+[2025-09-21 00:47:14] INFO: ============================================================ 
+[2025-09-21 00:47:14] INFO: TOTAL: 6 PASSED, 0 FAILED 
+[2025-09-21 00:47:14] INFO: ============================================================ 
+[2025-09-21 00:47:14] INFO: 🎉 ALL TESTS PASSED! 
+[2025-09-21 01:17:39] INFO: MongoDB client initialized 
+[2025-09-21 01:17:39] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-21 01:17:40] INFO: Test environment setup completed 
+[2025-09-21 01:17:40] INFO: Starting comprehensive tests... 
+[2025-09-21 01:17:40] INFO: Running: MongoDB Connection Test 
+[2025-09-21 01:17:40] INFO: ✓ MongoDB Connection Test (138.6 ms) 
+[2025-09-21 01:17:40] INFO: Running: User Model Validation 
+[2025-09-21 01:17:40] INFO: ✓ User Model Validation (231.38 ms) 
+[2025-09-21 01:17:40] INFO: Running: User Repository CRUD Operations 
+[2025-09-21 01:17:40] INFO: ✓ User Repository CRUD Operations (199.94 ms) 
+[2025-09-21 01:17:40] INFO: Running: User Service Integration 
+[2025-09-21 01:17:40] INFO: User created successfully {"userId":"68cf523442304ad0150863e4"}
+[2025-09-21 01:17:40] INFO: User deleted successfully {"userId":"68cf523442304ad0150863e4"}
+[2025-09-21 01:17:40] INFO: ✓ User Service Integration (201.1 ms) 
+[2025-09-21 01:17:40] INFO: Running: Error Handling 
+[2025-09-21 01:17:40] INFO: ✓ Error Handling (0.05 ms) 
+[2025-09-21 01:17:40] INFO: Running: Edge Cases 
+[2025-09-21 01:17:41] INFO: ✓ Edge Cases (399.07 ms) 
+[2025-09-21 01:17:41] INFO: 
+============================================================ 
+[2025-09-21 01:17:41] INFO: TEST SUMMARY 
+[2025-09-21 01:17:41] INFO: ============================================================ 
+[2025-09-21 01:17:41] INFO: MongoDB Connection Test                  ✓ PASS   (138.6ms)   
+[2025-09-21 01:17:41] INFO: User Model Validation                    ✓ PASS   (231.38ms)  
+[2025-09-21 01:17:41] INFO: User Repository CRUD Operations          ✓ PASS   (199.94ms)  
+[2025-09-21 01:17:41] INFO: User Service Integration                 ✓ PASS   (201.1ms)   
+[2025-09-21 01:17:41] INFO: Error Handling                           ✓ PASS   (0.05ms)    
+[2025-09-21 01:17:41] INFO: Edge Cases                               ✓ PASS   (399.07ms)  
+[2025-09-21 01:17:41] INFO: ============================================================ 
+[2025-09-21 01:17:41] INFO: TOTAL: 6 PASSED, 0 FAILED 
+[2025-09-21 01:17:41] INFO: ============================================================ 
+[2025-09-21 01:17:41] INFO: 🎉 ALL TESTS PASSED! 
+[2025-09-21 01:28:58] INFO: MongoDB client initialized 
+[2025-09-21 01:28:58] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-21 01:28:59] INFO: Test environment setup completed 
+[2025-09-21 01:28:59] INFO: Starting comprehensive tests... 
+[2025-09-21 01:28:59] INFO: Running: MongoDB Connection Test 
+[2025-09-21 01:28:59] INFO: ✓ MongoDB Connection Test (429.26 ms) 
+[2025-09-21 01:28:59] INFO: Running: User Model Validation 
+[2025-09-21 01:28:59] INFO: ✓ User Model Validation (231.47 ms) 
+[2025-09-21 01:28:59] INFO: Running: User Repository CRUD Operations 
+[2025-09-21 01:28:59] INFO: ✓ User Repository CRUD Operations (200.04 ms) 
+[2025-09-21 01:28:59] INFO: Running: User Service Integration 
+[2025-09-21 01:29:00] INFO: User created successfully {"userId":"68cf54dc541a6536340d7ef4"}
+[2025-09-21 01:29:00] INFO: User deleted successfully {"userId":"68cf54dc541a6536340d7ef4"}
+[2025-09-21 01:29:00] INFO: ✓ User Service Integration (203.54 ms) 
+[2025-09-21 01:29:00] INFO: Running: Error Handling 
+[2025-09-21 01:29:00] INFO: ✓ Error Handling (0.06 ms) 
+[2025-09-21 01:29:00] INFO: Running: Edge Cases 
+[2025-09-21 01:29:00] INFO: ✓ Edge Cases (397.6 ms) 
+[2025-09-21 01:29:00] INFO: 
+============================================================ 
+[2025-09-21 01:29:00] INFO: TEST SUMMARY 
+[2025-09-21 01:29:00] INFO: ============================================================ 
+[2025-09-21 01:29:00] INFO: MongoDB Connection Test                  ✓ PASS   (429.26ms)  
+[2025-09-21 01:29:00] INFO: User Model Validation                    ✓ PASS   (231.47ms)  
+[2025-09-21 01:29:00] INFO: User Repository CRUD Operations          ✓ PASS   (200.04ms)  
+[2025-09-21 01:29:00] INFO: User Service Integration                 ✓ PASS   (203.54ms)  
+[2025-09-21 01:29:00] INFO: Error Handling                           ✓ PASS   (0.06ms)    
+[2025-09-21 01:29:00] INFO: Edge Cases                               ✓ PASS   (397.6ms)   
+[2025-09-21 01:29:00] INFO: ============================================================ 
+[2025-09-21 01:29:00] INFO: TOTAL: 6 PASSED, 0 FAILED 
+[2025-09-21 01:29:00] INFO: ============================================================ 
+[2025-09-21 01:29:00] INFO: 🎉 ALL TESTS PASSED! 
+[2025-09-21 04:59:07] INFO: MongoDB client initialized 
+[2025-09-21 04:59:07] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-21 04:59:08] INFO: Test environment setup completed 
+[2025-09-21 04:59:08] INFO: Starting comprehensive tests... 
+[2025-09-21 04:59:08] INFO: Running: MongoDB Connection Test 
+[2025-09-21 04:59:08] INFO: ✓ MongoDB Connection Test (139.2 ms) 
+[2025-09-21 04:59:08] INFO: Running: User Model Validation 
+[2025-09-21 04:59:08] INFO: ✓ User Model Validation (229.35 ms) 
+[2025-09-21 04:59:08] INFO: Running: User Repository CRUD Operations 
+[2025-09-21 04:59:08] INFO: ✓ User Repository CRUD Operations (200.44 ms) 
+[2025-09-21 04:59:08] INFO: Running: User Service Integration 
+[2025-09-21 04:59:09] INFO: User created successfully {"userId":"68cf861d582b95951707f224"}
+[2025-09-21 04:59:09] INFO: User deleted successfully {"userId":"68cf861d582b95951707f224"}
+[2025-09-21 04:59:09] INFO: ✓ User Service Integration (202.73 ms) 
+[2025-09-21 04:59:09] INFO: Running: Error Handling 
+[2025-09-21 04:59:09] INFO: ✓ Error Handling (0.04 ms) 
+[2025-09-21 04:59:09] INFO: Running: Edge Cases 
+[2025-09-21 04:59:09] INFO: ✓ Edge Cases (397.35 ms) 
+[2025-09-21 04:59:09] INFO: 
+============================================================ 
+[2025-09-21 04:59:09] INFO: TEST SUMMARY 
+[2025-09-21 04:59:09] INFO: ============================================================ 
+[2025-09-21 04:59:09] INFO: MongoDB Connection Test                  ✓ PASS   (139.2ms)   
+[2025-09-21 04:59:09] INFO: User Model Validation                    ✓ PASS   (229.35ms)  
+[2025-09-21 04:59:09] INFO: User Repository CRUD Operations          ✓ PASS   (200.44ms)  
+[2025-09-21 04:59:09] INFO: User Service Integration                 ✓ PASS   (202.73ms)  
+[2025-09-21 04:59:09] INFO: Error Handling                           ✓ PASS   (0.04ms)    
+[2025-09-21 04:59:09] INFO: Edge Cases                               ✓ PASS   (397.35ms)  
+[2025-09-21 04:59:09] INFO: ============================================================ 
+[2025-09-21 04:59:09] INFO: TOTAL: 6 PASSED, 0 FAILED 
+[2025-09-21 04:59:09] INFO: ============================================================ 
+[2025-09-21 04:59:09] INFO: 🎉 ALL TESTS PASSED! 
+[2025-09-21 05:16:50] INFO: MongoDB client initialized 
+[2025-09-21 05:16:50] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-21 05:16:51] INFO: Test environment setup completed 
+[2025-09-21 05:16:51] INFO: Starting comprehensive tests... 
+[2025-09-21 05:16:51] INFO: Running: MongoDB Connection Test 
+[2025-09-21 05:16:51] INFO: ✓ MongoDB Connection Test (173.82 ms) 
+[2025-09-21 05:16:51] INFO: Running: User Model Validation 
+[2025-09-21 05:16:51] INFO: ✓ User Model Validation (233.46 ms) 
+[2025-09-21 05:16:51] INFO: Running: User Repository CRUD Operations 
+[2025-09-21 05:16:51] INFO: ✓ User Repository CRUD Operations (201.15 ms) 
+[2025-09-21 05:16:51] INFO: Running: User Service Integration 
+[2025-09-21 05:16:51] INFO: User created successfully {"userId":"68cf8a437abbbc663c0a50c4"}
+[2025-09-21 05:16:51] INFO: User deleted successfully {"userId":"68cf8a437abbbc663c0a50c4"}
+[2025-09-21 05:16:51] INFO: ✓ User Service Integration (200.07 ms) 
+[2025-09-21 05:16:51] INFO: Running: Error Handling 
+[2025-09-21 05:16:51] INFO: ✓ Error Handling (0.04 ms) 
+[2025-09-21 05:16:51] INFO: Running: Edge Cases 
+[2025-09-21 05:16:52] INFO: ✓ Edge Cases (402.63 ms) 
+[2025-09-21 05:16:52] INFO: 
+============================================================ 
+[2025-09-21 05:16:52] INFO: TEST SUMMARY 
+[2025-09-21 05:16:52] INFO: ============================================================ 
+[2025-09-21 05:16:52] INFO: MongoDB Connection Test                  ✓ PASS   (173.82ms)  
+[2025-09-21 05:16:52] INFO: User Model Validation                    ✓ PASS   (233.46ms)  
+[2025-09-21 05:16:52] INFO: User Repository CRUD Operations          ✓ PASS   (201.15ms)  
+[2025-09-21 05:16:52] INFO: User Service Integration                 ✓ PASS   (200.07ms)  
+[2025-09-21 05:16:52] INFO: Error Handling                           ✓ PASS   (0.04ms)    
+[2025-09-21 05:16:52] INFO: Edge Cases                               ✓ PASS   (402.63ms)  
+[2025-09-21 05:16:52] INFO: ============================================================ 
+[2025-09-21 05:16:52] INFO: TOTAL: 6 PASSED, 0 FAILED 
+[2025-09-21 05:16:52] INFO: ============================================================ 
+[2025-09-21 05:16:52] INFO: 🎉 ALL TESTS PASSED! 

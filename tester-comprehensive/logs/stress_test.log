@@ -1,0 +1,44 @@
+[2025-09-21 01:17:43] INFO: MongoDB client initialized 
+[2025-09-21 01:17:43] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-21 01:17:43] INFO: Starting database stress test... 
+[2025-09-21 01:17:43] INFO: Running: Basic CRUD Operations 
+[2025-09-21 01:17:43] INFO: ✓ Basic CRUD Operations completed in 208.43ms 
+[2025-09-21 01:17:43] INFO: Running: Multiple User Creation 
+[2025-09-21 01:17:44] INFO: ✓ Multiple User Creation completed in 1004.17ms 
+[2025-09-21 01:17:44] INFO: 
+============================================================ 
+[2025-09-21 01:17:44] INFO: STRESS TEST COMPLETED SUCCESSFULLY 
+[2025-09-21 01:17:44] INFO: ============================================================ 
+[2025-09-21 01:29:02] INFO: MongoDB client initialized 
+[2025-09-21 01:29:02] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-21 01:29:02] INFO: Starting database stress test... 
+[2025-09-21 01:29:02] INFO: Running: Basic CRUD Operations 
+[2025-09-21 01:29:02] INFO: ✓ Basic CRUD Operations completed in 208.27ms 
+[2025-09-21 01:29:02] INFO: Running: Multiple User Creation 
+[2025-09-21 01:29:03] INFO: ✓ Multiple User Creation completed in 1004.78ms 
+[2025-09-21 01:29:03] INFO: 
+============================================================ 
+[2025-09-21 01:29:03] INFO: STRESS TEST COMPLETED SUCCESSFULLY 
+[2025-09-21 01:29:03] INFO: ============================================================ 
+[2025-09-21 04:59:12] INFO: MongoDB client initialized 
+[2025-09-21 04:59:12] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-21 04:59:12] INFO: Starting database stress test... 
+[2025-09-21 04:59:12] INFO: Running: Basic CRUD Operations 
+[2025-09-21 04:59:12] INFO: ✓ Basic CRUD Operations completed in 206.37ms 
+[2025-09-21 04:59:12] INFO: Running: Multiple User Creation 
+[2025-09-21 04:59:13] INFO: ✓ Multiple User Creation completed in 997.06ms 
+[2025-09-21 04:59:13] INFO: 
+============================================================ 
+[2025-09-21 04:59:13] INFO: STRESS TEST COMPLETED SUCCESSFULLY 
+[2025-09-21 04:59:13] INFO: ============================================================ 
+[2025-09-21 05:16:54] INFO: MongoDB client initialized 
+[2025-09-21 05:16:54] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-21 05:16:54] INFO: Starting database stress test... 
+[2025-09-21 05:16:54] INFO: Running: Basic CRUD Operations 
+[2025-09-21 05:16:54] INFO: ✓ Basic CRUD Operations completed in 204.46ms 
+[2025-09-21 05:16:54] INFO: Running: Multiple User Creation 
+[2025-09-21 05:16:55] INFO: ✓ Multiple User Creation completed in 999.24ms 
+[2025-09-21 05:16:55] INFO: 
+============================================================ 
+[2025-09-21 05:16:55] INFO: STRESS TEST COMPLETED SUCCESSFULLY 
+[2025-09-21 05:16:55] INFO: ============================================================ 
