@@ -90,3 +90,72 @@
 [2025-09-21 05:17:29] INFO: ============================================================ 
 [2025-09-21 05:17:29] INFO: Results: 5 passed, 0 failed 
 [2025-09-21 05:17:29] INFO: ✅ All AI integration tests passed! 
+[2025-09-21 09:13:20] INFO: Starting AI Integration Tests with Ollama... 
+[2025-09-21 09:13:20] INFO: Running: Ollama Connection Test (timeout: 10s) 
+[2025-09-21 09:13:20] INFO: ✓ Ollama Connection Test (1.18ms) 
+[2025-09-21 09:13:20] INFO: Running: Simple Prompt Test (timeout: 30s) 
+[2025-09-21 09:13:50] INFO: ✗ Simple Prompt Test failed: Ollama API failed. HTTP Code: 0, Error: Operation timed out after 30003 milliseconds with 0 bytes received 
+[2025-09-21 09:13:50] INFO: Running: Short Inventory Analysis (timeout: 45s) 
+[2025-09-21 09:14:06] INFO: ✓ Short Inventory Analysis (16287.33ms) 
+[2025-09-21 09:14:06] INFO: Running: Short Demand Prediction (timeout: 40s) 
+[2025-09-21 09:14:17] INFO: ✓ Short Demand Prediction (11027.25ms) 
+[2025-09-21 09:14:17] INFO: Running: Quick Reordering Logic (timeout: 35s) 
+[2025-09-21 09:14:27] INFO: ✓ Quick Reordering Logic (9747.91ms) 
+[2025-09-21 09:14:27] INFO: 
+============================================================ 
+[2025-09-21 09:14:27] INFO: AI INTEGRATION TEST REPORT 
+[2025-09-21 09:14:27] INFO: ============================================================ 
+[2025-09-21 09:14:27] INFO: ✓ Ollama Connection Test        1.18 ms  Available models: deepseek-cod... 
+[2025-09-21 09:14:27] INFO: ✗ Simple Prompt Test        FAILED: Ollama API failed. HTTP Code: 0, Error:  
+[2025-09-21 09:14:27] INFO: ✓ Short Inventory Analysis  16287.33 ms  Analysis: Laptop, Mouse, and M... 
+[2025-09-21 09:14:27] INFO: ✓ Short Demand Prediction   11027.25 ms  Prediction: 180... 
+[2025-09-21 09:14:27] INFO: ✓ Quick Reordering Logic     9747.91 ms  Decision: Yes, the statement c... 
+[2025-09-21 09:14:27] INFO: ============================================================ 
+[2025-09-21 09:14:27] INFO: Results: 4 passed, 1 failed 
+[2025-09-21 09:14:27] INFO: ⚠️  AI integration tests completed with 1 failures 
+[2025-09-21 09:50:18] INFO: Starting AI Integration Tests with Ollama... 
+[2025-09-21 09:50:18] INFO: Running: Ollama Connection Test (timeout: 10s) 
+[2025-09-21 09:50:18] INFO: ✓ Ollama Connection Test (1.39ms) 
+[2025-09-21 09:50:18] INFO: Running: Simple Prompt Test (timeout: 30s) 
+[2025-09-21 09:50:23] INFO: ✓ Simple Prompt Test (4523.28ms) 
+[2025-09-21 09:50:23] INFO: Running: Short Inventory Analysis (timeout: 45s) 
+[2025-09-21 09:50:34] INFO: ✓ Short Inventory Analysis (11226.53ms) 
+[2025-09-21 09:50:34] INFO: Running: Short Demand Prediction (timeout: 40s) 
+[2025-09-21 09:50:44] INFO: ✓ Short Demand Prediction (9776.79ms) 
+[2025-09-21 09:50:44] INFO: Running: Quick Reordering Logic (timeout: 35s) 
+[2025-09-21 09:50:54] INFO: ✓ Quick Reordering Logic (9661.61ms) 
+[2025-09-21 09:50:54] INFO: 
+============================================================ 
+[2025-09-21 09:50:54] INFO: AI INTEGRATION TEST REPORT 
+[2025-09-21 09:50:54] INFO: ============================================================ 
+[2025-09-21 09:50:54] INFO: ✓ Ollama Connection Test        1.39 ms  Available models: deepseek-cod... 
+[2025-09-21 09:50:54] INFO: ✓ Simple Prompt Test         4523.28 ms  Response: "Goodbye."... 
+[2025-09-21 09:50:54] INFO: ✓ Short Inventory Analysis  11226.53 ms  Analysis: Laptop, Mouse, and M... 
+[2025-09-21 09:50:54] INFO: ✓ Short Demand Prediction    9776.79 ms  Prediction: 180... 
+[2025-09-21 09:50:54] INFO: ✓ Quick Reordering Logic     9661.61 ms  Decision: Yes, the sentence ca... 
+[2025-09-21 09:50:54] INFO: ============================================================ 
+[2025-09-21 09:50:54] INFO: Results: 5 passed, 0 failed 
+[2025-09-21 09:50:54] INFO: ✅ All AI integration tests passed! 
+[2025-09-21 10:09:00] INFO: Starting AI Integration Tests with Ollama... 
+[2025-09-21 10:09:00] INFO: Running: Ollama Connection Test (timeout: 10s) 
+[2025-09-21 10:09:00] INFO: ✓ Ollama Connection Test (1.13ms) 
+[2025-09-21 10:09:00] INFO: Running: Simple Prompt Test (timeout: 30s) 
+[2025-09-21 10:09:04] INFO: ✓ Simple Prompt Test (4503.96ms) 
+[2025-09-21 10:09:04] INFO: Running: Short Inventory Analysis (timeout: 45s) 
+[2025-09-21 10:09:15] INFO: ✓ Short Inventory Analysis (10856.16ms) 
+[2025-09-21 10:09:15] INFO: Running: Short Demand Prediction (timeout: 40s) 
+[2025-09-21 10:09:26] INFO: ✓ Short Demand Prediction (10446.17ms) 
+[2025-09-21 10:09:26] INFO: Running: Quick Reordering Logic (timeout: 35s) 
+[2025-09-21 10:09:35] INFO: ✓ Quick Reordering Logic (9435.7ms) 
+[2025-09-21 10:09:35] INFO: 
+============================================================ 
+[2025-09-21 10:09:35] INFO: AI INTEGRATION TEST REPORT 
+[2025-09-21 10:09:35] INFO: ============================================================ 
+[2025-09-21 10:09:35] INFO: ✓ Ollama Connection Test        1.13 ms  Available models: deepseek-cod... 
+[2025-09-21 10:09:35] INFO: ✓ Simple Prompt Test         4503.96 ms  Response: "Goodbye."... 
+[2025-09-21 10:09:35] INFO: ✓ Short Inventory Analysis  10856.16 ms  Analysis: Laptop, Mouse, and M... 
+[2025-09-21 10:09:35] INFO: ✓ Short Demand Prediction   10446.17 ms  Prediction: 180... 
+[2025-09-21 10:09:35] INFO: ✓ Quick Reordering Logic     9435.70 ms  Decision: Yes, the statement c... 
+[2025-09-21 10:09:35] INFO: ============================================================ 
+[2025-09-21 10:09:35] INFO: Results: 5 passed, 0 failed 
+[2025-09-21 10:09:35] INFO: ✅ All AI integration tests passed! 
