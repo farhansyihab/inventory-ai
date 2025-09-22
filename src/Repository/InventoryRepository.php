@@ -303,8 +303,7 @@ class InventoryRepository implements IInventoryRepository
         }
     }
 
-    /* -------------------- Domain-centric methods -------------------- */
-
+    /* -------------------- Domain-centric methods -------------------- 
     public function saveInventory(Inventory $inventory): string
     {
         try {
@@ -342,6 +341,7 @@ class InventoryRepository implements IInventoryRepository
         }
         return $this->delete($inventory->getId());
     }
+*/
 
     /* -------------------- Internal helpers -------------------- */
 
