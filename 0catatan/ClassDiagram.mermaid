@@ -87,6 +87,24 @@ classDiagram
         +validateItemData(array data, bool isCreate = true) array
     }
 
+    class IAIService {
+        <<interface>>
+        +analyzeInventory(array inventoryData, string analysisType) array
+        +generateReport(array inventoryData, string reportType) array
+        +predictStockNeeds(array items, int forecastDays) array
+        +detectAnomalies(array inventoryData) array
+        +setStrategy(string strategyName) bool
+        +getAvailableStrategies() array
+        +isAvailable() bool
+    }
+
+    class AIStrategy {
+        <<interface>>
+        +analyze(array data, string analysisType) array
+        +generate(array data, string reportType) array
+        +isAvailable() bool
+    }
+
     %% ========== Concrete Implementations ==========
     class UserRepository {
         +__construct(Collection collection = null, LoggerInterface logger = null)
@@ -172,6 +190,43 @@ classDiagram
         +isRefreshTokenRevoked(string token) bool
         +getAccessTokenExpiry() int
         +getRefreshTokenExpiry() int
+    }
+
+    class AIService {
+        -strategies array
+        -activeStrategy AIStrategy|null
+        -logger Logger
+        -enabled bool
+        +__construct(Logger logger, bool enabled = true)
+        +registerStrategy(string name, AIStrategy strategy) void
+        +setStrategy(string strategyName) bool
+        +analyzeInventory(array inventoryData, string analysisType) array
+        +generateReport(array inventoryData, string reportType) array
+        +predictStockNeeds(array items, int forecastDays) array
+        +detectAnomalies(array inventoryData) array
+        +getAvailableStrategies() array
+        +isAvailable() bool
+        -validateInventoryData(array data) void
+        -getFallbackAnalysis(array inventoryData, string analysisType) array
+        -getFallbackReport(array inventoryData, string reportType) array
+    }
+
+    class OllamaStrategy {
+        -httpClient HttpClient
+        -logger Logger
+        -baseUrl string
+        -model string
+        -defaultOptions array
+        +__construct(HttpClient httpClient, Logger logger, string baseUrl, string model)
+        +analyze(array data, string analysisType) array
+        +generate(array data, string reportType) array
+        +isAvailable() bool
+        -callOllamaAPI(string prompt) array
+        -buildAnalysisPrompt(array data, string analysisType) string
+        -buildReportPrompt(array data, string reportType) string
+        -parseAnalysisResponse(array response, string analysisType) array
+        -parseReportResponse(array response, string reportType) array
+        -validateData(array data) void
     }
 
     class BaseController {
@@ -281,6 +336,21 @@ classDiagram
         +getLogFile() string
     }
 
+    class HttpClient {
+        -defaultOptions array
+        +__construct(array defaultOptions = [])
+        +get(string url, array options = []) array
+        +post(string url, mixed data = null, array options = []) array
+        +put(string url, mixed data = null, array options = []) array
+        +delete(string url, array options = []) array
+        +isUrlReachable(string url, float timeout = 5) bool
+        +setDefaultOptions(array options) void
+        +getDefaultOptions() array
+        -request(string method, string url, mixed data, array options) array
+        -createStreamContext(string method, mixed data, array options) resource
+        -executeRequest(string url, resource context, array options) array
+    }
+
     class User {
         -id string|null
         -username string
@@ -368,6 +438,8 @@ classDiagram
     IInventoryService <|.. InventoryService
     ITokenService <|.. JwtTokenService
     ITokenRepository <|.. MongoTokenRepository
+    IAIService <|.. AIService
+    AIStrategy <|.. OllamaStrategy
     
     UserRepository --> MongoDBManager : uses
     InventoryRepository --> MongoDBManager : uses
@@ -386,6 +458,12 @@ classDiagram
     JwtTokenService --> ITokenRepository : depends on
     JwtTokenService --> Logger : depends on
     
+    AIService --> AIStrategy : depends on
+    AIService --> Logger : depends on
+    
+    OllamaStrategy --> HttpClient : depends on
+    OllamaStrategy --> Logger : depends on
+    
     AuthController --> AuthService : depends on
     AuthController --> UserService : depends on
     AuthController --> BaseController : extends
@@ -403,7 +481,7 @@ classDiagram
     %% ========== Planned Components (Belum Diimplementasi) ==========
     class ICategoryRepository {
         <<interface>>
-        +findBySlug(string slug)
+        +findBySlug(string slug) array|null
         +findActive() array
     }
 
@@ -415,47 +493,81 @@ classDiagram
 
     class IHashService {
         <<interface>>
-        +hash(string password): string
-        +verify(string password, string hash): bool
+        +hash(string password) string
+        +verify(string password, string hash) bool
     }
 
-    class AIStrategy {
-        <<interface>>
-        +generate(string prompt): array
-        +analyze(array data): array
+    class CategoryService {
+        +__construct(ICategoryRepository categoryRepo, Logger logger)
+        +createCategory(array data) array
+        +updateCategory(string id, array data) array
+        +getCategoryTree() array
     }
 
-    class CategoryService
-    class SupplierService
-    class AuditLogService
-    class AIService {
-        -strategies Map~string, AIStrategy~
-        +registerStrategy(string name, AIStrategy strategy)
-        +setStrategy(string name)
-        +analyzeInventory(array items) array
-        +generateReport(array data) array
+    class SupplierService {
+        +__construct(ISupplierRepository supplierRepo, Logger logger)
+        +createSupplier(array data) array
+        +updateSupplier(string id, array data) array
+        +getSupplierPerformance(string supplierId) array
     }
 
-    class CategoryController
-    class SupplierController
-    class ReportController
+    class AuditLogService {
+        +__construct(AuditLogRepository auditRepo, Logger logger)
+        +logAction(string userId, string action, string resource, string resourceId, array oldData, array newData) bool
+        +getAuditTrail(string resourceType, string resourceId, DateTime from, DateTime to) array
+    }
+
+    class CategoryController {
+        -categoryService CategoryService
+        +__construct(CategoryService categoryService, Logger logger)
+        +listCategories() void
+        +getCategory(string id) void
+        +createCategory() void
+        +updateCategory(string id) void
+        +deleteCategory(string id) void
+    }
+
+    class SupplierController {
+        -supplierService SupplierService
+        +__construct(SupplierService supplierService, Logger logger)
+        +listSuppliers() void
+        +getSupplier(string id) void
+        +createSupplier() void
+        +updateSupplier(string id) void
+        +deleteSupplier(string id) void
+    }
+
+    class ReportController {
+        -aiService AIService
+        -inventoryService InventoryService
+        +__construct(AIService aiService, InventoryService inventoryService, Logger logger)
+        +generateInventoryReport() void
+        +generateSalesReport() void
+        +generateStockPrediction() void
+    }
 
     class AuthMiddleware {
-        +verifyAccessToken(request, response, next)
+        -tokenService ITokenService
+        +__construct(ITokenService tokenService)
+        +verifyAccessToken(Request request, Response response, callable next) mixed
+        +requireAuthentication() mixed
     }
     
     class RoleMiddleware {
-        +requireRole(string role)
-        +requireAnyRole(array roles)
+        +__construct(array allowedRoles)
+        +requireRole(string role) mixed
+        +requireAnyRole(array roles) mixed
     }
     
     class Validator {
         +validate(array schema, array data) array
         +sanitize(array data) array
+        +validateEmail(string email) bool
+        +validatePassword(string password) array
     }
 
     class Category {
-        +string _id
+        +string id
         +string name
         +string slug
         +string description
@@ -465,7 +577,7 @@ classDiagram
     }
 
     class Supplier {
-        +string _id
+        +string id
         +string name
         +string contactEmail
         +string phone
@@ -476,7 +588,7 @@ classDiagram
     }
 
     class AuditLog {
-        +string _id
+        +string id
         +string userId
         +string action
         +string resource
@@ -493,15 +605,15 @@ classDiagram
     IHashService <|.. BcryptHashService
     AIStrategy <|.. Phi3Strategy
     AIStrategy <|.. DeepSeekStrategy
-    AIStrategy <|.. OllamaStrategy
 
     CategoryController --> CategoryService
     SupplierController --> SupplierService
     ReportController --> AIService
+    ReportController --> InventoryService
 
     CategoryService --> ICategoryRepository
     SupplierService --> ISupplierRepository
-    AIService --> AIStrategy
+    AuditLogService --> AuditLogRepository
 
     Inventory --> Category
     Inventory --> Supplier
@@ -509,7 +621,11 @@ classDiagram
 
     MongoCategoryRepository --> MongoDBManager
     MongoSupplierRepository --> MongoDBManager
+    AuditLogRepository --> MongoDBManager
 
     CategoryService --> Logger
     SupplierService --> Logger
-    AIService --> Logger
+    AuditLogService --> Logger
+
+    AuthMiddleware --> ITokenService
+    RoleMiddleware --> AuthMiddleware
