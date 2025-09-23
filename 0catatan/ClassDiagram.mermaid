@@ -1,0 +1,515 @@
+classDiagram
+    note for MongoDBManager "Singleton pattern untuk MongoDB connection"
+    
+    %% ========== Interfaces / Abstractions ==========
+    class IRepository {
+        <<interface>>
+        +findById(string id) array|null
+        +find(array filter = [], array options = []) array
+        +create(array data) string
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter = []) int
+        +findOne(array filter = []) array|null
+    }
+
+    class IInventoryRepository {
+        <<interface>>
+        +find(array filter = [], array options = []) array
+        +findById(string id) array|null
+        +findOne(array filter = []) array|null
+        +create(array data) string
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter = []) int
+        +findLowStock(int threshold = 0) array
+        +findOutOfStock() array
+        +updateQuantity(string id, int quantityChange) bool
+        +getStats() array
+        +aggregate(array pipeline) array
+    }
+
+    class IService {
+        <<interface>>
+        +findById(string id) array|null
+        +find(array filter = [], array options = []) array
+        +create(array data) array
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter = []) int
+        +validate(array data) bool
+        +findOne(array filter = []) array|null
+    }
+
+    class IAuthService {
+        <<interface>>
+        +register(array userData) array
+        +login(string username, string password) array
+        +refreshToken(string refreshToken) array
+        +logout(string refreshToken) bool
+        +verifyCredentials(string username, string password) array|false
+        +changePassword(string userId, string currentPassword, string newPassword) bool
+    }
+
+    class ITokenService {
+        <<interface>>
+        +generateAccessToken(array user) string
+        +generateRefreshToken(array user) string
+        +verifyAccessToken(string token) array|false
+        +verifyRefreshToken(string token) array|false
+        +revokeRefreshToken(string token) bool
+        +isRefreshTokenRevoked(string token) bool
+        +getAccessTokenExpiry() int
+        +getRefreshTokenExpiry() int
+    }
+
+    class ITokenRepository {
+        <<interface>>
+        +storeRefreshToken(string tokenHash, string userId, DateTime expiresAt) bool
+        +revokeRefreshToken(string tokenHash) bool
+        +isRefreshTokenRevoked(string tokenHash) bool
+        +findRefreshToken(string tokenHash) array|null
+        +cleanupExpiredTokens() int
+    }
+
+    class IInventoryService {
+        <<interface>>
+        +getItem(string id) array|null
+        +listItems(array filter = [], array options = []) array
+        +createItem(array data) array
+        +updateItem(string id, array data) array
+        +deleteItem(string id) bool
+        +getLowStockItems(int threshold = 0) array
+        +getOutOfStockItems() array
+        +updateItemQuantity(string id, int quantityChange) array
+        +getInventoryStats() array
+        +searchItems(string query, array options = []) array
+        +validateItemData(array data, bool isCreate = true) array
+    }
+
+    %% ========== Concrete Implementations ==========
+    class UserRepository {
+        +__construct(Collection collection = null, LoggerInterface logger = null)
+        +findUserById(string id) User|null
+        +findUserByUsername(string username) User|null
+        +findUserByEmail(string email) User|null
+        +saveUser(User user) string
+        +deleteUser(User user) bool
+        +usernameExists(string username) bool
+        +emailExists(string email) bool
+        +createIndexes() array
+        -documentToArray(mixed document) array
+        -normalizeToUTCDateTime(mixed value) UTCDateTime
+        -parseDuplicateError(string mongoMessage) string
+    }
+
+    class InventoryRepository {
+        +__construct(LoggerInterface logger = null)
+        +createIndexes() array
+        -documentToArray(mixed document) array
+        -normalizeToUTCDateTime(mixed value) UTCDateTime
+    }
+
+    class MongoTokenRepository {
+        +__construct(Logger logger = null)
+        +storeRefreshToken(string tokenHash, string userId, DateTime expiresAt) bool
+        +revokeRefreshToken(string tokenHash) bool
+        +isRefreshTokenRevoked(string tokenHash) bool
+        +findRefreshToken(string tokenHash) array|null
+        +cleanupExpiredTokens() int
+    }
+
+    class MongoDBManager {
+        -static Client client
+        -static Database database
+        -static LoggerInterface logger
+        +initialize(LoggerInterface logger = null) void
+        +getClient() Client
+        +getDatabase() Database
+        +getCollection(string name) Collection
+        +ping() bool
+        +startSession() Session|null
+        +getConnectionInfo() array
+        +createIndexes(string collectionName, array indexes) array
+        +collectionExists(string collectionName) bool
+        +getStats() array
+        +getCollectionStats(string collectionName) array
+        +dropCollection(string collectionName) array
+        +getServerInfo() array
+        +getServerVersion() array
+        +reset() void
+        +getLogger() LoggerInterface
+        +setLogger(LoggerInterface logger) void
+    }
+
+    class UserService {
+        +__construct(UserRepository userRepository, Logger logger)
+        +findByUsername(string username) array|null
+        +findByEmail(string email) array|null
+        -convertToArray(array userData) array
+    }
+
+    class InventoryService {
+        +__construct(IInventoryRepository inventoryRepo, Logger logger)
+        +getItemsByCategory(string categoryId, array options = []) array
+        +getItemsBySupplier(string supplierId, array options = []) array
+        -calculateInventoryHealth(array stats) string
+    }
+
+    class AuthService {
+        +__construct(UserService userService, ITokenService tokenService, Logger logger)
+        +validatePasswordStrength(string password) array
+        -generateTokens(array user) array
+    }
+
+    class JwtTokenService {
+        +__construct(string secretKey, string algorithm, int accessTokenExpiry, int refreshTokenExpiry, Logger logger, ITokenRepository tokenRepository)
+        +generateAccessToken(array user) string
+        +generateRefreshToken(array user) string
+        +verifyAccessToken(string token) array|false
+        +verifyRefreshToken(string token) array|false
+        +revokeRefreshToken(string token) bool
+        +isRefreshTokenRevoked(string token) bool
+        +getAccessTokenExpiry() int
+        +getRefreshTokenExpiry() int
+    }
+
+    class BaseController {
+        #logger Logger
+        #requestData array
+        +__construct(Logger logger = null)
+        #parseRequestData() void
+        #getRequestValue(string key, mixed default) mixed
+        #jsonResponse(array data, int statusCode = 200) void
+        #successResponse(array data = [], string message = 'Success', int statusCode = 200) void
+        #errorResponse(string message, array errors = [], int statusCode = 400) void
+        #notFoundResponse(string message = 'Resource not found') void
+        #unauthorizedResponse(string message = 'Unauthorized') void
+        #validationErrorResponse(array errors, string message = 'Validation failed') void
+        #getAuthUserId() string|null
+        #isAuthenticated() bool
+        #validateRequiredFields(array fields) array
+        #logAction(string action, array context = []) void
+        #getPaginationParams() array
+        #getSortingParams() array
+    }
+
+    class AuthController {
+        -authService AuthService
+        -userService UserService
+        +__construct(AuthService authService = null, UserService userService = null, Logger logger = null)
+        +register() void
+        +login() void
+        +refreshToken() void
+        +logout() void
+        +profile() void
+        +changePassword() void
+    }
+
+    class UserController {
+        -userService UserService
+        +__construct(UserService userService = null, Logger logger = null)
+        +listUsers() void
+        +getUser(string id) void
+        +createUser() void
+        +updateUser(string id) void
+        +deleteUser(string id) void
+    }
+
+    class InventoryController {
+        -inventoryService InventoryService
+        +__construct(InventoryService inventoryService = null, Logger logger = null)
+        +listItems() void
+        +getItem(string id) void
+        +createItem() void
+        +updateItem(string id) void
+        +deleteItem(string id) void
+        +getLowStock() void
+        +getOutOfStock() void
+        +getStats() void
+        +searchItems() void
+        +updateQuantity(string id) void
+    }
+
+    class ErrorHandler {
+        -logger LoggerInterface
+        -displayErrors bool
+        +__construct(LoggerInterface logger = null, bool displayErrors = false)
+        +register() void
+        +handleError(int errno, string errstr, string errfile, int errline) bool
+        +handleException(Throwable exception) void
+        +handleShutdown() void
+        -sendErrorResponse(Throwable exception) void
+        -getErrorType(int errno) string
+        +setDisplayErrors(bool displayErrors) void
+    }
+
+    class Router {
+        -routes array
+        -routeGroups array
+        -notFoundHandler callable
+        -currentGroupPrefix string
+        +__construct()
+        +get(string path, mixed handler) self
+        +post(string path, mixed handler) self
+        +put(string path, mixed handler) self
+        +delete(string path, mixed handler) self
+        +patch(string path, mixed handler) self
+        +options(string path, mixed handler) self
+        +any(string path, mixed handler) self
+        +addRoute(string method, string path, mixed handler) self
+        +group(string prefix, callable callback) self
+        +setNotFoundHandler(callable handler) self
+        +dispatch(string method, string path) mixed
+        -executeHandler(mixed handler, array params = []) mixed
+        -matchRoute(string routePath, string requestPath, array& params) bool
+        -handleNotFound() mixed
+        -normalizePath(string path) string
+        +getRoutes() array
+        +clearRoutes() void
+    }
+
+    class Logger {
+        -logFile string
+        -defaultLevel string
+        +__construct(string logFile = null, string defaultLevel = 'INFO')
+        +log(mixed level, string|Stringable message, array context = []) void
+        +debug(string|Stringable message, array context = []) void
+        +info(string|Stringable message, array context = []) void
+        +error(string|Stringable message, array context = []) void
+        +warning(string|Stringable message, array context = []) void
+        +getLogFile() string
+    }
+
+    class User {
+        -id string|null
+        -username string
+        -email string
+        -passwordHash string
+        -role string
+        -createdAt DateTime
+        -updatedAt DateTime
+        +ROLE_ADMIN = 'admin'
+        +ROLE_MANAGER = 'manager'
+        +ROLE_STAFF = 'staff'
+        +VALID_ROLES = [ROLE_ADMIN, ROLE_MANAGER, ROLE_STAFF]
+        +__construct(string username, string email, string passwordHash, string role = 'staff', string id = null, DateTime createdAt = null, DateTime updatedAt = null)
+        +getId() string|null
+        +getUsername() string
+        +getEmail() string
+        +getPasswordHash() string
+        +getRole() string
+        +getCreatedAt() DateTime
+        +getUpdatedAt() DateTime
+        +setUsername(string username) void
+        +setEmail(string email) void
+        +setPasswordHash(string hash) void
+        +setRole(string role) void
+        +setUpdatedAt(DateTime updatedAt) void
+        +toDocument() array
+        +fromDocument(mixed document) User
+        -parseDate(mixed dateValue) DateTime
+        +validate() void
+        +isAdmin() bool
+        +isManager() bool
+        +isStaff() bool
+        +toArray() array
+        +__toString() string
+    }
+
+    class Inventory {
+        -id string|null
+        -name string
+        -description string
+        -quantity int
+        -price float
+        -categoryId string|null
+        -supplierId string|null
+        -minStockLevel int
+        -createdAt DateTime
+        -updatedAt DateTime
+        +__construct(string name, string description, int quantity, float price, string categoryId = null, string supplierId = null, int minStockLevel = 0, string id = null, DateTime createdAt = null, DateTime updatedAt = null)
+        +getId() string|null
+        +getName() string
+        +getDescription() string
+        +getQuantity() int
+        +getPrice() float
+        +getCategoryId() string|null
+        +getSupplierId() string|null
+        +getMinStockLevel() int
+        +getCreatedAt() DateTime
+        +getUpdatedAt() DateTime
+        +setName(string name) void
+        +setDescription(string description) void
+        +setQuantity(int quantity) void
+        +setPrice(float price) void
+        +setCategoryId(string categoryId) void
+        +setSupplierId(string supplierId) void
+        +setMinStockLevel(int minStockLevel) void
+        +setUpdatedAt(DateTime updatedAt) void
+        +isLowStock() bool
+        +isOutOfStock() bool
+        +toDocument() array
+        +fromDocument(mixed document) Inventory
+        -parseDate(mixed dateValue) DateTime
+        +validate() void
+        +getTotalValue() float
+        +__toString() string
+        +toArray() array
+    }
+
+    %% ========== Relationships ==========
+    IRepository <|.. UserRepository
+    IRepository <|.. InventoryRepository
+    IInventoryRepository <|.. InventoryRepository
+    IService <|.. UserService
+    IService <|.. InventoryService
+    IAuthService <|.. AuthService
+    IInventoryService <|.. InventoryService
+    ITokenService <|.. JwtTokenService
+    ITokenRepository <|.. MongoTokenRepository
+    
+    UserRepository --> MongoDBManager : uses
+    InventoryRepository --> MongoDBManager : uses
+    MongoTokenRepository --> MongoDBManager : uses
+    
+    UserService --> UserRepository : depends on
+    UserService --> Logger : depends on
+    
+    InventoryService --> IInventoryRepository : depends on
+    InventoryService --> Logger : depends on
+    
+    AuthService --> UserService : depends on
+    AuthService --> ITokenService : depends on
+    AuthService --> Logger : depends on
+    
+    JwtTokenService --> ITokenRepository : depends on
+    JwtTokenService --> Logger : depends on
+    
+    AuthController --> AuthService : depends on
+    AuthController --> UserService : depends on
+    AuthController --> BaseController : extends
+    
+    UserController --> UserService : depends on
+    UserController --> BaseController : extends
+
+    InventoryController --> InventoryService : depends on
+    InventoryController --> BaseController : extends
+    
+    BaseController --> Logger : depends on
+    
+    ErrorHandler --> LoggerInterface : depends on
+
+    %% ========== Planned Components (Belum Diimplementasi) ==========
+    class ICategoryRepository {
+        <<interface>>
+        +findBySlug(string slug)
+        +findActive() array
+    }
+
+    class ISupplierRepository {
+        <<interface>>
+        +findByStatus(string status) array
+        +getSupplierStats() array
+    }
+
+    class IHashService {
+        <<interface>>
+        +hash(string password): string
+        +verify(string password, string hash): bool
+    }
+
+    class AIStrategy {
+        <<interface>>
+        +generate(string prompt): array
+        +analyze(array data): array
+    }
+
+    class CategoryService
+    class SupplierService
+    class AuditLogService
+    class AIService {
+        -strategies Map~string, AIStrategy~
+        +registerStrategy(string name, AIStrategy strategy)
+        +setStrategy(string name)
+        +analyzeInventory(array items) array
+        +generateReport(array data) array
+    }
+
+    class CategoryController
+    class SupplierController
+    class ReportController
+
+    class AuthMiddleware {
+        +verifyAccessToken(request, response, next)
+    }
+    
+    class RoleMiddleware {
+        +requireRole(string role)
+        +requireAnyRole(array roles)
+    }
+    
+    class Validator {
+        +validate(array schema, array data) array
+        +sanitize(array data) array
+    }
+
+    class Category {
+        +string _id
+        +string name
+        +string slug
+        +string description
+        +bool active
+        +DateTime createdAt
+        +DateTime updatedAt
+    }
+
+    class Supplier {
+        +string _id
+        +string name
+        +string contactEmail
+        +string phone
+        +string address
+        +string status
+        +DateTime createdAt
+        +DateTime updatedAt
+    }
+
+    class AuditLog {
+        +string _id
+        +string userId
+        +string action
+        +string resource
+        +string resourceId
+        +array oldData
+        +array newData
+        +DateTime timestamp
+        +string ipAddress
+    }
+
+    %% ========== Future Relationships ==========
+    ICategoryRepository <|.. MongoCategoryRepository
+    ISupplierRepository <|.. MongoSupplierRepository
+    IHashService <|.. BcryptHashService
+    AIStrategy <|.. Phi3Strategy
+    AIStrategy <|.. DeepSeekStrategy
+    AIStrategy <|.. OllamaStrategy
+
+    CategoryController --> CategoryService
+    SupplierController --> SupplierService
+    ReportController --> AIService
+
+    CategoryService --> ICategoryRepository
+    SupplierService --> ISupplierRepository
+    AIService --> AIStrategy
+
+    Inventory --> Category
+    Inventory --> Supplier
+    AuditLog --> User
+
+    MongoCategoryRepository --> MongoDBManager
+    MongoSupplierRepository --> MongoDBManager
+
+    CategoryService --> Logger
+    SupplierService --> Logger
+    AIService --> Logger

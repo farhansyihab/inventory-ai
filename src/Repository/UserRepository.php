@@ -5,9 +5,9 @@ namespace App\Repository;
 
 use App\Config\MongoDBManager;
 use App\Model\User;
-use MongoDB\Collection;
 use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\UTCDateTime;
+use MongoDB\Driver\Exception\BulkWriteException;
 use MongoDB\Driver\Exception\Exception as MongoException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -19,7 +19,7 @@ use Throwable;
  */
 class UserRepository implements IRepository
 {
-    private Collection $collection;
+    private \MongoDB\Collection $collection;
     private LoggerInterface $logger;
 
     public function __construct(?Collection $collection = null, ?LoggerInterface $logger = null)
@@ -71,9 +71,8 @@ class UserRepository implements IRepository
     public function create(array $data): string
     {
         try {
-            // Normalize timestamps -> ensure UTCDateTime
-            $data['createdAt'] = $this->normalizeToUTCDateTime($data['createdAt'] ?? null);
-            $data['updatedAt'] = $this->normalizeToUTCDateTime($data['updatedAt'] ?? null);
+            $data['createdAt'] = new UTCDateTime();
+            $data['updatedAt'] = new UTCDateTime();
 
             $result = $this->collection->insertOne($data);
             $insertedId = (string) $result->getInsertedId();
@@ -84,14 +83,37 @@ class UserRepository implements IRepository
             ]);
 
             return $insertedId;
-        } catch (MongoException $e) {
+        } catch (BulkWriteException $e) {
+            if ($e->getCode() === 11000) {
+                $this->logger->warning('Duplicate user create attempt', [
+                    'data' => $data,
+                    'exception' => $e->getMessage()
+                ]);
+                return ''; // gunakan string kosong untuk menandai gagal
+            }
+            throw $e;
+        } catch (Throwable $e) {
             $this->logger->error('UserRepository.create failed', [
                 'data' => $data,
                 'exception' => $e->getMessage()
             ]);
-            throw new InvalidArgumentException('Failed to create user: ' . $e->getMessage(), 0, $e);
+            return ''; // fallback gagal
         }
     }
+
+    /**
+     * Parse MongoDB duplicate error message untuk user-friendly message
+     */
+    private function parseDuplicateError(string $mongoMessage): string
+    {
+        if (strpos($mongoMessage, 'username_1') !== false) {
+            return 'Username already exists';
+        }
+        if (strpos($mongoMessage, 'email_1') !== false) {
+            return 'Email already registered';
+        }
+        return 'Duplicate data found';
+    }    
 
     public function update(string $id, array $data): bool
     {
@@ -127,6 +149,18 @@ class UserRepository implements IRepository
                 'id' => $id,
                 'exception' => $e->getMessage()
             ]);
+            
+            // Improved duplicate error handling for update
+            if (strpos($e->getMessage(), 'duplicate key') !== false) {
+                if (strpos($e->getMessage(), 'username_1') !== false) {
+                    throw new InvalidArgumentException('Username already exists', 400);
+                }
+                if (strpos($e->getMessage(), 'email_1') !== false) {
+                    throw new InvalidArgumentException('Email already registered', 400);
+                }
+                throw new InvalidArgumentException('Duplicate data found', 400);
+            }
+            
             return false;
         } catch (Throwable $e) {
             $this->logger->error('UserRepository.update unexpected error', [
@@ -240,7 +274,19 @@ class UserRepository implements IRepository
                 'user' => (string)$user,
                 'exception' => $e->getMessage()
             ]);
-            throw new InvalidArgumentException('Failed to save user: ' . $e->getMessage(), 0, $e);
+            
+            // Improved duplicate error handling
+            if (strpos($e->getMessage(), 'duplicate key') !== false) {
+                if (strpos($e->getMessage(), 'username_1') !== false) {
+                    throw new InvalidArgumentException('Username already exists', 400);
+                }
+                if (strpos($e->getMessage(), 'email_1') !== false) {
+                    throw new InvalidArgumentException('Email already registered', 400);
+                }
+                throw new InvalidArgumentException('Duplicate data found', 400);
+            }
+            
+            throw new InvalidArgumentException('Failed to save user: ' . $e->getMessage(), 400, $e);
         }
     }
 
@@ -296,6 +342,40 @@ class UserRepository implements IRepository
                 'exception' => $e->getMessage()
             ]);
             return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Check if username already exists
+     */
+    public function usernameExists(string $username): bool
+    {
+        try {
+            $count = $this->collection->countDocuments(['username' => $username]);
+            return $count > 0;
+        } catch (MongoException $e) {
+            $this->logger->error('UserRepository.usernameExists failed', [
+                'username' => $username,
+                'exception' => $e->getMessage()
+            ]);
+            return false;
+        }
+    }
+
+    /**
+     * Check if email already exists
+     */
+    public function emailExists(string $email): bool
+    {
+        try {
+            $count = $this->collection->countDocuments(['email' => $email]);
+            return $count > 0;
+        } catch (MongoException $e) {
+            $this->logger->error('UserRepository.emailExists failed', [
+                'email' => $email,
+                'exception' => $e->getMessage()
+            ]);
+            return false;
         }
     }
 }
