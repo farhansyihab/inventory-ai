@@ -1,4 +1,5 @@
 <?php
+// src/Service/AIStrategy.php
 declare(strict_types=1);
 
 namespace App\Service;

@@ -279,11 +279,11 @@ class InventoryRepository implements IInventoryRepository
                 ]
             ];
 
-            $result = $this->collection->aggregate($pipeline)->toArray();
-            return $result[0] ?? [];
+                $result = $this->collection->aggregate($pipeline)->toArray();
+                return isset($result[0]) ? (array) $result[0] : [];
         } catch (MongoException $e) {
-            $this->logger->error('InventoryRepository::getStats failed', [
-                'exception' => $e->getMessage()
+                $this->logger->error('InventoryRepository::getStats failed', [
+                    'exception' => $e->getMessage()
             ]);
             return [];
         }
