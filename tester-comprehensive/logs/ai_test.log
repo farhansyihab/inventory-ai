@@ -159,3 +159,26 @@
 [2025-09-21 10:09:35] INFO: ============================================================ 
 [2025-09-21 10:09:35] INFO: Results: 5 passed, 0 failed 
 [2025-09-21 10:09:35] INFO: ✅ All AI integration tests passed! 
+[2025-09-24 10:53:10] INFO: Starting AI Integration Tests with Ollama... 
+[2025-09-24 10:53:10] INFO: Running: Ollama Connection Test (timeout: 10s) 
+[2025-09-24 10:53:11] INFO: ✓ Ollama Connection Test (1.91ms) 
+[2025-09-24 10:53:11] INFO: Running: Simple Prompt Test (timeout: 30s) 
+[2025-09-24 10:53:41] INFO: ✗ Simple Prompt Test failed: Ollama API failed. HTTP Code: 0, Error: Operation timed out after 30003 milliseconds with 0 bytes received 
+[2025-09-24 10:53:41] INFO: Running: Short Inventory Analysis (timeout: 45s) 
+[2025-09-24 10:54:01] INFO: ✓ Short Inventory Analysis (20044.51ms) 
+[2025-09-24 10:54:01] INFO: Running: Short Demand Prediction (timeout: 40s) 
+[2025-09-24 10:54:05] INFO: ✓ Short Demand Prediction (4606.32ms) 
+[2025-09-24 10:54:05] INFO: Running: Quick Reordering Logic (timeout: 35s) 
+[2025-09-24 10:54:14] INFO: ✓ Quick Reordering Logic (9289.97ms) 
+[2025-09-24 10:54:14] INFO: 
+============================================================ 
+[2025-09-24 10:54:14] INFO: AI INTEGRATION TEST REPORT 
+[2025-09-24 10:54:14] INFO: ============================================================ 
+[2025-09-24 10:54:14] INFO: ✓ Ollama Connection Test        1.91 ms  Available models: deepseek-cod... 
+[2025-09-24 10:54:14] INFO: ✗ Simple Prompt Test        FAILED: Ollama API failed. HTTP Code: 0, Error:  
+[2025-09-24 10:54:14] INFO: ✓ Short Inventory Analysis  20044.51 ms  Analysis: Laptop, Mouse, and M... 
+[2025-09-24 10:54:14] INFO: ✓ Short Demand Prediction    4606.32 ms  Prediction: 180... 
+[2025-09-24 10:54:14] INFO: ✓ Quick Reordering Logic     9289.97 ms  Decision: Yes, the statement c... 
+[2025-09-24 10:54:14] INFO: ============================================================ 
+[2025-09-24 10:54:14] INFO: Results: 4 passed, 1 failed 
+[2025-09-24 10:54:14] INFO: ⚠️  AI integration tests completed with 1 failures 

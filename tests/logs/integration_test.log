@@ -2169,3 +2169,177 @@
 [2025-09-24 03:53:24] INFO: Inventory item created {"id":"68d36b34422fa7d2fc073836","name":"Mechanical Keyboard"}
 [2025-09-24 03:53:24] INFO: Inventory item created {"id":"68d36b34422fa7d2fc073837","name":"27-inch Monitor"}
 [2025-09-24 03:53:24] INFO: Data consistency test passed 
+[2025-09-24 10:53:04] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-24T10:53:04+00:00"}
+[2025-09-24 10:53:04] INFO: InventoryAnalysisService initialized {"ai_service_available":false,"cache_ttl":300,"timestamp":"2025-09-24T10:53:04+00:00"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2780","name":"Laptop Dell XPS 13"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2781","name":"Wireless Mouse Logitech"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2782","name":"Mechanical Keyboard"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2783","name":"27-inch Monitor"}
+[2025-09-24 10:53:04] INFO: Comprehensive analysis integration test passed {"items_analyzed":1,"risk_level":"unknown"}
+[2025-09-24 10:53:04] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-24T10:53:04+00:00"}
+[2025-09-24 10:53:04] INFO: InventoryAnalysisService initialized {"ai_service_available":false,"cache_ttl":300,"timestamp":"2025-09-24T10:53:04+00:00"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2784","name":"Laptop Dell XPS 13"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2785","name":"Wireless Mouse Logitech"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2786","name":"Mechanical Keyboard"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2787","name":"27-inch Monitor"}
+[2025-09-24 10:53:04] ERROR: Optimized weekly report failed {"error":"Inventory data must contain items array"}
+[2025-09-24 10:53:04] INFO: Weekly report integration test passed 
+[2025-09-24 10:53:04] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-24T10:53:04+00:00"}
+[2025-09-24 10:53:04] INFO: InventoryAnalysisService initialized {"ai_service_available":false,"cache_ttl":300,"timestamp":"2025-09-24T10:53:04+00:00"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2788","name":"Laptop Dell XPS 13"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2789","name":"Wireless Mouse Logitech"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d278a","name":"Mechanical Keyboard"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d278b","name":"27-inch Monitor"}
+[2025-09-24 10:53:04] INFO: Monitoring critical inventory items 
+[2025-09-24 10:53:04] ERROR: Critical items monitoring failed {"error":"Inventory data must contain items array"}
+[2025-09-24 10:53:04] INFO: Critical items monitoring integration test passed {"total_alerts":2}
+[2025-09-24 10:53:04] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-24T10:53:04+00:00"}
+[2025-09-24 10:53:04] INFO: InventoryAnalysisService initialized {"ai_service_available":false,"cache_ttl":300,"timestamp":"2025-09-24T10:53:04+00:00"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d278c","name":"Laptop Dell XPS 13"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d278d","name":"Wireless Mouse Logitech"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d278e","name":"Mechanical Keyboard"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d278f","name":"27-inch Monitor"}
+[2025-09-24 10:53:04] INFO: Predicting inventory needs {"forecast_days":30}
+[2025-09-24 10:53:04] ERROR: AI analysis failed: No active AI strategy available {"analysis_type":"stock_prediction","fallback_used":true}
+[2025-09-24 10:53:04] WARNING: Using fallback analysis {"analysis_type":"stock_prediction"}
+[2025-09-24 10:53:04] INFO: AIService: Analyzing sales trends {"data_points":480,"period_days":30}
+[2025-09-24 10:53:04] WARNING: AIService: Using fallback sales trends analysis 
+[2025-09-24 10:53:04] INFO: AIService: Generating purchase recommendations {"suppliers_count":3}
+[2025-09-24 10:53:04] WARNING: AIService: Using fallback purchase recommendations 
+[2025-09-24 10:53:04] INFO: Inventory needs prediction completed {"forecast_days":30,"confidence":0.7}
+[2025-09-24 10:53:04] INFO: Inventory needs prediction integration test passed {"forecast_days":30,"confidence":0.7}
+[2025-09-24 10:53:04] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-24T10:53:04+00:00"}
+[2025-09-24 10:53:04] INFO: InventoryAnalysisService initialized {"ai_service_available":false,"cache_ttl":300,"timestamp":"2025-09-24T10:53:04+00:00"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2790","name":"Laptop Dell XPS 13"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2791","name":"Wireless Mouse Logitech"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2792","name":"Mechanical Keyboard"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2793","name":"27-inch Monitor"}
+[2025-09-24 10:53:04] INFO: Starting inventory optimization 
+[2025-09-24 10:53:04] INFO: AIService: Optimizing stock levels {"inventory_items":20}
+[2025-09-24 10:53:04] WARNING: AIService: Using fallback stock optimization 
+[2025-09-24 10:53:04] WARNING: AIService: Using fallback for stock optimization 
+[2025-09-24 10:53:04] INFO: Inventory optimization completed {"potential_savings":44249.399999999994,"items_optimized":20}
+[2025-09-24 10:53:04] INFO: Inventory optimization integration test passed {"potential_savings":44249.399999999994}
+[2025-09-24 10:53:04] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-24T10:53:04+00:00"}
+[2025-09-24 10:53:04] INFO: InventoryAnalysisService initialized {"ai_service_available":false,"cache_ttl":300,"timestamp":"2025-09-24T10:53:04+00:00"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2794","name":"Laptop Dell XPS 13"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2795","name":"Wireless Mouse Logitech"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2796","name":"Mechanical Keyboard"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2797","name":"27-inch Monitor"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2798","name":"Test Item 1"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2799","name":"Test Item 2"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d279a","name":"Test Item 3"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d279b","name":"Test Item 4"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d279c","name":"Test Item 5"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d279d","name":"Test Item 6"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d279e","name":"Test Item 7"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d279f","name":"Test Item 8"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27a0","name":"Test Item 9"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27a1","name":"Test Item 10"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27a2","name":"Test Item 11"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27a3","name":"Test Item 12"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27a4","name":"Test Item 13"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27a5","name":"Test Item 14"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27a6","name":"Test Item 15"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27a7","name":"Test Item 16"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27a8","name":"Test Item 17"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27a9","name":"Test Item 18"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27aa","name":"Test Item 19"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27ab","name":"Test Item 20"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27ac","name":"Test Item 21"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27ad","name":"Test Item 22"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27ae","name":"Test Item 23"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27af","name":"Test Item 24"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27b0","name":"Test Item 25"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27b1","name":"Test Item 26"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27b2","name":"Test Item 27"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27b3","name":"Test Item 28"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27b4","name":"Test Item 29"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27b5","name":"Test Item 30"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27b6","name":"Test Item 31"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27b7","name":"Test Item 32"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27b8","name":"Test Item 33"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27b9","name":"Test Item 34"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27ba","name":"Test Item 35"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27bb","name":"Test Item 36"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27bc","name":"Test Item 37"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27bd","name":"Test Item 38"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27be","name":"Test Item 39"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27bf","name":"Test Item 40"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27c0","name":"Test Item 41"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27c1","name":"Test Item 42"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27c2","name":"Test Item 43"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27c3","name":"Test Item 44"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27c4","name":"Test Item 45"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27c5","name":"Test Item 46"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27c6","name":"Test Item 47"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27c7","name":"Test Item 48"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27c8","name":"Test Item 49"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27c9","name":"Test Item 50"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27ca","name":"Test Item 51"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27cb","name":"Test Item 52"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27cc","name":"Test Item 53"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27cd","name":"Test Item 54"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27ce","name":"Test Item 55"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27cf","name":"Test Item 56"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27d0","name":"Test Item 57"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27d1","name":"Test Item 58"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27d2","name":"Test Item 59"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27d3","name":"Test Item 60"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27d4","name":"Test Item 61"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27d5","name":"Test Item 62"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27d6","name":"Test Item 63"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27d7","name":"Test Item 64"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27d8","name":"Test Item 65"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27d9","name":"Test Item 66"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27da","name":"Test Item 67"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27db","name":"Test Item 68"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27dc","name":"Test Item 69"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27dd","name":"Test Item 70"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27de","name":"Test Item 71"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27df","name":"Test Item 72"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27e0","name":"Test Item 73"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27e1","name":"Test Item 74"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27e2","name":"Test Item 75"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27e3","name":"Test Item 76"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27e4","name":"Test Item 77"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27e5","name":"Test Item 78"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27e6","name":"Test Item 79"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27e7","name":"Test Item 80"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27e8","name":"Test Item 81"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27e9","name":"Test Item 82"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27ea","name":"Test Item 83"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27eb","name":"Test Item 84"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27ec","name":"Test Item 85"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27ed","name":"Test Item 86"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27ee","name":"Test Item 87"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27ef","name":"Test Item 88"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27f0","name":"Test Item 89"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27f1","name":"Test Item 90"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27f2","name":"Test Item 91"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27f3","name":"Test Item 92"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27f4","name":"Test Item 93"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27f5","name":"Test Item 94"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27f6","name":"Test Item 95"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27f7","name":"Test Item 96"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27f8","name":"Test Item 97"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27f9","name":"Test Item 98"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27fa","name":"Test Item 99"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27fb","name":"Test Item 100"}
+[2025-09-24 10:53:04] INFO: Performance test passed {"execution_time":"0s","memory_usage":"10MB","items_analyzed":1}
+[2025-09-24 10:53:04] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-24T10:53:04+00:00"}
+[2025-09-24 10:53:04] INFO: InventoryAnalysisService initialized {"ai_service_available":false,"cache_ttl":300,"timestamp":"2025-09-24T10:53:04+00:00"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27fc","name":"Laptop Dell XPS 13"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27fd","name":"Wireless Mouse Logitech"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27fe","name":"Mechanical Keyboard"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d27ff","name":"27-inch Monitor"}
+[2025-09-24 10:53:04] INFO: AIService initialized {"enabled":false,"timestamp":"2025-09-24T10:53:04+00:00"}
+[2025-09-24 10:53:04] INFO: InventoryAnalysisService initialized {"ai_service_available":false,"cache_ttl":300,"timestamp":"2025-09-24T10:53:04+00:00"}
+[2025-09-24 10:53:04] INFO: Error handling and fallback test passed 
+[2025-09-24 10:53:04] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-24T10:53:04+00:00"}
+[2025-09-24 10:53:04] INFO: InventoryAnalysisService initialized {"ai_service_available":false,"cache_ttl":300,"timestamp":"2025-09-24T10:53:04+00:00"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2800","name":"Laptop Dell XPS 13"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2801","name":"Wireless Mouse Logitech"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2802","name":"Mechanical Keyboard"}
+[2025-09-24 10:53:04] INFO: Inventory item created {"id":"68d3cd9012c11605aa0d2803","name":"27-inch Monitor"}
+[2025-09-24 10:53:04] INFO: Data consistency test passed 
