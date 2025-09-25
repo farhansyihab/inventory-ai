@@ -60,3 +60,175 @@
 [2025-09-24 10:43:06] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":0,"risk_level":"unknown"}
 [2025-09-24 10:43:06] INFO: Controller Action: ai_weekly_report {"controller":"App\\Controller\\AIAnalysisController","action":"ai_weekly_report","ip":"unknown","user_agent":"unknown","period":"weekly"}
 [2025-09-24 10:43:06] INFO: Controller Action: ai_inventory_prediction {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_prediction","ip":"unknown","user_agent":"unknown","forecast_days":7,"confidence":0}
+[2025-09-25 00:44:12] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:44:12+00:00"}
+[2025-09-25 00:44:12] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":150,"risk_level":"medium"}
+[2025-09-25 00:44:12] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:44:12+00:00"}
+[2025-09-25 00:44:12] INFO: Controller Action: ai_weekly_report {"controller":"App\\Controller\\AIAnalysisController","action":"ai_weekly_report","ip":"unknown","user_agent":"unknown","period":"weekly"}
+[2025-09-25 00:44:12] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:44:12+00:00"}
+[2025-09-25 00:44:12] INFO: Controller Action: ai_critical_monitoring {"controller":"App\\Controller\\AIAnalysisController","action":"ai_critical_monitoring","ip":"unknown","user_agent":"unknown","total_alerts":1,"risk_level":"medium"}
+[2025-09-25 00:44:12] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:44:12+00:00"}
+[2025-09-25 00:44:12] INFO: Controller Action: ai_inventory_prediction {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_prediction","ip":"unknown","user_agent":"unknown","forecast_days":30,"confidence":0.85}
+[2025-09-25 00:44:12] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:44:12+00:00"}
+[2025-09-25 00:44:12] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:44:12+00:00"}
+[2025-09-25 00:44:12] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:44:12+00:00"}
+[2025-09-25 00:44:12] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":0,"risk_level":"unknown"}
+[2025-09-25 00:49:01] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:49:01+00:00"}
+[2025-09-25 00:49:01] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":150,"risk_level":"medium"}
+[2025-09-25 00:49:01] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:49:01+00:00"}
+[2025-09-25 00:49:01] INFO: Controller Action: ai_weekly_report {"controller":"App\\Controller\\AIAnalysisController","action":"ai_weekly_report","ip":"unknown","user_agent":"unknown","period":"weekly"}
+[2025-09-25 00:49:01] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:49:01+00:00"}
+[2025-09-25 00:49:01] INFO: Controller Action: ai_critical_monitoring {"controller":"App\\Controller\\AIAnalysisController","action":"ai_critical_monitoring","ip":"unknown","user_agent":"unknown","total_alerts":1,"risk_level":"medium"}
+[2025-09-25 00:49:01] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:49:01+00:00"}
+[2025-09-25 00:49:01] INFO: Controller Action: ai_inventory_prediction {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_prediction","ip":"unknown","user_agent":"unknown","forecast_days":30,"confidence":0.85}
+[2025-09-25 00:49:01] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:49:01+00:00"}
+[2025-09-25 00:49:01] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:49:01+00:00"}
+[2025-09-25 00:49:01] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:49:01+00:00"}
+[2025-09-25 00:49:01] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":0,"risk_level":"unknown"}
+[2025-09-25 00:53:54] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:53:54+00:00"}
+[2025-09-25 00:53:54] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":150,"risk_level":"medium"}
+[2025-09-25 00:53:54] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:53:54+00:00"}
+[2025-09-25 00:53:54] INFO: Controller Action: ai_weekly_report {"controller":"App\\Controller\\AIAnalysisController","action":"ai_weekly_report","ip":"unknown","user_agent":"unknown","period":"weekly"}
+[2025-09-25 00:53:54] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:53:54+00:00"}
+[2025-09-25 00:53:54] INFO: Controller Action: ai_critical_monitoring {"controller":"App\\Controller\\AIAnalysisController","action":"ai_critical_monitoring","ip":"unknown","user_agent":"unknown","total_alerts":1,"risk_level":"medium"}
+[2025-09-25 00:53:54] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:53:54+00:00"}
+[2025-09-25 00:53:54] INFO: Controller Action: ai_inventory_prediction {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_prediction","ip":"unknown","user_agent":"unknown","forecast_days":30,"confidence":0.85}
+[2025-09-25 00:53:54] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:53:54+00:00"}
+[2025-09-25 00:53:54] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:53:54+00:00"}
+[2025-09-25 00:53:54] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:53:54+00:00"}
+[2025-09-25 00:53:54] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":0,"risk_level":"unknown"}
+[2025-09-25 00:56:18] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:56:18+00:00"}
+[2025-09-25 00:56:18] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":150,"risk_level":"medium"}
+[2025-09-25 00:56:18] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:56:18+00:00"}
+[2025-09-25 00:56:18] INFO: Controller Action: ai_weekly_report {"controller":"App\\Controller\\AIAnalysisController","action":"ai_weekly_report","ip":"unknown","user_agent":"unknown","period":"weekly"}
+[2025-09-25 00:56:18] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:56:18+00:00"}
+[2025-09-25 00:56:18] INFO: Controller Action: ai_critical_monitoring {"controller":"App\\Controller\\AIAnalysisController","action":"ai_critical_monitoring","ip":"unknown","user_agent":"unknown","total_alerts":1,"risk_level":"medium"}
+[2025-09-25 00:56:18] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:56:18+00:00"}
+[2025-09-25 00:56:18] INFO: Controller Action: ai_inventory_prediction {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_prediction","ip":"unknown","user_agent":"unknown","forecast_days":30,"confidence":0.85}
+[2025-09-25 00:56:18] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:56:18+00:00"}
+[2025-09-25 00:56:18] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:56:18+00:00"}
+[2025-09-25 00:56:18] INFO: AIService initialized {"enabled":true,"timestamp":"2025-09-25T00:56:18+00:00"}
+[2025-09-25 00:56:18] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":0,"risk_level":"unknown"}
+[2025-09-25 01:20:32] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":150,"risk_level":"medium"}
+[2025-09-25 01:20:32] ERROR: AIAnalysisController::getComprehensiveAnalysis failed: http_response_code(): Cannot set response code - headers already sent (output started at /var/www/html/inventory-ai/vendor/phpunit/phpunit/src/Util/Printer.php:104) 
+[2025-09-25 01:31:51] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":150,"risk_level":"medium"}
+[2025-09-25 01:31:51] INFO: Controller Action: ai_weekly_report {"controller":"App\\Controller\\AIAnalysisController","action":"ai_weekly_report","ip":"unknown","user_agent":"unknown","period":"weekly"}
+[2025-09-25 01:31:51] INFO: Controller Action: ai_critical_monitoring {"controller":"App\\Controller\\AIAnalysisController","action":"ai_critical_monitoring","ip":"unknown","user_agent":"unknown","total_alerts":1,"risk_level":"medium"}
+[2025-09-25 01:31:51] INFO: Controller Action: ai_inventory_prediction {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_prediction","ip":"unknown","user_agent":"unknown","forecast_days":30,"confidence":0.85}
+[2025-09-25 01:31:51] INFO: Controller Action: ai_inventory_optimization {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_optimization","ip":"unknown","user_agent":"unknown","items_optimized":50,"potential_savings":15000.5}
+[2025-09-25 01:31:51] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":1,"risk_level":"unknown"}
+[2025-09-25 01:31:51] ERROR: AIAnalysisController::getComprehensiveAnalysis failed: Service unavailable 
+[2025-09-25 01:59:29] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":150,"risk_level":"medium"}
+[2025-09-25 01:59:29] INFO: Controller Action: ai_weekly_report {"controller":"App\\Controller\\AIAnalysisController","action":"ai_weekly_report","ip":"unknown","user_agent":"unknown","period":"weekly"}
+[2025-09-25 01:59:29] INFO: Controller Action: ai_critical_monitoring {"controller":"App\\Controller\\AIAnalysisController","action":"ai_critical_monitoring","ip":"unknown","user_agent":"unknown","total_alerts":1,"risk_level":"medium"}
+[2025-09-25 01:59:29] INFO: Controller Action: ai_inventory_prediction {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_prediction","ip":"unknown","user_agent":"unknown","forecast_days":30,"confidence":0.85}
+[2025-09-25 01:59:29] INFO: Controller Action: ai_inventory_optimization {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_optimization","ip":"unknown","user_agent":"unknown","items_optimized":50,"potential_savings":15000.5}
+[2025-09-25 01:59:29] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":1,"risk_level":"unknown"}
+[2025-09-25 01:59:29] ERROR: AIAnalysisController::getComprehensiveAnalysis failed: Service unavailable 
+[2025-09-25 01:59:44] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":150,"risk_level":"medium"}
+[2025-09-25 01:59:44] INFO: Controller Action: ai_weekly_report {"controller":"App\\Controller\\AIAnalysisController","action":"ai_weekly_report","ip":"unknown","user_agent":"unknown","period":"weekly"}
+[2025-09-25 01:59:44] INFO: Controller Action: ai_critical_monitoring {"controller":"App\\Controller\\AIAnalysisController","action":"ai_critical_monitoring","ip":"unknown","user_agent":"unknown","total_alerts":1,"risk_level":"medium"}
+[2025-09-25 01:59:44] INFO: Controller Action: ai_inventory_prediction {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_prediction","ip":"unknown","user_agent":"unknown","forecast_days":30,"confidence":0.85}
+[2025-09-25 01:59:44] INFO: Controller Action: ai_inventory_optimization {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_optimization","ip":"unknown","user_agent":"unknown","items_optimized":50,"potential_savings":15000.5}
+[2025-09-25 01:59:44] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":1,"risk_level":"unknown"}
+[2025-09-25 01:59:44] ERROR: AIAnalysisController::getComprehensiveAnalysis failed: Service unavailable 
+[2025-09-25 02:58:11] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":150,"risk_level":"medium"}
+[2025-09-25 02:58:11] INFO: Controller Action: ai_weekly_report {"controller":"App\\Controller\\AIAnalysisController","action":"ai_weekly_report","ip":"unknown","user_agent":"unknown","period":"weekly"}
+[2025-09-25 02:58:11] INFO: Controller Action: ai_critical_monitoring {"controller":"App\\Controller\\AIAnalysisController","action":"ai_critical_monitoring","ip":"unknown","user_agent":"unknown","total_alerts":1,"risk_level":"medium"}
+[2025-09-25 02:58:11] INFO: Controller Action: ai_inventory_prediction {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_prediction","ip":"unknown","user_agent":"unknown","forecast_days":30,"confidence":0.85}
+[2025-09-25 02:58:11] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 02:58:11] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 02:58:11] INFO: Controller Action: ai_inventory_optimization {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_optimization","ip":"unknown","user_agent":"unknown","items_optimized":50,"potential_savings":15000.5}
+[2025-09-25 02:58:11] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":1,"risk_level":"unknown"}
+[2025-09-25 02:58:11] ERROR: AIAnalysisController::getComprehensiveAnalysis failed: Service unavailable 
+[2025-09-25 03:09:11] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":150,"risk_level":"medium"}
+[2025-09-25 03:09:11] INFO: Controller Action: ai_weekly_report {"controller":"App\\Controller\\AIAnalysisController","action":"ai_weekly_report","ip":"unknown","user_agent":"unknown","period":"weekly"}
+[2025-09-25 03:09:11] INFO: Controller Action: ai_critical_monitoring {"controller":"App\\Controller\\AIAnalysisController","action":"ai_critical_monitoring","ip":"unknown","user_agent":"unknown","total_alerts":1,"risk_level":"medium"}
+[2025-09-25 03:09:11] INFO: Controller Action: ai_inventory_prediction {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_prediction","ip":"unknown","user_agent":"unknown","forecast_days":30,"confidence":0.85}
+[2025-09-25 03:09:11] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 03:09:11] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 03:09:11] INFO: Controller Action: ai_inventory_optimization {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_optimization","ip":"unknown","user_agent":"unknown","items_optimized":50,"potential_savings":15000.5}
+[2025-09-25 03:09:11] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":1,"risk_level":"unknown"}
+[2025-09-25 03:09:11] ERROR: AIAnalysisController::getComprehensiveAnalysis failed: Service unavailable 
+[2025-09-25 03:15:21] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 03:40:36] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 03:43:16] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":150,"risk_level":"medium"}
+[2025-09-25 03:43:16] INFO: Controller Action: ai_weekly_report {"controller":"App\\Controller\\AIAnalysisController","action":"ai_weekly_report","ip":"unknown","user_agent":"unknown","period":"weekly"}
+[2025-09-25 03:43:16] INFO: Controller Action: ai_critical_monitoring {"controller":"App\\Controller\\AIAnalysisController","action":"ai_critical_monitoring","ip":"unknown","user_agent":"unknown","total_alerts":1,"risk_level":"medium"}
+[2025-09-25 03:43:16] INFO: Controller Action: ai_inventory_prediction {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_prediction","ip":"unknown","user_agent":"unknown","forecast_days":30,"confidence":0.85}
+[2025-09-25 03:43:16] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 03:43:16] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 03:43:16] INFO: Controller Action: ai_inventory_optimization {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_optimization","ip":"unknown","user_agent":"unknown","items_optimized":50,"potential_savings":15000.5}
+[2025-09-25 03:43:16] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":1,"risk_level":"unknown"}
+[2025-09-25 03:43:16] ERROR: AIAnalysisController::getComprehensiveAnalysis failed: Service unavailable 
+[2025-09-25 03:49:38] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":150,"risk_level":"medium"}
+[2025-09-25 03:49:38] INFO: Controller Action: ai_weekly_report {"controller":"App\\Controller\\AIAnalysisController","action":"ai_weekly_report","ip":"unknown","user_agent":"unknown","period":"weekly"}
+[2025-09-25 03:49:38] INFO: Controller Action: ai_critical_monitoring {"controller":"App\\Controller\\AIAnalysisController","action":"ai_critical_monitoring","ip":"unknown","user_agent":"unknown","total_alerts":1,"risk_level":"medium"}
+[2025-09-25 03:49:38] INFO: Controller Action: ai_inventory_prediction {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_prediction","ip":"unknown","user_agent":"unknown","forecast_days":30,"confidence":0.85}
+[2025-09-25 03:49:38] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 03:49:38] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 03:49:38] INFO: Controller Action: ai_inventory_optimization {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_optimization","ip":"unknown","user_agent":"unknown","items_optimized":50,"potential_savings":15000.5}
+[2025-09-25 03:49:38] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":1,"risk_level":"unknown"}
+[2025-09-25 03:49:38] ERROR: AIAnalysisController::getComprehensiveAnalysis failed: Service unavailable 
+[2025-09-25 03:50:45] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":150,"risk_level":"medium"}
+[2025-09-25 03:50:45] INFO: Controller Action: ai_weekly_report {"controller":"App\\Controller\\AIAnalysisController","action":"ai_weekly_report","ip":"unknown","user_agent":"unknown","period":"weekly"}
+[2025-09-25 03:50:45] INFO: Controller Action: ai_critical_monitoring {"controller":"App\\Controller\\AIAnalysisController","action":"ai_critical_monitoring","ip":"unknown","user_agent":"unknown","total_alerts":1,"risk_level":"medium"}
+[2025-09-25 03:50:45] INFO: Controller Action: ai_inventory_prediction {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_prediction","ip":"unknown","user_agent":"unknown","forecast_days":30,"confidence":0.85}
+[2025-09-25 03:50:45] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 03:50:45] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 03:50:45] INFO: Controller Action: ai_inventory_optimization {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_optimization","ip":"unknown","user_agent":"unknown","items_optimized":50,"potential_savings":15000.5}
+[2025-09-25 03:50:45] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":1,"risk_level":"unknown"}
+[2025-09-25 03:50:45] ERROR: AIAnalysisController::getComprehensiveAnalysis failed: Service unavailable 
+[2025-09-25 03:52:38] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":150,"risk_level":"medium"}
+[2025-09-25 03:52:38] INFO: Controller Action: ai_weekly_report {"controller":"App\\Controller\\AIAnalysisController","action":"ai_weekly_report","ip":"unknown","user_agent":"unknown","period":"weekly"}
+[2025-09-25 03:52:38] INFO: Controller Action: ai_critical_monitoring {"controller":"App\\Controller\\AIAnalysisController","action":"ai_critical_monitoring","ip":"unknown","user_agent":"unknown","total_alerts":1,"risk_level":"medium"}
+[2025-09-25 03:52:38] INFO: Controller Action: ai_inventory_prediction {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_prediction","ip":"unknown","user_agent":"unknown","forecast_days":30,"confidence":0.85}
+[2025-09-25 03:52:38] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 03:52:38] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 03:52:38] INFO: Controller Action: ai_inventory_optimization {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_optimization","ip":"unknown","user_agent":"unknown","items_optimized":50,"potential_savings":15000.5}
+[2025-09-25 03:52:38] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":1,"risk_level":"unknown"}
+[2025-09-25 03:52:38] ERROR: AIAnalysisController::getComprehensiveAnalysis failed: Service unavailable 
+[2025-09-25 03:54:00] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":150,"risk_level":"medium"}
+[2025-09-25 03:54:00] INFO: Controller Action: ai_weekly_report {"controller":"App\\Controller\\AIAnalysisController","action":"ai_weekly_report","ip":"unknown","user_agent":"unknown","period":"weekly"}
+[2025-09-25 03:54:00] INFO: Controller Action: ai_critical_monitoring {"controller":"App\\Controller\\AIAnalysisController","action":"ai_critical_monitoring","ip":"unknown","user_agent":"unknown","total_alerts":1,"risk_level":"medium"}
+[2025-09-25 03:54:00] INFO: Controller Action: ai_inventory_prediction {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_prediction","ip":"unknown","user_agent":"unknown","forecast_days":30,"confidence":0.85}
+[2025-09-25 03:54:00] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 03:54:00] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 03:54:00] INFO: Controller Action: ai_inventory_optimization {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_optimization","ip":"unknown","user_agent":"unknown","items_optimized":50,"potential_savings":15000.5}
+[2025-09-25 03:54:00] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":1,"risk_level":"unknown"}
+[2025-09-25 03:54:00] ERROR: AIAnalysisController::getComprehensiveAnalysis failed: Service unavailable 
+[2025-09-25 03:58:06] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":150,"risk_level":"medium"}
+[2025-09-25 03:58:06] INFO: Controller Action: ai_weekly_report {"controller":"App\\Controller\\AIAnalysisController","action":"ai_weekly_report","ip":"unknown","user_agent":"unknown","period":"weekly"}
+[2025-09-25 03:58:06] INFO: Controller Action: ai_critical_monitoring {"controller":"App\\Controller\\AIAnalysisController","action":"ai_critical_monitoring","ip":"unknown","user_agent":"unknown","total_alerts":1,"risk_level":"medium"}
+[2025-09-25 03:58:06] INFO: Controller Action: ai_inventory_prediction {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_prediction","ip":"unknown","user_agent":"unknown","forecast_days":30,"confidence":0.85}
+[2025-09-25 03:58:06] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 03:58:06] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 03:58:06] INFO: Controller Action: ai_inventory_optimization {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_optimization","ip":"unknown","user_agent":"unknown","items_optimized":50,"potential_savings":15000.5}
+[2025-09-25 03:58:06] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":1,"risk_level":"unknown"}
+[2025-09-25 03:58:06] ERROR: AIAnalysisController::getComprehensiveAnalysis failed: Service unavailable 
+[2025-09-25 03:58:27] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":150,"risk_level":"medium"}
+[2025-09-25 03:58:27] INFO: Controller Action: ai_weekly_report {"controller":"App\\Controller\\AIAnalysisController","action":"ai_weekly_report","ip":"unknown","user_agent":"unknown","period":"weekly"}
+[2025-09-25 03:58:27] INFO: Controller Action: ai_critical_monitoring {"controller":"App\\Controller\\AIAnalysisController","action":"ai_critical_monitoring","ip":"unknown","user_agent":"unknown","total_alerts":1,"risk_level":"medium"}
+[2025-09-25 03:58:27] INFO: Controller Action: ai_inventory_prediction {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_prediction","ip":"unknown","user_agent":"unknown","forecast_days":30,"confidence":0.85}
+[2025-09-25 03:58:27] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 03:58:27] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 03:58:27] INFO: Controller Action: ai_inventory_optimization {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_optimization","ip":"unknown","user_agent":"unknown","items_optimized":50,"potential_savings":15000.5}
+[2025-09-25 03:58:27] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":1,"risk_level":"unknown"}
+[2025-09-25 03:58:27] ERROR: AIAnalysisController::getComprehensiveAnalysis failed: Service unavailable 
+[2025-09-25 04:10:58] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":150,"risk_level":"medium"}
+[2025-09-25 04:10:58] INFO: Controller Action: ai_weekly_report {"controller":"App\\Controller\\AIAnalysisController","action":"ai_weekly_report","ip":"unknown","user_agent":"unknown","period":"weekly"}
+[2025-09-25 04:10:58] INFO: Controller Action: ai_critical_monitoring {"controller":"App\\Controller\\AIAnalysisController","action":"ai_critical_monitoring","ip":"unknown","user_agent":"unknown","total_alerts":1,"risk_level":"medium"}
+[2025-09-25 04:10:58] INFO: Controller Action: ai_inventory_prediction {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_prediction","ip":"unknown","user_agent":"unknown","forecast_days":30,"confidence":0.85}
+[2025-09-25 04:10:58] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 04:10:58] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 04:10:58] INFO: Controller Action: ai_inventory_optimization {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_optimization","ip":"unknown","user_agent":"unknown","items_optimized":50,"potential_savings":15000.5}
+[2025-09-25 04:10:58] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":1,"risk_level":"unknown"}
+[2025-09-25 04:10:58] ERROR: AIAnalysisController::getComprehensiveAnalysis failed: Service unavailable 
+[2025-09-25 04:11:45] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":150,"risk_level":"medium"}
+[2025-09-25 04:11:45] INFO: Controller Action: ai_weekly_report {"controller":"App\\Controller\\AIAnalysisController","action":"ai_weekly_report","ip":"unknown","user_agent":"unknown","period":"weekly"}
+[2025-09-25 04:11:45] INFO: Controller Action: ai_critical_monitoring {"controller":"App\\Controller\\AIAnalysisController","action":"ai_critical_monitoring","ip":"unknown","user_agent":"unknown","total_alerts":1,"risk_level":"medium"}
+[2025-09-25 04:11:45] INFO: Controller Action: ai_inventory_prediction {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_prediction","ip":"unknown","user_agent":"unknown","forecast_days":30,"confidence":0.85}
+[2025-09-25 04:11:45] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 04:11:45] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-25 04:11:45] INFO: Controller Action: ai_inventory_optimization {"controller":"App\\Controller\\AIAnalysisController","action":"ai_inventory_optimization","ip":"unknown","user_agent":"unknown","items_optimized":50,"potential_savings":15000.5}
+[2025-09-25 04:11:45] INFO: Controller Action: ai_comprehensive_analysis {"controller":"App\\Controller\\AIAnalysisController","action":"ai_comprehensive_analysis","ip":"unknown","user_agent":"unknown","items_analyzed":1,"risk_level":"unknown"}
+[2025-09-25 04:11:45] ERROR: AIAnalysisController::getComprehensiveAnalysis failed: Service unavailable 

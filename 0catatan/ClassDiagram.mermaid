@@ -85,6 +85,8 @@ classDiagram
         +getInventoryStats() array
         +searchItems(string query, array options = []) array
         +validateItemData(array data, bool isCreate = true) array
+        +getItemsByCategory(string categoryId, array options = []) array
+        +getItemsBySupplier(string supplierId, array options = []) array
     }
 
     class IAIService {
@@ -105,6 +107,7 @@ classDiagram
         +optimizeStockLevels(array inventoryData) array
         +generatePurchaseRecommendations(array supplierData) array
         +calculateSafetyStock(array itemHistory) array
+        +analyzeInventoryWithStats(array inventoryData, string analysisType) array
     }
 
     class IInventoryAnalysisService {
@@ -372,15 +375,20 @@ classDiagram
     class BaseController {
         #logger Logger
         #requestData array
+        #testMode bool
+        #lastResponse array|null
         +__construct(Logger logger = null)
+        +enableTestMode() void
+        +setRequestData(array data) void
         #parseRequestData() void
         #getRequestValue(string key, mixed default) mixed
-        #jsonResponse(array data, int statusCode = 200) void
-        #successResponse(array data = [], string message = 'Success', int statusCode = 200) void
-        #errorResponse(string message, array errors = [], int statusCode = 400) void
-        #notFoundResponse(string message = 'Resource not found') void
-        #unauthorizedResponse(string message = 'Unauthorized') void
-        #validationErrorResponse(array errors, string message = 'Validation failed') void
+        #getRequestData() array
+        #jsonResponse(array data, int statusCode = 200) array|null
+        #successResponse(array data = [], string message = 'Success', int statusCode = 200) array|null
+        #errorResponse(string message, array errors = [], int statusCode = 400) array|null
+        #notFoundResponse(string message = 'Resource not found') array|null
+        #unauthorizedResponse(string message = 'Unauthorized') array|null
+        #validationErrorResponse(array errors, string message = 'Validation failed') array|null
         #getAuthUserId() string|null
         #isAuthenticated() bool
         #validateRequiredFields(array fields) array
@@ -430,13 +438,14 @@ classDiagram
         -analysisService InventoryAnalysisService
         -aiService AIService
         +__construct(InventoryAnalysisService analysisService = null, AIService aiService = null, Logger logger = null)
-        +getComprehensiveAnalysis() void
-        +generateWeeklyReport() void
-        +monitorCriticalItems() void
-        +predictInventoryNeeds() void
-        +optimizeInventory() void
-        +analyzeSalesTrends() void
-        +getAIStatus() void
+        +getComprehensiveAnalysis() array|null
+        +generateWeeklyReport() array|null
+        +monitorCriticalItems() array|null
+        +predictInventoryNeeds(int days = null) array|null
+        +optimizeInventory() array|null
+        +analyzeSalesTrends() array|null
+        +getAIStatus() array|null
+        -createMockAnalysisService() InventoryAnalysisService
     }
 
     class ErrorHandler {
@@ -457,7 +466,9 @@ classDiagram
         -routeGroups array
         -notFoundHandler callable
         -currentGroupPrefix string
+        -testMode bool
         +__construct()
+        +enableTestMode() void
         +get(string path, mixed handler) self
         +post(string path, mixed handler) self
         +put(string path, mixed handler) self
@@ -502,6 +513,22 @@ classDiagram
         -request(string method, string url, mixed data, array options) array
         -createStreamContext(string method, mixed data, array options) resource
         -executeRequest(string url, resource context, array options) array
+    }
+
+    class PerformanceBenchmark {
+        -static array benchmarks
+        -static bool enabled
+        +enable() void
+        +disable() void
+        +measure(callable fn, string operation, array context = []) mixed
+        +measureBatch(array operations, bool parallel = false) array
+        +getResults() array
+        +getLatestResult() array|null
+        +clear() void
+        +generateReport() array
+        +meetsThreshold(string operation, float maxDuration, int maxMemory) bool
+        -recordBenchmark(string operation, float duration, int memoryUsed, array context = []) void
+        -measureParallel(array operations) array
     }
 
     class User {

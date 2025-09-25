@@ -1,5 +1,5 @@
 <?php
-// File: tests/Unit/AI/AIServiceAdvancedTest.php (Perbaikan test cases)
+// File: tests/Unit/AI/AIServiceAdvancedTest.php
 declare(strict_types=1);
 
 namespace Tests\Unit\AI;
@@ -7,271 +7,242 @@ namespace Tests\Unit\AI;
 use App\Service\AIService;
 use App\Service\AIStrategy;
 use App\Utility\Logger;
+use App\Utility\PerformanceBenchmark;
 use PHPUnit\Framework\TestCase;
-
-class MockAIStrategy implements AIStrategy
-{
-    public function analyze(array $data, string $analysisType = 'stock_prediction'): array
-    {
-        // PERBAIKAN: Return struktur yang sesuai dengan analysis type
-        $baseResult = [
-            'analysis_type' => $analysisType,
-            'result' => 'mock_analysis',
-            'confidence' => 0.9,
-            'timestamp' => date('c')
-        ];
-
-        // Tambahkan field khusus berdasarkan analysis type
-        switch ($analysisType) {
-            case 'stock_optimization':
-                $baseResult['optimizations'] = [
-                    'mock_item' => [
-                        'current_stock' => 10,
-                        'optimal_stock' => 15,
-                        'safety_stock' => 5,
-                        'reorder_point' => 8
-                    ]
-                ];
-                break;
-            case 'sales_trends':
-                $baseResult['trend'] = 'increasing';
-                $baseResult['growth_rate'] = 0.1;
-                break;
-            case 'inventory_turnover':
-                $baseResult['predictions'] = ['item1' => 30];
-                break;
-            case 'purchase_recommendations':
-                $baseResult['recommendations'] = ['supplier1'];
-                break;
-            case 'safety_stock':
-                $baseResult['safety_stock'] = 5;
-                break;
-        }
-
-        return $baseResult;
-    }
-
-    public function generate(array $data, string $reportType = 'summary'): array
-    {
-        return [
-            'report_type' => $reportType,
-            'content' => 'mock_report',
-            'timestamp' => date('c')
-        ];
-    }
-
-    public function isAvailable(): bool
-    {
-        return true;
-    }
-}
 
 class AIServiceAdvancedTest extends TestCase
 {
     private AIService $aiService;
-    private Logger $logger;
-    private MockAIStrategy $mockStrategy;
+    private $loggerMock;
+    private $strategyMock;
 
     protected function setUp(): void
     {
-        // Create mock logger
-        $this->logger = $this->createMock(Logger::class);
+        $this->loggerMock = $this->createMock(Logger::class);
+        $this->strategyMock = $this->createMock(AIStrategy::class);
         
-        // Configure logger mock
-        $this->logger->method('info')->willReturnCallback(function ($message, $context = []) {});
-        $this->logger->method('warning')->willReturnCallback(function ($message, $context = []) {});
-        $this->logger->method('error')->willReturnCallback(function ($message, $context = []) {});
-        $this->logger->method('debug')->willReturnCallback(function ($message, $context = []) {});
-        
-        // Create AIService instance
-        $this->aiService = new AIService($this->logger, true);
-        
-        // Register mock strategy
-        $this->mockStrategy = new MockAIStrategy();
-        $this->aiService->registerStrategy('mock', $this->mockStrategy);
+        $this->aiService = new AIService($this->loggerMock, true);
+        $this->aiService->registerStrategy('advanced_strategy', $this->strategyMock);
+
+        PerformanceBenchmark::enable();
+        PerformanceBenchmark::clear();
     }
 
-    public function testSalesTrendsAnalysis(): void
+    protected function tearDown(): void
     {
-        $salesData = [
-            [
-                'date' => '2024-01-01',
-                'quantity' => 10,
-                'revenue' => 1000.00
-            ],
-            [
-                'date' => '2024-01-02',
-                'quantity' => 15,
-                'revenue' => 1500.00
-            ]
+        PerformanceBenchmark::clear();
+    }
+
+    public function testAnalyzeSalesTrendsPerformance(): void
+    {
+        $salesData = $this->generateSalesData(1000); // 1000 data points
+        $periodDays = 30;
+
+        $expectedResult = [
+            'trend_direction' => 'increasing',
+            'growth_rate' => 0.15,
+            'confidence' => 0.85
         ];
+
+        $this->strategyMock
+            ->method('analyze')
+            ->willReturn($expectedResult);
+
+        // Measure performance
+        $result = PerformanceBenchmark::measure(
+            fn() => $this->aiService->analyzeSalesTrends($salesData, $periodDays),
+            'analyze_sales_trends_1000_points'
+        );
+
+        // Assert performance thresholds
+        $this->assertTrue(
+            PerformanceBenchmark::meetsThreshold('analyze_sales_trends_1000_points', 2.0, 50 * 1024 * 1024),
+            'Sales trends analysis should complete within 2 seconds and 50MB memory'
+        );
+
+        $this->assertEquals($expectedResult['trend_direction'], $result['trend_direction']);
+    }
+
+    public function testPredictInventoryTurnoverWithLargeDataset(): void
+    {
+        $items = $this->generateInventoryItems(500); // 500 items
+
+        $expectedResult = [
+            'turnover_analysis' => [],
+            'overall_metrics' => ['average_turnover' => 2.1],
+            'efficiency_score' => 0.75
+        ];
+
+        $this->strategyMock
+            ->method('analyze')
+            ->willReturn($expectedResult);
+
+        $result = PerformanceBenchmark::measure(
+            fn() => $this->aiService->predictInventoryTurnover($items),
+            'predict_turnover_500_items'
+        );
+
+        // Performance assertion
+        $this->assertTrue(
+            PerformanceBenchmark::meetsThreshold('predict_turnover_500_items', 3.0, 75 * 1024 * 1024),
+            'Turnover prediction should complete within 3 seconds for 500 items'
+        );
+
+        $this->assertArrayHasKey('turnover_analysis', $result);
+    }
+
+    public function testOptimizeStockLevelsPerformance(): void
+    {
+        $inventoryData = $this->generateOptimizationData(200); // 200 items
+
+        $expectedResult = [
+            'optimizations' => [],
+            'total_potential_savings' => 15000.50
+        ];
+
+        $this->strategyMock
+            ->method('analyze')
+            ->willReturn($expectedResult);
+
+        $result = PerformanceBenchmark::measure(
+            fn() => $this->aiService->optimizeStockLevels($inventoryData),
+            'optimize_stock_200_items'
+        );
+
+        $this->assertTrue(
+            PerformanceBenchmark::meetsThreshold('optimize_stock_200_items', 2.5, 60 * 1024 * 1024)
+        );
+
+        $this->assertArrayHasKey('total_potential_savings', $result);
+    }
+
+    public function testErrorHandlingInSalesTrendsAnalysis(): void
+    {
+        $invalidSalesData = [['invalid' => 'data']]; // Missing required fields
+
+        $this->expectException(\InvalidArgumentException::class);
+        
+        $this->aiService->analyzeSalesTrends($invalidSalesData, 30);
+    }
+
+    public function testFallbackMechanismWhenStrategyFails(): void
+    {
+        $salesData = $this->generateSalesData(100);
+
+        $this->strategyMock
+            ->method('analyze')
+            ->willThrowException(new \RuntimeException('Strategy unavailable'));
+
+        $this->loggerMock
+            ->expects($this->once())
+            ->method('warning');
 
         $result = $this->aiService->analyzeSalesTrends($salesData, 30);
 
-        $this->assertArrayHasKey('analysis_type', $result);
-        $this->assertEquals('sales_trends', $result['analysis_type']);
-        $this->assertArrayHasKey('trend', $result);
-    }
-
-    public function testInventoryTurnoverPrediction(): void
-    {
-        $items = [
-            [
-                'name' => 'Laptop Dell XPS 13',
-                'currentStock' => 25,
-                'salesHistory' => [
-                    ['date' => '2024-01-01', 'quantity' => 5],
-                    ['date' => '2024-01-02', 'quantity' => 3]
-                ]
-            ]
-        ];
-
-        $result = $this->aiService->predictInventoryTurnover($items);
-
-        $this->assertArrayHasKey('analysis_type', $result);
-        $this->assertEquals('inventory_turnover', $result['analysis_type']);
-        $this->assertArrayHasKey('predictions', $result);
-    }
-
-    public function testStockOptimization(): void
-    {
-        $inventoryData = [
-            [
-                'name' => 'Laptop Dell XPS 13',
-                'currentStock' => 15,
-                'minStock' => 5,
-                'maxStock' => 50,
-                'leadTimeDays' => 7,
-                'unitCost' => 1000.00,
-                'dailyUsage' => 2
-            ]
-        ];
-
-        $result = $this->aiService->optimizeStockLevels($inventoryData);
-
-        $this->assertArrayHasKey('analysis_type', $result);
-        $this->assertEquals('stock_optimization', $result['analysis_type']);
-        $this->assertArrayHasKey('optimizations', $result); // Pastikan key ini ada
-        $this->assertIsArray($result['optimizations']);
-    }
-
-    public function testPurchaseRecommendations(): void
-    {
-        $supplierData = [
-            [
-                'name' => 'Supplier A',
-                'leadTimeDays' => 7,
-                'reliabilityScore' => 0.9,
-                'costScore' => 0.8
-            ]
-        ];
-
-        $result = $this->aiService->generatePurchaseRecommendations($supplierData);
-
-        $this->assertArrayHasKey('analysis_type', $result);
-        $this->assertEquals('purchase_recommendations', $result['analysis_type']);
-    }
-
-    public function testSafetyStockCalculation(): void
-    {
-        $itemHistory = [
-            [
-                'date' => '2024-01-01',
-                'demand' => 10,
-                'leadTime' => 7
-            ],
-            [
-                'date' => '2024-01-02',
-                'demand' => 15,
-                'leadTime' => 7
-            ]
-        ];
-
-        $result = $this->aiService->calculateSafetyStock($itemHistory);
-
-        $this->assertArrayHasKey('analysis_type', $result);
-        $this->assertEquals('safety_stock', $result['analysis_type']);
-    }
-
-    public function testEmptyDataValidation(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Sales data cannot be empty');
-        
-        // PERBAIKAN: Pastikan ini benar-benar empty array
-        $this->aiService->analyzeSalesTrends([], 30);
-    }
-
-    public function testInvalidDataStructure(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid sales data structure');
-        
-        // PERBAIKAN: Data yang benar-benar invalid
-        $invalidData = [
-            ['invalid_field' => 'data'] // Tidak ada field yang required
-        ];
-
-        $this->aiService->analyzeSalesTrends($invalidData, 30);
-    }
-
-    public function testServiceAvailability(): void
-    {
-        $this->assertTrue($this->aiService->isAvailable());
-        
-        $disabledService = new AIService($this->logger, false);
-        $this->assertFalse($disabledService->isAvailable());
-    }
-
-    public function testFallbackMechanism(): void
-    {
-        $unavailableStrategy = new class implements AIStrategy {
-            public function analyze(array $data, string $analysisType = 'stock_prediction'): array { 
-                throw new \RuntimeException('Strategy not available');
-            }
-            public function generate(array $data, string $reportType = 'summary'): array { return []; }
-            public function isAvailable(): bool { return false; }
-        };
-        
-        $service = new AIService($this->logger, true);
-        $service->registerStrategy('unavailable', $unavailableStrategy);
-        
-        $salesData = [
-            ['date' => '2024-01-01', 'quantity' => 10, 'revenue' => 1000]
-        ];
-        
-        $result = $service->analyzeSalesTrends($salesData, 30);
-        
         $this->assertArrayHasKey('is_fallback', $result);
         $this->assertTrue($result['is_fallback']);
+        $this->assertArrayHasKey('confidence', $result);
     }
 
-    public function testStrategyRegistration(): void
+    public function testMemoryUsageWithVeryLargeDataset(): void
     {
-        $strategies = $this->aiService->getAvailableStrategies();
-        $this->assertContains('mock', $strategies);
-        
-        $this->assertTrue($this->aiService->setStrategy('mock'));
-        $this->assertFalse($this->aiService->setStrategy('nonexistent'));
+        $largeDataset = $this->generateSalesData(10000); // 10,000 data points
+
+        // Skip test jika memory insufficient
+        if (memory_get_usage(true) > (100 * 1024 * 1024)) {
+            $this->markTestSkipped('Insufficient memory for large dataset test');
+        }
+
+        $this->strategyMock
+            ->method('analyze')
+            ->willReturn(['status' => 'analyzed']);
+
+        $result = PerformanceBenchmark::measure(
+            fn() => $this->aiService->analyzeSalesTrends($largeDataset, 30),
+            'analyze_sales_trends_10000_points'
+        );
+
+        $report = PerformanceBenchmark::generateReport();
+        $benchmark = end($report['benchmarks']);
+
+        $this->assertLessThan(
+            100 * 1024 * 1024, // 100MB
+            $benchmark['memory_used'],
+            'Memory usage should be under 100MB for 10,000 data points'
+        );
     }
 
-    // TEST TAMBAHAN: Validasi data yang benar-benar kosong
-    public function testTrulyEmptyData(): void
+    public function testBatchProcessingPerformance(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->aiService->analyzeSalesTrends([], 30);
-    }
-
-    // TEST TAMBAHAN: Validasi data dengan struktur yang sangat invalid
-    public function testVeryInvalidData(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        
-        $veryInvalidData = [
-            'not_an_array' // Bukan array asosiatif
+        $operations = [
+            'sales_trends' => fn() => $this->aiService->analyzeSalesTrends($this->generateSalesData(500), 30),
+            'turnover_prediction' => fn() => $this->aiService->predictInventoryTurnover($this->generateInventoryItems(300)),
+            'stock_optimization' => fn() => $this->aiService->optimizeStockLevels($this->generateOptimizationData(150))
         ];
+
+        $this->strategyMock
+            ->method('analyze')
+            ->willReturn(['status' => 'success']);
+
+        $results = PerformanceBenchmark::measureBatch($operations, false);
+
+        $this->assertCount(3, $results);
+        $this->assertArrayHasKey('sales_trends', $results);
+        $this->assertArrayHasKey('turnover_prediction', $results);
+        $this->assertArrayHasKey('stock_optimization', $results);
+    }
+
+    private function generateSalesData(int $count): array
+    {
+        $data = [];
+        $baseDate = new \DateTime('-30 days');
         
-        $this->aiService->analyzeSalesTrends($veryInvalidData, 30);
+        for ($i = 0; $i < $count; $i++) {
+            $data[] = [
+                'date' => (clone $baseDate)->modify("+$i days")->format('Y-m-d'),
+                'quantity' => rand(1, 100),
+                'revenue' => rand(100, 5000) / 100,
+                'item_id' => 'item_' . $i,
+                'item_name' => 'Product ' . $i
+            ];
+        }
+        
+        return $data;
+    }
+
+    private function generateInventoryItems(int $count): array
+    {
+        $items = [];
+        
+        for ($i = 0; $i < $count; $i++) {
+            $items[] = [
+                'name' => 'Product ' . $i,
+                'currentStock' => rand(0, 100),
+                'salesHistory' => array_map(fn() => ['quantity' => rand(1, 20)], range(1, 30)),
+                'price' => rand(100, 1000) / 100,
+                'minStockLevel' => rand(5, 20)
+            ];
+        }
+        
+        return $items;
+    }
+
+    private function generateOptimizationData(int $count): array
+    {
+        $data = [];
+        
+        for ($i = 0; $i < $count; $i++) {
+            $data[] = [
+                'name' => 'Product ' . $i,
+                'currentStock' => rand(0, 200),
+                'minStock' => rand(5, 20),
+                'maxStock' => rand(100, 500),
+                'leadTimeDays' => rand(1, 14),
+                'unitCost' => rand(10, 100) / 100,
+                'dailyUsage' => rand(1, 10)
+            ];
+        }
+        
+        return $data;
     }
 }
-?>

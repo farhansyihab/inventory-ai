@@ -146,28 +146,45 @@ class AIAnalysisController extends BaseController
     public function analyzeSalesTrends(): ?array
     {
         try {
-            $requestData = $this->getRequestData();
-            $salesData = $requestData['sales_data'] ?? [];
-            $periodDays = (int) ($requestData['period_days'] ?? 30);
-
+            $this->logAction('analyze_sales_trends');
+            
+            // Get request data
+            $salesData = $this->getRequestValue('sales_data', []);
+            $periodDays = (int) $this->getRequestValue('period_days', 30);
+            
+            // Basic validation
             if (empty($salesData)) {
-                return $this->validationErrorResponse(['sales_data' => 'Sales data is required']);
+                return $this->validationErrorResponse([
+                    'sales_data' => 'Sales data is required and cannot be empty'
+                ]);
             }
-
+            
+            if ($periodDays <= 0 || $periodDays > 365) {
+                return $this->validationErrorResponse([
+                    'period_days' => 'Period days must be between 1 and 365'
+                ]);
+            }
+            
+            // FIX: Call AIService with correct parameters
+            // AIService::analyzeSalesTrends expects two parameters: array $salesData, int $periodDays
             $analysis = $this->aiService->analyzeSalesTrends($salesData, $periodDays);
-
-            $this->logAction('ai_sales_trends_analysis', [
-                'data_points' => count($salesData),
-                'period_days' => $periodDays
-            ]);
-
+            
             return $this->successResponse([
                 'analysis' => $analysis,
-                'period_analyzed' => $periodDays
+                'parameters' => [
+                    'data_points' => count($salesData),
+                    'period_days' => $periodDays
+                ]
             ], 'Sales trends analysis completed');
+            
+        } catch (\InvalidArgumentException $e) {
+            // Handle validation errors from AIService
+            return $this->validationErrorResponse([
+                'sales_data' => $e->getMessage()
+            ]);
         } catch (\Exception $e) {
-            $this->logger->error("AIAnalysisController::analyzeSalesTrends failed: " . $e->getMessage());
-            return $this->errorResponse('Failed to analyze sales trends', [], 500);
+            $this->logger->error('Sales trends analysis failed: ' . $e->getMessage());
+            return $this->errorResponse('Failed to analyze sales trends: ' . $e->getMessage());
         }
     }
 

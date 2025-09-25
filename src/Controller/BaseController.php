@@ -1,4 +1,5 @@
 <?php
+// File: src/Controller/BaseController.php (MINOR MODIFICATION)
 declare(strict_types=1);
 
 namespace App\Controller;
@@ -69,23 +70,38 @@ abstract class BaseController
         return $this->requestData;
     }
 
+// Di src/Controller/BaseController.php - tambahkan jika belum ada
+    // public function getRequestData(): array
+    // {
+    //     return $this->requestData;
+    // }
+
+    // Di src/Controller/BaseController.php - tambahkan method untuk testing
+    public function setRequestData(array $data): void
+    {
+        $this->requestData = $data;
+    }    
+
     /**
      * Kirim JSON response
+     * MODIFICATION: Added test mode handling
      */
     protected function jsonResponse(array $data, int $statusCode = 200): ?array
     {
-        if (!$this->testMode) {
-            http_response_code($statusCode);
-            header('Content-Type: application/json');
-            echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-            exit;
-        } else {
+        if ($this->testMode) {
+            // Test mode: return data tanpa HTTP headers
             $this->lastResponse = [
                 'status_code' => $statusCode,
                 'body' => $data
             ];
             return $data;
         }
+        
+        // Original production code (unchanged)
+        http_response_code($statusCode);
+        header('Content-Type: application/json');
+        echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        exit;
     }
 
     /**
