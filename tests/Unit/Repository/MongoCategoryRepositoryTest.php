@@ -8,7 +8,8 @@ use App\Utility\Logger;
 use MongoDB\BSON\ObjectId;
 use MongoDB\Collection;
 use MongoDB\Database;
-use MongoDB\Driver\Exception\RuntimeException; // ✅ pakai RuntimeException
+use MongoDB\Driver\CursorInterface;
+use MongoDB\Driver\Exception\RuntimeException;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -27,11 +28,6 @@ class MongoCategoryRepositoryTest extends TestCase
         // Mock MongoDB Collection
         $this->mockCollection = $this->createMock(Collection::class);
 
-        // Mock MongoDB Database
-        $this->mockDatabase = $this->createMock(Database::class);
-        $this->mockDatabase->method('selectCollection')
-            ->willReturn($this->mockCollection);
-
         // Create repository instance
         $this->repository = new MongoCategoryRepository($this->logger);
 
@@ -46,12 +42,12 @@ class MongoCategoryRepositoryTest extends TestCase
     {
         $this->mockCollection->expects($this->once())
             ->method('createIndexes')
-            ->willReturn(['slug_1', 'active_1']); // ✅ hasil sederhana
+            ->willReturn(['slug_1', 'active_1']);
 
         $result = $this->repository->createIndexes();
 
         $this->assertIsArray($result);
-        $this->assertContains('slug_1', $result); // ✅ cek isi array
+        $this->assertContains('slug_1', $result);
     }
 
     public function testFindByIdSuccess(): void
@@ -96,7 +92,7 @@ class MongoCategoryRepositoryTest extends TestCase
 
         $this->mockCollection->expects($this->once())
             ->method('findOne')
-            ->willThrowException(new RuntimeException('Connection failed')); // ✅ pakai RuntimeException
+            ->willThrowException(new RuntimeException('Connection failed'));
 
         $this->logger->expects($this->once())
             ->method('error');
@@ -224,15 +220,30 @@ class MongoCategoryRepositoryTest extends TestCase
 
     public function testFindActiveCategories(): void
     {
-        $cursor = new \ArrayIterator([ // ✅ ganti mock Cursor
+        // Create a mock CursorInterface
+        $mockCursor = $this->createMock(CursorInterface::class);
+        
+        // Setup iterator behavior for the cursor
+        $documents = [
             ['_id' => new ObjectId(), 'name' => 'Cat1', 'active' => true],
             ['_id' => new ObjectId(), 'name' => 'Cat2', 'active' => true],
-        ]);
+        ];
+        
+        $mockCursor->expects($this->exactly(3))
+            ->method('valid')
+            ->willReturnOnConsecutiveCalls(true, true, false);
+            
+        $mockCursor->expects($this->exactly(2))
+            ->method('current')
+            ->willReturnOnConsecutiveCalls($documents[0], $documents[1]);
+            
+        $mockCursor->expects($this->exactly(2))
+            ->method('next');
 
         $this->mockCollection->expects($this->once())
             ->method('find')
             ->with(['active' => true], ['sort' => ['name' => 1]])
-            ->willReturn($cursor);
+            ->willReturn($mockCursor);
 
         $result = $this->repository->findActive();
 
@@ -244,14 +255,28 @@ class MongoCategoryRepositoryTest extends TestCase
     {
         $parentId = '507f1f77bcf86cd799439011';
 
-        $cursor = new \ArrayIterator([ // ✅ ganti mock Cursor
+        // Create a mock CursorInterface
+        $mockCursor = $this->createMock(CursorInterface::class);
+        
+        $documents = [
             ['_id' => new ObjectId(), 'name' => 'Child1', 'parentId' => $parentId]
-        ]);
+        ];
+        
+        $mockCursor->expects($this->exactly(2))
+            ->method('valid')
+            ->willReturnOnConsecutiveCalls(true, false);
+            
+        $mockCursor->expects($this->once())
+            ->method('current')
+            ->willReturn($documents[0]);
+            
+        $mockCursor->expects($this->once())
+            ->method('next');
 
         $this->mockCollection->expects($this->once())
             ->method('find')
             ->with(['parentId' => $parentId, 'active' => true], ['sort' => ['name' => 1]])
-            ->willReturn($cursor);
+            ->willReturn($mockCursor);
 
         $result = $this->repository->findByParentId($parentId);
 
@@ -261,14 +286,28 @@ class MongoCategoryRepositoryTest extends TestCase
 
     public function testFindRootCategories(): void
     {
-        $cursor = new \ArrayIterator([ // ✅ ganti mock Cursor
+        // Create a mock CursorInterface
+        $mockCursor = $this->createMock(CursorInterface::class);
+        
+        $documents = [
             ['_id' => new ObjectId(), 'name' => 'Root1', 'parentId' => null]
-        ]);
+        ];
+        
+        $mockCursor->expects($this->exactly(2))
+            ->method('valid')
+            ->willReturnOnConsecutiveCalls(true, false);
+            
+        $mockCursor->expects($this->once())
+            ->method('current')
+            ->willReturn($documents[0]);
+            
+        $mockCursor->expects($this->once())
+            ->method('next');
 
         $this->mockCollection->expects($this->once())
             ->method('find')
             ->with(['parentId' => null, 'active' => true], ['sort' => ['name' => 1]])
-            ->willReturn($cursor);
+            ->willReturn($mockCursor);
 
         $result = $this->repository->findRootCategories();
 
@@ -334,5 +373,39 @@ class MongoCategoryRepositoryTest extends TestCase
         $result = $this->repository->count(['active' => true]);
 
         $this->assertEquals(5, $result);
+    }
+
+    // Helper method untuk membuat mock cursor dengan data
+    private function createMockCursor(array $documents): CursorInterface
+    {
+        $mockCursor = $this->createMock(CursorInterface::class);
+        
+        $iterator = new \ArrayIterator($documents);
+        
+        $mockCursor->expects($this->exactly(count($documents) + 1))
+            ->method('valid')
+            ->willReturnCallback(function() use ($iterator) {
+                return $iterator->valid();
+            });
+            
+        $mockCursor->expects($this->exactly(count($documents)))
+            ->method('current')
+            ->willReturnCallback(function() use ($iterator) {
+                return $iterator->current();
+            });
+            
+        $mockCursor->expects($this->exactly(count($documents)))
+            ->method('next')
+            ->willReturnCallback(function() use ($iterator) {
+                $iterator->next();
+            });
+            
+        $mockCursor->expects($this->once())
+            ->method('rewind')
+            ->willReturnCallback(function() use ($iterator) {
+                $iterator->rewind();
+            });
+
+        return $mockCursor;
     }
 }
