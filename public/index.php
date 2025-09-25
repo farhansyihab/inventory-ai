@@ -50,7 +50,36 @@ $router->group('/api', function ($router) {
     $router->get('/users/{id}', 'App\Controller\UserController@getUser');
     $router->post('/users', 'App\Controller\UserController@createUser');
 
+    // $router->get('/inventory', 'App\Controller\InventoryController@listItems');
+
+    // Tambahkan routes inventory setelah auth routes
     $router->get('/inventory', 'App\Controller\InventoryController@listItems');
+    $router->get('/inventory/{id}', 'App\Controller\InventoryController@getItem');
+    $router->post('/inventory', 'App\Controller\InventoryController@createItem');
+    $router->put('/inventory/{id}', 'App\Controller\InventoryController@updateItem');
+    $router->delete('/inventory/{id}', 'App\Controller\InventoryController@deleteItem');
+    $router->get('/inventory/low-stock', 'App\Controller\InventoryController@getLowStock');
+    $router->get('/inventory/out-of-stock', 'App\Controller\InventoryController@getOutOfStock');
+    $router->get('/inventory/stats', 'App\Controller\InventoryController@getStats');
+    $router->get('/inventory/search', 'App\Controller\InventoryController@searchItems');
+    $router->patch('/inventory/{id}/quantity', 'App\Controller\InventoryController@updateQuantity');    
+
+    // Tambahkan routes authentication setelah health check
+    $router->post('/auth/register', 'App\Controller\AuthController@register');
+    $router->post('/auth/login', 'App\Controller\AuthController@login');
+    $router->post('/auth/refresh', 'App\Controller\AuthController@refreshToken');
+    $router->post('/auth/logout', 'App\Controller\AuthController@logout');
+    $router->get('/auth/profile', 'App\Controller\AuthController@profile');
+    $router->post('/auth/change-password', 'App\Controller\AuthController@changePassword');
+
+    // User management routes
+    $router->get('/users', 'App\Controller\UserController@listUsers');
+    $router->get('/users/{id}', 'App\Controller\UserController@getUser');
+    $router->post('/users', 'App\Controller\UserController@createUser');
+    $router->put('/users/{id}', 'App\Controller\UserController@updateUser');
+    $router->delete('/users/{id}', 'App\Controller\UserController@deleteUser'); 
+    
+    
 });
 
 // 404 handler

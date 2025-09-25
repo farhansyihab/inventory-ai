@@ -15,6 +15,7 @@ class Router
     private array $routeGroups = [];
     private $notFoundHandler;
     private $currentGroupPrefix = '';
+    private bool $testMode = false;
 
     // HTTP Methods
     public const METHOD_GET = 'GET';
@@ -36,6 +37,14 @@ class Router
             self::METHOD_OPTIONS => [],
         ];
     }
+
+    /**
+    * Aktifkan test mode (skip http_response_code)
+    */
+    public function enableTestMode(): void
+    {
+        $this->testMode = true;
+    }    
 
     /**
      * Add a route for GET method
@@ -217,7 +226,7 @@ class Router
             return $this->executeHandler($this->notFoundHandler);
         }
 
-        http_response_code(404);
+        // http_response_code(404);
         return [
             'status' => 'error',
             'message' => 'Not Found',

@@ -1,0 +1,1 @@
+[2025-09-25 03:17:54] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}

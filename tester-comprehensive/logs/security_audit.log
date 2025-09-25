@@ -106,3 +106,165 @@ WARNINGS:
 [2025-09-21 05:16:54] INFO: Total issues: 0 
 [2025-09-21 05:16:54] INFO: Total warnings: 5 
 [2025-09-21 05:16:54] INFO: ⚠️  Security audit completed with warnings 
+[2025-09-21 09:13:16] INFO: Starting security audit... 
+[2025-09-21 09:13:16] INFO: .env file found at: /var/www/html/inventory-ai/.env 
+[2025-09-21 09:13:16] INFO: WARNING [Medium]: Sensitive data pattern found in .env file: /password/i 
+[2025-09-21 09:13:16] INFO: WARNING [Low]: .env file contains placeholder values that need to be updated 
+[2025-09-21 09:13:16] INFO: WARNING [Medium]: MongoDB connection may not be using encryption 
+[2025-09-21 09:13:16] INFO: WARNING [Low]: Error reporting set to show all errors 
+[2025-09-21 09:13:16] INFO: Input validation working correctly: Invalid email format 
+[2025-09-21 09:13:16] INFO: composer.lock file found at: /var/www/html/inventory-ai/composer.lock 
+[2025-09-21 09:13:18] INFO: WARNING [Medium]: Outdated dependencies found 
+[2025-09-21 09:13:18] INFO: Directory not found: /var/www/html/inventory-ai/logs 
+[2025-09-21 09:13:18] INFO: Directory /var/www/html/inventory-ai/vendor has secure permissions: 775 
+[2025-09-21 09:13:18] INFO: Directory /var/www/html/inventory-ai/tester-comprehensive/logs has secure permissions: 775 
+[2025-09-21 09:13:18] INFO: 
+============================================================ 
+[2025-09-21 09:13:18] INFO: SECURITY AUDIT REPORT 
+[2025-09-21 09:13:18] INFO: ============================================================ 
+[2025-09-21 09:13:18] INFO: 
+WARNINGS: 
+[2025-09-21 09:13:18] INFO: [Medium] Sensitive data pattern found in .env file: /password/i 
+[2025-09-21 09:13:18] INFO: [Low] .env file contains placeholder values that need to be updated 
+[2025-09-21 09:13:18] INFO: [Medium] MongoDB connection may not be using encryption 
+[2025-09-21 09:13:18] INFO: [Low] Error reporting set to show all errors 
+[2025-09-21 09:13:18] INFO: [Medium] Outdated dependencies found 
+[2025-09-21 09:13:18] INFO: ============================================================ 
+[2025-09-21 09:13:18] INFO: Total issues: 0 
+[2025-09-21 09:13:18] INFO: Total warnings: 5 
+[2025-09-21 09:13:18] INFO: ⚠️  Security audit completed with warnings 
+[2025-09-21 09:50:15] INFO: Starting security audit... 
+[2025-09-21 09:50:15] INFO: .env file found at: /var/www/html/inventory-ai/.env 
+[2025-09-21 09:50:15] INFO: WARNING [Medium]: Sensitive data pattern found in .env file: /password/i 
+[2025-09-21 09:50:15] INFO: WARNING [Low]: .env file contains placeholder values that need to be updated 
+[2025-09-21 09:50:15] INFO: WARNING [Medium]: MongoDB connection may not be using encryption 
+[2025-09-21 09:50:15] INFO: WARNING [Low]: Error reporting set to show all errors 
+[2025-09-21 09:50:15] INFO: Input validation working correctly: Invalid email format 
+[2025-09-21 09:50:15] INFO: composer.lock file found at: /var/www/html/inventory-ai/composer.lock 
+[2025-09-21 09:50:17] INFO: WARNING [Medium]: Outdated dependencies found 
+[2025-09-21 09:50:17] INFO: Directory not found: /var/www/html/inventory-ai/logs 
+[2025-09-21 09:50:17] INFO: Directory /var/www/html/inventory-ai/vendor has secure permissions: 775 
+[2025-09-21 09:50:17] INFO: Directory /var/www/html/inventory-ai/tester-comprehensive/logs has secure permissions: 775 
+[2025-09-21 09:50:17] INFO: 
+============================================================ 
+[2025-09-21 09:50:17] INFO: SECURITY AUDIT REPORT 
+[2025-09-21 09:50:17] INFO: ============================================================ 
+[2025-09-21 09:50:17] INFO: 
+WARNINGS: 
+[2025-09-21 09:50:17] INFO: [Medium] Sensitive data pattern found in .env file: /password/i 
+[2025-09-21 09:50:17] INFO: [Low] .env file contains placeholder values that need to be updated 
+[2025-09-21 09:50:17] INFO: [Medium] MongoDB connection may not be using encryption 
+[2025-09-21 09:50:17] INFO: [Low] Error reporting set to show all errors 
+[2025-09-21 09:50:17] INFO: [Medium] Outdated dependencies found 
+[2025-09-21 09:50:17] INFO: ============================================================ 
+[2025-09-21 09:50:17] INFO: Total issues: 0 
+[2025-09-21 09:50:17] INFO: Total warnings: 5 
+[2025-09-21 09:50:17] INFO: ⚠️  Security audit completed with warnings 
+[2025-09-21 10:08:56] INFO: Starting security audit... 
+[2025-09-21 10:08:56] INFO: .env file found at: /var/www/html/inventory-ai/.env 
+[2025-09-21 10:08:56] INFO: WARNING [Medium]: Sensitive data pattern found in .env file: /password/i 
+[2025-09-21 10:08:56] INFO: WARNING [Low]: .env file contains placeholder values that need to be updated 
+[2025-09-21 10:08:56] INFO: WARNING [Medium]: MongoDB connection may not be using encryption 
+[2025-09-21 10:08:56] INFO: WARNING [Low]: Error reporting set to show all errors 
+[2025-09-21 10:08:56] INFO: Input validation working correctly: Invalid email format 
+[2025-09-21 10:08:57] INFO: composer.lock file found at: /var/www/html/inventory-ai/composer.lock 
+[2025-09-21 10:08:58] INFO: WARNING [Medium]: Outdated dependencies found 
+[2025-09-21 10:08:58] INFO: Directory not found: /var/www/html/inventory-ai/logs 
+[2025-09-21 10:08:58] INFO: Directory /var/www/html/inventory-ai/vendor has secure permissions: 775 
+[2025-09-21 10:08:58] INFO: Directory /var/www/html/inventory-ai/tester-comprehensive/logs has secure permissions: 775 
+[2025-09-21 10:08:58] INFO: 
+============================================================ 
+[2025-09-21 10:08:58] INFO: SECURITY AUDIT REPORT 
+[2025-09-21 10:08:58] INFO: ============================================================ 
+[2025-09-21 10:08:58] INFO: 
+WARNINGS: 
+[2025-09-21 10:08:58] INFO: [Medium] Sensitive data pattern found in .env file: /password/i 
+[2025-09-21 10:08:58] INFO: [Low] .env file contains placeholder values that need to be updated 
+[2025-09-21 10:08:58] INFO: [Medium] MongoDB connection may not be using encryption 
+[2025-09-21 10:08:58] INFO: [Low] Error reporting set to show all errors 
+[2025-09-21 10:08:58] INFO: [Medium] Outdated dependencies found 
+[2025-09-21 10:08:58] INFO: ============================================================ 
+[2025-09-21 10:08:58] INFO: Total issues: 0 
+[2025-09-21 10:08:58] INFO: Total warnings: 5 
+[2025-09-21 10:08:58] INFO: ⚠️  Security audit completed with warnings 
+[2025-09-24 10:53:07] INFO: Starting security audit... 
+[2025-09-24 10:53:07] INFO: .env file found at: /var/www/html/inventory-ai/.env 
+[2025-09-24 10:53:07] INFO: WARNING [Medium]: Sensitive data pattern found in .env file: /password/i 
+[2025-09-24 10:53:07] INFO: WARNING [Low]: .env file contains placeholder values that need to be updated 
+[2025-09-24 10:53:07] INFO: WARNING [Medium]: MongoDB connection may not be using encryption 
+[2025-09-24 10:53:07] INFO: WARNING [Low]: Error reporting set to show all errors 
+[2025-09-24 10:53:07] INFO: Input validation working correctly: Invalid email format 
+[2025-09-24 10:53:07] INFO: composer.lock file found at: /var/www/html/inventory-ai/composer.lock 
+[2025-09-24 10:53:09] INFO: WARNING [Medium]: Outdated dependencies found 
+[2025-09-24 10:53:09] INFO: Directory not found: /var/www/html/inventory-ai/logs 
+[2025-09-24 10:53:09] INFO: Directory /var/www/html/inventory-ai/vendor has secure permissions: 775 
+[2025-09-24 10:53:09] INFO: Directory /var/www/html/inventory-ai/tester-comprehensive/logs has secure permissions: 775 
+[2025-09-24 10:53:09] INFO: 
+============================================================ 
+[2025-09-24 10:53:09] INFO: SECURITY AUDIT REPORT 
+[2025-09-24 10:53:09] INFO: ============================================================ 
+[2025-09-24 10:53:09] INFO: 
+WARNINGS: 
+[2025-09-24 10:53:09] INFO: [Medium] Sensitive data pattern found in .env file: /password/i 
+[2025-09-24 10:53:09] INFO: [Low] .env file contains placeholder values that need to be updated 
+[2025-09-24 10:53:09] INFO: [Medium] MongoDB connection may not be using encryption 
+[2025-09-24 10:53:09] INFO: [Low] Error reporting set to show all errors 
+[2025-09-24 10:53:09] INFO: [Medium] Outdated dependencies found 
+[2025-09-24 10:53:09] INFO: ============================================================ 
+[2025-09-24 10:53:09] INFO: Total issues: 0 
+[2025-09-24 10:53:09] INFO: Total warnings: 5 
+[2025-09-24 10:53:09] INFO: ⚠️  Security audit completed with warnings 
+[2025-09-25 04:18:52] INFO: Starting security audit... 
+[2025-09-25 04:18:52] INFO: .env file found at: /var/www/html/inventory-ai/.env 
+[2025-09-25 04:18:52] INFO: WARNING [Medium]: Sensitive data pattern found in .env file: /password/i 
+[2025-09-25 04:18:52] INFO: WARNING [Low]: .env file contains placeholder values that need to be updated 
+[2025-09-25 04:18:52] INFO: WARNING [Medium]: MongoDB connection may not be using encryption 
+[2025-09-25 04:18:52] INFO: WARNING [Low]: Error reporting set to show all errors 
+[2025-09-25 04:18:52] INFO: Input validation working correctly: Invalid email format 
+[2025-09-25 04:18:52] INFO: composer.lock file found at: /var/www/html/inventory-ai/composer.lock 
+[2025-09-25 04:18:54] INFO: WARNING [Medium]: Outdated dependencies found 
+[2025-09-25 04:18:54] INFO: Directory /var/www/html/inventory-ai/logs has secure permissions: 755 
+[2025-09-25 04:18:54] INFO: Directory /var/www/html/inventory-ai/vendor has secure permissions: 775 
+[2025-09-25 04:18:54] INFO: Directory /var/www/html/inventory-ai/tester-comprehensive/logs has secure permissions: 775 
+[2025-09-25 04:18:54] INFO: 
+============================================================ 
+[2025-09-25 04:18:54] INFO: SECURITY AUDIT REPORT 
+[2025-09-25 04:18:54] INFO: ============================================================ 
+[2025-09-25 04:18:54] INFO: 
+WARNINGS: 
+[2025-09-25 04:18:54] INFO: [Medium] Sensitive data pattern found in .env file: /password/i 
+[2025-09-25 04:18:54] INFO: [Low] .env file contains placeholder values that need to be updated 
+[2025-09-25 04:18:54] INFO: [Medium] MongoDB connection may not be using encryption 
+[2025-09-25 04:18:54] INFO: [Low] Error reporting set to show all errors 
+[2025-09-25 04:18:54] INFO: [Medium] Outdated dependencies found 
+[2025-09-25 04:18:54] INFO: ============================================================ 
+[2025-09-25 04:18:54] INFO: Total issues: 0 
+[2025-09-25 04:18:54] INFO: Total warnings: 5 
+[2025-09-25 04:18:54] INFO: ⚠️  Security audit completed with warnings 
+[2025-09-25 04:21:00] INFO: Starting security audit... 
+[2025-09-25 04:21:00] INFO: .env file found at: /var/www/html/inventory-ai/.env 
+[2025-09-25 04:21:00] INFO: WARNING [Medium]: Sensitive data pattern found in .env file: /password/i 
+[2025-09-25 04:21:00] INFO: WARNING [Low]: .env file contains placeholder values that need to be updated 
+[2025-09-25 04:21:00] INFO: WARNING [Medium]: MongoDB connection may not be using encryption 
+[2025-09-25 04:21:00] INFO: WARNING [Low]: Error reporting set to show all errors 
+[2025-09-25 04:21:00] INFO: Input validation working correctly: Invalid email format 
+[2025-09-25 04:21:00] INFO: composer.lock file found at: /var/www/html/inventory-ai/composer.lock 
+[2025-09-25 04:21:02] INFO: WARNING [Medium]: Outdated dependencies found 
+[2025-09-25 04:21:02] INFO: Directory /var/www/html/inventory-ai/logs has secure permissions: 755 
+[2025-09-25 04:21:02] INFO: Directory /var/www/html/inventory-ai/vendor has secure permissions: 775 
+[2025-09-25 04:21:02] INFO: Directory /var/www/html/inventory-ai/tester-comprehensive/logs has secure permissions: 775 
+[2025-09-25 04:21:02] INFO: 
+============================================================ 
+[2025-09-25 04:21:02] INFO: SECURITY AUDIT REPORT 
+[2025-09-25 04:21:02] INFO: ============================================================ 
+[2025-09-25 04:21:02] INFO: 
+WARNINGS: 
+[2025-09-25 04:21:02] INFO: [Medium] Sensitive data pattern found in .env file: /password/i 
+[2025-09-25 04:21:02] INFO: [Low] .env file contains placeholder values that need to be updated 
+[2025-09-25 04:21:02] INFO: [Medium] MongoDB connection may not be using encryption 
+[2025-09-25 04:21:02] INFO: [Low] Error reporting set to show all errors 
+[2025-09-25 04:21:02] INFO: [Medium] Outdated dependencies found 
+[2025-09-25 04:21:02] INFO: ============================================================ 
+[2025-09-25 04:21:02] INFO: Total issues: 0 
+[2025-09-25 04:21:02] INFO: Total warnings: 5 
+[2025-09-25 04:21:02] INFO: ⚠️  Security audit completed with warnings 

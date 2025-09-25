@@ -1,10 +1,10 @@
 <?php
+// File: src/Controller/BaseController.php (MINOR MODIFICATION)
 declare(strict_types=1);
 
 namespace App\Controller;
 
 use App\Utility\Logger;
-use Psr\Http\Message\ResponseInterface;
 
 /**
  * Base Controller with common functionality for all controllers
@@ -14,6 +14,12 @@ abstract class BaseController
     protected Logger $logger;
     protected array $requestData = [];
 
+    /** @var bool apakah berjalan dalam PHPUnit test mode */
+    protected bool $testMode = false;
+
+    /** @var array|null menyimpan response terakhir saat test */
+    public ?array $lastResponse = null;
+
     public function __construct(?Logger $logger = null)
     {
         $this->logger = $logger ?? new Logger();
@@ -21,32 +27,35 @@ abstract class BaseController
     }
 
     /**
-     * Parse request data from JSON input or form data
+     * Aktifkan test mode (digunakan di PHPUnit)
+     */
+    public function enableTestMode(): void
+    {
+        $this->testMode = true;
+    }
+
+    /**
+     * Parse request data dari JSON body, form POST, dan query GET
      */
     protected function parseRequestData(): void
     {
         $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
-        
-        // Parse JSON data
+
         if (strpos($contentType, 'application/json') !== false) {
             $jsonInput = file_get_contents('php://input');
             $data = json_decode($jsonInput, true);
-            
             if (json_last_error() === JSON_ERROR_NONE) {
-                $this->requestData = $data;
+                $this->requestData = $data ?? [];
             }
-        } 
-        // Parse form data
-        else {
-            $this->requestData = $_POST;
+        } else {
+            $this->requestData = $_POST ?? [];
         }
 
-        // Merge with query parameters
-        $this->requestData = array_merge($this->requestData, $_GET);
+        $this->requestData = array_merge($this->requestData, $_GET ?? []);
     }
 
     /**
-     * Get request data by key with optional default value
+     * Ambil value dari request
      */
     protected function getRequestValue(string $key, $default = null)
     {
@@ -54,21 +63,51 @@ abstract class BaseController
     }
 
     /**
-     * Send JSON response
+     * Ambil semua request data
      */
-    protected function jsonResponse(array $data, int $statusCode = 200): void
+    protected function getRequestData(): array
     {
+        return $this->requestData;
+    }
+
+// Di src/Controller/BaseController.php - tambahkan jika belum ada
+    // public function getRequestData(): array
+    // {
+    //     return $this->requestData;
+    // }
+
+    // Di src/Controller/BaseController.php - tambahkan method untuk testing
+    public function setRequestData(array $data): void
+    {
+        $this->requestData = $data;
+    }    
+
+    /**
+     * Kirim JSON response
+     * MODIFICATION: Added test mode handling
+     */
+    protected function jsonResponse(array $data, int $statusCode = 200): ?array
+    {
+        if ($this->testMode) {
+            // Test mode: return data tanpa HTTP headers
+            $this->lastResponse = [
+                'status_code' => $statusCode,
+                'body' => $data
+            ];
+            return $data;
+        }
+        
+        // Original production code (unchanged)
         http_response_code($statusCode);
         header('Content-Type: application/json');
-        
         echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         exit;
     }
 
     /**
-     * Send success response
+     * Success response
      */
-    protected function successResponse(array $data = [], string $message = 'Success', int $statusCode = 200): void
+    protected function successResponse(array $data = [], string $message = 'Success', int $statusCode = 200): ?array
     {
         $response = [
             'status' => 'success',
@@ -76,14 +115,13 @@ abstract class BaseController
             'timestamp' => time(),
             'data' => $data
         ];
-
-        $this->jsonResponse($response, $statusCode);
+        return $this->jsonResponse($response, $statusCode);
     }
 
     /**
-     * Send error response
+     * Error response
      */
-    protected function errorResponse(string $message, array $errors = [], int $statusCode = 400): void
+    protected function errorResponse(string $message, array $errors = [], int $statusCode = 400): ?array
     {
         $response = [
             'status' => 'error',
@@ -91,70 +129,65 @@ abstract class BaseController
             'timestamp' => time(),
             'errors' => $errors
         ];
-
-        $this->jsonResponse($response, $statusCode);
+        return $this->jsonResponse($response, $statusCode);
     }
 
     /**
-     * Send not found response
+     * Not found response
      */
-    protected function notFoundResponse(string $message = 'Resource not found'): void
+    protected function notFoundResponse(string $message = 'Resource not found'): ?array
     {
-        $this->errorResponse($message, [], 404);
+        return $this->errorResponse($message, [], 404);
     }
 
     /**
-     * Send unauthorized response
+     * Unauthorized response
      */
-    protected function unauthorizedResponse(string $message = 'Unauthorized'): void
+    protected function unauthorizedResponse(string $message = 'Unauthorized'): ?array
     {
-        $this->errorResponse($message, [], 401);
+        return $this->errorResponse($message, [], 401);
     }
 
     /**
-     * Send validation error response
+     * Validation error response
      */
-    protected function validationErrorResponse(array $errors, string $message = 'Validation failed'): void
+    protected function validationErrorResponse(array $errors, string $message = 'Validation failed'): ?array
     {
-        $this->errorResponse($message, $errors, 422);
+        return $this->errorResponse($message, $errors, 422);
     }
 
     /**
-     * Get authenticated user ID (to be implemented with JWT)
+     * Get authenticated user ID (dummy, implementasi JWT nanti)
      */
     protected function getAuthUserId(): ?string
     {
-        // TODO: Implement JWT authentication
         return null;
     }
 
     /**
-     * Check if user is authenticated
+     * Cek apakah user terautentikasi
      */
     protected function isAuthenticated(): bool
     {
-        // TODO: Implement authentication check
         return $this->getAuthUserId() !== null;
     }
 
     /**
-     * Validate required fields in request data
+     * Validasi field wajib
      */
     protected function validateRequiredFields(array $fields): array
     {
         $errors = [];
-
         foreach ($fields as $field) {
             if (!isset($this->requestData[$field]) || empty($this->requestData[$field])) {
                 $errors[$field] = "The {$field} field is required";
             }
         }
-
         return $errors;
     }
 
     /**
-     * Log controller action
+     * Logging aksi controller
      */
     protected function logAction(string $action, array $context = []): void
     {
@@ -167,12 +200,12 @@ abstract class BaseController
     }
 
     /**
-     * Get pagination parameters from request
+     * Ambil parameter pagination
      */
     protected function getPaginationParams(): array
     {
-        $page = max(1, (int) $this->getRequestValue('page', 1));
-        $limit = max(1, min(100, (int) $this->getRequestValue('limit', 20)));
+        $page = max(1, (int)$this->getRequestValue('page', 1));
+        $limit = max(1, min(100, (int)$this->getRequestValue('limit', 20)));
         $offset = ($page - 1) * $limit;
 
         return [
@@ -183,17 +216,15 @@ abstract class BaseController
     }
 
     /**
-     * Get sorting parameters from request
+     * Ambil parameter sorting
      */
     protected function getSortingParams(): array
     {
         $sortBy = $this->getRequestValue('sort_by', 'createdAt');
         $sortOrder = strtolower($this->getRequestValue('sort_order', 'desc'));
-        
         if (!in_array($sortOrder, ['asc', 'desc'])) {
             $sortOrder = 'desc';
         }
-
         return [
             'sort_by' => $sortBy,
             'sort_order' => $sortOrder

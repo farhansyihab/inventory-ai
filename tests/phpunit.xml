@@ -24,6 +24,13 @@
             <directory>Integration</directory>
             <directory>Functional</directory>
         </testsuite>
+        <!-- Tambahkan dalam section <testsuites> -->
+        <testsuite name="Performance Tests">
+            <directory>Performance</directory>
+        </testsuite>
+        <testsuite name="Error Handling Tests">
+            <directory>Unit/AI</directory>
+        </testsuite>        
     </testsuites>
     
     <coverage>

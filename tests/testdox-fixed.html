@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Test Documentation</title>
+        <style>
+            body {
+                text-rendering: optimizeLegibility;
+                font-family: Source SansSerif Pro, Arial, sans-serif;
+                font-variant-ligatures: common-ligatures;
+                font-kerning: normal;
+                margin-left: 2rem;
+                background-color: #fff;
+                color: #000;
+            }
+
+            body > ul > li {
+                font-size: larger;
+            }
+
+            h2 {
+                font-size: larger;
+                text-decoration-line: underline;
+                text-decoration-thickness: 2px;
+                margin: 0;
+                padding: 0.5rem 0;
+            }
+
+            ul {
+                list-style: none;
+                margin: 0 0 2rem;
+                padding: 0 0 0 1rem;
+                text-indent: -1rem;
+            }
+
+            .success:before {
+                color: #4e9a06;
+                content: '✓';
+                padding-right: 0.5rem;
+            }
+
+            .defect {
+                color: #a40000;
+            }
+
+            .defect:before {
+                color: #a40000;
+                content: '✗';
+                padding-right: 0.5rem;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>AIService Advanced (Tests\Unit\AI\AIServiceAdvanced)</h2>
+        <ul>
+            <li class="success">Analyze sales trends performance</li>
+            <li class="success">Predict inventory turnover with large dataset</li>
+            <li class="success">Optimize stock levels performance</li>
+            <li class="success">Error handling in sales trends analysis</li>
+            <li class="success">Fallback mechanism when strategy fails</li>
+            <li class="success">Memory usage with very large dataset</li>
+            <li class="success">Batch processing performance</li>
+        </ul>
+        <h2>AIService (Tests\Unit\AI\AIService)</h2>
+        <ul>
+            <li class="success">A i service can register strategies</li>
+            <li class="success">A i service can switch strategies</li>
+            <li class="success">Analyze inventory calls active strategy</li>
+            <li class="success">Analyze inventory uses fallback when strategy fails</li>
+            <li class="success">Analyze inventory validates data</li>
+            <li class="success">Generate report calls active strategy</li>
+            <li class="success">Predict stock needs</li>
+            <li class="success">Detect anomalies</li>
+            <li class="success">A i service disabled mode</li>
+        </ul>
+        <h2>Error Handling (Tests\Unit\AI\ErrorHandling)</h2>
+        <ul>
+            <li class="success">Fallback on strategy failure</li>
+            <li class="success">Data validation errors</li>
+            <li class="success">Empty dataset handling</li>
+            <li class="success">Invalid analysis type</li>
+            <li class="success">Memory limit handling</li>
+            <li class="success">Timeout handling</li>
+            <li class="success">Partial failure recovery</li>
+        </ul>
+        <h2>Http Client (Tests\Unit\AI\HttpClient)</h2>
+        <ul>
+            <li class="success">Http client can be initialized</li>
+            <li class="success">Get request returns expected structure</li>
+            <li class="success">Post request with j s o n data</li>
+            <li class="success">Put request</li>
+            <li class="success">Delete request</li>
+            <li class="success">Request with custom headers</li>
+            <li class="success">Request handles 404 error</li>
+            <li class="success">Request handles 500 error</li>
+            <li class="success">Request throws exception on invalid u r l</li>
+            <li class="success">Request includes duration</li>
+            <li class="success">Is url reachable returns true for valid u r l</li>
+            <li class="success">Is url reachable returns false for invalid u r l</li>
+            <li class="success">Set default options</li>
+            <li class="success">J s o n response parsing</li>
+            <li class="success">Non j s o n response handling</li>
+        </ul>
+        <h2>Ollama Strategy (Tests\Unit\AI\OllamaStrategy)</h2>
+        <ul>
+            <li class="success">Ollama strategy can be initialized</li>
+            <li class="success">Analyze inventory calls ollama a p i</li>
+            <li class="success">Analyze inventory handles a p i errors</li>
+            <li class="success">Analyze inventory handles invalid j s o n response</li>
+            <li class="success">Generate report calls ollama a p i</li>
+            <li class="success">Is available returns true when ollama is reachable</li>
+            <li class="success">Is available returns false when ollama is unreachable</li>
+            <li class="success">Is available handles exceptions</li>
+            <li class="success">Analyze validates inventory data</li>
+            <li class="success">Generate validates inventory data</li>
+            <li class="success">Different analysis types</li>
+        </ul>
+        <h2>Mongo DBManager (Tests\Unit\Config\MongoDBManager)</h2>
+        <ul>
+            <li class="success">Get client returns client instance</li>
+            <li class="success">Get database returns database instance</li>
+            <li class="success">Get collection returns collection instance</li>
+            <li class="success">Ping returns true when connected</li>
+            <li class="success">Start session returns session or null</li>
+            <li class="success">Get connection info returns valid array</li>
+            <li class="success">Create indexes returns success</li>
+            <li class="success">Collection exists returns boolean</li>
+            <li class="success">Get server info returns valid data</li>
+            <li class="success">Get server version returns valid data</li>
+            <li class="success">Reset method works</li>
+        </ul>
+        <h2>AIAnalysis Controller (Tests\Unit\Controller\AIAnalysisController)</h2>
+        <ul>
+            <li class="success">Analyze sales trends with valid data</li>
+            <li class="success">Analyze sales trends with missing data</li>
+            <li class="success">Get comprehensive analysis</li>
+            <li class="success">Monitor critical items</li>
+            <li class="success">Predict inventory needs</li>
+            <li class="success">Error handling</li>
+        </ul>
+        <h2>Inventory (Tests\Unit\Model\Inventory)</h2>
+        <ul>
+            <li class="success">Inventory creation with valid data</li>
+            <li class="success">Inventory validation with invalid name</li>
+            <li class="success">Inventory validation with negative quantity</li>
+            <li class="success">Inventory validation with negative price</li>
+            <li class="success">Is low stock</li>
+            <li class="success">Is out of stock</li>
+            <li class="success">Get total value</li>
+            <li class="success">To array conversion</li>
+            <li class="success">To document conversion</li>
+            <li class="success">From document creation</li>
+            <li class="success">Set methods validation</li>
+        </ul>
+        <h2>User (Tests\Unit\Model\User)</h2>
+        <ul>
+            <li class="success">User creation with valid data</li>
+            <li class="success">User validation with invalid email</li>
+            <li class="success">User validation with short username</li>
+            <li class="success">User validation with invalid role</li>
+            <li class="success">User to document conversion</li>
+            <li class="success">User from document creation</li>
+            <li class="success">User role methods</li>
+            <li class="success">User to array conversion</li>
+        </ul>
+        <h2>Inventory Repository (Tests\Unit\Repository\InventoryRepository)</h2>
+        <ul>
+            <li class="success">Create inventory item</li>
+            <li class="success">Find inventory item by id</li>
+            <li class="success">Update inventory item</li>
+            <li class="success">Delete inventory item</li>
+            <li class="success">Find low stock items</li>
+            <li class="success">Find out of stock items</li>
+            <li class="success">Update quantity</li>
+            <li class="success">Count inventory items</li>
+        </ul>
+        <h2>Auth Service (Tests\Unit\Service\AuthService)</h2>
+        <ul>
+            <li class="success">Validate password strength with valid password</li>
+            <li class="success">Validate password strength with weak password</li>
+            <li class="success">Login throws exception with invalid credentials</li>
+            <li class="success">Login success with username</li>
+            <li class="success">Login success with email</li>
+            <li class="success">Login fails with wrong password</li>
+            <li class="success">Logout success</li>
+            <li class="success">Logout failure</li>
+        </ul>
+        <h2>Inventory Analysis Service (Tests\Unit\Service\InventoryAnalysisService)</h2>
+        <ul>
+            <li class="success">Comprehensive analysis</li>
+        </ul>
+        <h2>Inventory Service (Tests\Unit\Service\InventoryService)</h2>
+        <ul>
+            <li class="success">Get item returns item when exists</li>
+            <li class="success">Get item returns null when not found</li>
+            <li class="success">Create item validates required fields</li>
+            <li class="success">Create item successfully</li>
+            <li class="success">Update item validates data</li>
+            <li class="success">Update item throws exception when item not found</li>
+            <li class="success">Delete item returns true when successful</li>
+            <li class="success">Get low stock items</li>
+            <li class="success">Get out of stock items</li>
+            <li class="success">Update item quantity successfully</li>
+            <li class="success">Validate item data with valid data</li>
+            <li class="success">Validate item data with invalid data</li>
+            <li class="success">Search items</li>
+            <li class="success">Get inventory stats</li>
+        </ul>
+        <h2>User Service (Tests\Unit\Service\UserService)</h2>
+        <ul>
+            <li class="success">Find by id returns user when exists</li>
+            <li class="success">Find by id returns null when user not found</li>
+            <li class="success">Find by id throws exception on repository error</li>
+            <li class="success">Create user validates required fields</li>
+            <li class="success">Create user successfully</li>
+            <li class="success">Validate accepts valid data for create</li>
+            <li class="success">Validate rejects invalid data for create</li>
+            <li class="success">Validate accepts partial data for update</li>
+            <li class="success">Find by username returns user when exists</li>
+            <li class="success">Find by email returns user when exists</li>
+            <li class="success">Count returns correct number</li>
+            <li class="success">Delete returns true when successful</li>
+            <li class="success">Update validates data</li>
+            <li class="success">Update throws exception when user not found</li>
+        </ul>
+        <h2>Inventory Analysis Integration (Tests\Integration\AI\InventoryAnalysisIntegration)</h2>
+        <ul>
+            <li class="success">Comprehensive analysis integration</li>
+            <li class="success">Weekly report generation integration</li>
+            <li class="success">Critical items monitoring integration</li>
+            <li class="success">Inventory needs prediction integration</li>
+            <li class="success">Inventory optimization integration</li>
+            <li class="success">Performance with large dataset</li>
+            <li class="success">Error handling and fallbacks</li>
+            <li class="success">Data consistency across analyses</li>
+        </ul>
+        <h2>Mongo DBIntegration (Tests\Integration\Database\MongoDBIntegration)</h2>
+        <ul>
+            <li class="success">Database connection and operations</li>
+            <li class="success">Index creation</li>
+            <li class="success">Bulk operations</li>
+            <li class="success">Aggregation framework</li>
+        </ul>
+    </body>
+</html>

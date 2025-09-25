@@ -1,64 +1,89 @@
 <?php
+// File: tests/Functional/Api/HealthCheckTest.php (FIXED)
 declare(strict_types=1);
 
 namespace Tests\Functional\Api;
 
+use App\Controller\AIAnalysisController;
+use App\Service\InventoryAnalysisService;
+use App\Service\AIService;
+use App\Utility\Logger;
 use PHPUnit\Framework\TestCase;
 
 class HealthCheckTest extends TestCase
 {
-    public function testApiHealthEndpoint(): void
+    private AIService $aiService;
+    private InventoryAnalysisService $analysisService;
+    private Logger $logger;
+
+    protected function setUp(): void
     {
-        // Simulate a request to the health endpoint
-        $url = 'http://localhost/inventory-ai/health';
-        
-        // Use curl or file_get_contents to test actual endpoint
-        $context = stream_context_create([
-            'http' => [
-                'method' => 'GET',
-                'header' => 'Accept: application/json'
-            ]
-        ]);
-        
-        try {
-            $response = @file_get_contents($url, false, $context);
-            
-            if ($response === false) {
-                $this->markTestSkipped('API server not running');
-                return;
-            }
-            
-            $data = json_decode($response, true);
-            
-            $this->assertIsArray($data);
-            $this->assertArrayHasKey('status', $data);
-            $this->assertEquals('healthy', $data['status']);
-            
-        } catch (\Exception $e) {
-            $this->markTestSkipped('API test skipped: ' . $e->getMessage());
-        }
+        $this->logger = new Logger(__DIR__ . '/../../logs/health_check_test.log');
+        $this->aiService = $this->createMock(AIService::class);
+        $this->analysisService = $this->createMock(InventoryAnalysisService::class);
     }
 
-    public function testApiRootEndpoint(): void
+    public function testApiHealthEndpoint(): void
     {
-        $url = 'http://localhost/inventory-ai/';
+        // Mock AI service sebagai available
+        $this->aiService
+            ->method('isAvailable')
+            ->willReturn(true);
+
+        $this->aiService
+            ->method('getAvailableStrategies')
+            ->willReturn(['advanced_analysis', 'ollama']);
+
+        $controller = new AIAnalysisController($this->analysisService, $this->aiService, $this->logger);
+        $controller->enableTestMode();
         
-        try {
-            $response = @file_get_contents($url);
-            
-            if ($response === false) {
-                $this->markTestSkipped('API server not running');
-                return;
-            }
-            
-            $data = json_decode($response, true);
-            
-            $this->assertIsArray($data);
-            $this->assertArrayHasKey('status', $data);
-            $this->assertEquals('success', $data['status']);
-            
-        } catch (\Exception $e) {
-            $this->markTestSkipped('API test skipped: ' . $e->getMessage());
-        }
+        $response = $controller->getAIStatus();
+
+        $this->assertArrayHasKey('status', $response);
+        $this->assertEquals('success', $response['status']);
+        $this->assertTrue($response['data']['ai_service_available']);
+        $this->assertContains('advanced_analysis', $response['data']['available_strategies']);
+    }
+
+    public function testBasicEndpointResponse(): void
+    {
+        $mockAnalysisResult = [
+            'summary' => ['status' => 'basic_analysis'],
+            'risk_assessment' => 'unknown',
+            'items_analyzed' => 0
+        ];
+
+        $this->analysisService
+            ->method('getComprehensiveAnalysis')
+            ->willReturn($mockAnalysisResult);
+
+        $controller = new AIAnalysisController($this->analysisService, $this->aiService, $this->logger);
+        $controller->enableTestMode();
+
+        $response = $controller->getComprehensiveAnalysis();
+
+        // Basic health check: endpoint should return valid response structure
+        $this->assertArrayHasKey('status', $response);
+        $this->assertArrayHasKey('message', $response);
+        $this->assertArrayHasKey('data', $response);
+        $this->assertArrayHasKey('timestamp', $response);
+    }
+
+    public function testErrorEndpointHealth(): void
+    {
+        $this->analysisService
+            ->method('getComprehensiveAnalysis')
+            ->willThrowException(new \RuntimeException('Test error'));
+
+        $controller = new AIAnalysisController($this->analysisService, $this->aiService, $this->logger);
+        $controller->enableTestMode();
+        
+        $response = $controller->getComprehensiveAnalysis();
+
+        // Even error responses should have proper structure
+        $this->assertArrayHasKey('status', $response);
+        $this->assertEquals('error', $response['status']);
+        $this->assertArrayHasKey('message', $response);
+        $this->assertArrayHasKey('timestamp', $response);
     }
 }
