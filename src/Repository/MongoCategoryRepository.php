@@ -28,24 +28,33 @@ class MongoCategoryRepository implements ICategoryRepository
 
     public function createIndexes(): array
     {
-        $indexes = [
-            // Unique index untuk slug
-            ['key' => ['slug' => 1], 'unique' => true],
-            // Index untuk active categories
-            ['key' => ['active' => 1]],
-            // Index untuk parent-child relationships
-            ['key' => ['parentId' => 1]],
-            ['key' => ['depth' => 1}],
-            // Composite index untuk efficient tree queries
-            ['key' => ['parentId' => 1, 'active' => 1]],
-            ['key' => ['path' => 1}],
-            // Index untuk sorting
-            ['key' => ['createdAt' => 1]],
-            ['key' => ['name' => 1]],
-        ];
+        try {
+            $indexes = [
+                ['key' => ['slug' => 1], 'unique' => true, 'name' => 'slug_1'],
+                ['key' => ['active' => 1], 'name' => 'active_1'],
+                ['key' => ['parentId' => 1], 'name' => 'parentId_1'],
+                ['key' => ['depth' => 1], 'name' => 'depth_1'],
+                ['key' => ['parentId' => 1, 'active' => 1], 'name' => 'parentId_active_1'],
+                ['key' => ['path' => 1], 'name' => 'path_1'],
+                ['key' => ['createdAt' => 1], 'name' => 'createdAt_1'],
+                ['key' => ['name' => 1], 'name' => 'name_1'],
+            ];
 
-        return MongoDBManager::createIndexes('categories', $indexes);
+            $result = $this->collection->createIndexes($indexes);
+            
+            // Return array of index names
+            return array_map(function($index) {
+                return $index['name'];
+            }, $indexes);
+            
+        } catch (MongoDBException $e) {
+            $this->logger->error('Category index creation failed', [
+                'exception' => $e->getMessage()
+            ]);
+            return [];
+        }
     }
+
 
     public function findById(string $id): ?array
     {
@@ -67,6 +76,7 @@ class MongoCategoryRepository implements ICategoryRepository
             $cursor = $this->collection->find($filter, $options);
             $results = [];
             
+            // Pastikan cursor diiterasi dengan benar
             foreach ($cursor as $document) {
                 $results[] = $this->documentToArray($document);
             }

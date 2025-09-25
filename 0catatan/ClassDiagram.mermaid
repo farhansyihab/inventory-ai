@@ -13,6 +13,20 @@ classDiagram
         +findOne(array filter = []) array|null
     }
 
+    class ICategoryRepository {
+        <<interface>>
+        +findBySlug(string slug) array|null
+        +findActive() array
+        +findByParentId(string parentId) array
+        +findRootCategories() array
+        +getCategoryTree() array
+        +findByDepth(int depth) array
+        +updatePath(string categoryId, array path, int depth) bool
+        +slugExists(string slug, string excludeId = null) bool
+        +getCategoriesWithCounts() array
+        +bulkUpdateStatus(array categoryIds, bool active) bool
+    }
+
     class IInventoryRepository {
         <<interface>>
         +find(array filter = [], array options = []) array
@@ -142,6 +156,73 @@ classDiagram
         -parseDuplicateError(string mongoMessage) string
     }
 
+    class Category {
+        -id string|null
+        -name string
+        -slug string
+        -description string
+        -active bool
+        -parentId string|null
+        -depth int
+        -path array
+        -createdAt DateTime
+        -updatedAt DateTime
+        +__construct(string name, string slug, string description = '', bool active = true, string parentId = null, string id = null, DateTime createdAt = null, DateTime updatedAt = null)
+        +getId() string|null
+        +getName() string
+        +getSlug() string
+        +getDescription() string
+        +isActive() bool
+        +getParentId() string|null
+        +getDepth() int
+        +getPath() array
+        +getCreatedAt() DateTime
+        +getUpdatedAt() DateTime
+        +setName(string name) void
+        +setSlug(string slug) void
+        +setDescription(string description) void
+        +setActive(bool active) void
+        +setParentId(string parentId) void
+        +setDepth(int depth) void
+        +setPath(array path) void
+        +setUpdatedAt(DateTime updatedAt) void
+        +validate() void
+        +toDocument() array
+        +fromDocument(array document) Category
+        +toArray() array
+        +__toString() string
+        +isRoot() bool
+        +hasChildren() bool
+        +getFullPath() string
+        -parseDate(mixed dateValue) DateTime
+    }
+
+    class MongoCategoryRepository {
+        -collection Collection
+        -logger Logger
+        +__construct(Logger logger = null)
+        +createIndexes() array
+        +findById(string id) array|null
+        +find(array filter = [], array options = []) array
+        +findOne(array filter = []) array|null
+        +create(array data) string
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter = []) int
+        +findBySlug(string slug) array|null
+        +findActive() array
+        +findByParentId(string parentId) array
+        +findRootCategories() array
+        +getCategoryTree() array
+        +findByDepth(int depth) array
+        +updatePath(string categoryId, array path, int depth) bool
+        +slugExists(string slug, string excludeId = null) bool
+        +getCategoriesWithCounts() array
+        +bulkUpdateStatus(array categoryIds, bool active) bool
+        -documentToArray(mixed document) array
+        -normalizeToUTCDateTime(mixed value) UTCDateTime
+    }
+
     class InventoryRepository {
         +__construct(LoggerInterface logger = null)
         +createIndexes() array
@@ -186,6 +267,13 @@ classDiagram
         +findByUsername(string username) array|null
         +findByEmail(string email) array|null
         -convertToArray(array userData) array
+    }
+
+    class CategoryService {
+        +__construct(ICategoryRepository categoryRepo, Logger logger)
+        +createCategory(array data) array
+        +updateCategory(string id, array data) array
+        +getCategoryTree() array
     }
 
     class InventoryService {
@@ -419,6 +507,16 @@ classDiagram
         +deleteUser(string id) void
     }
 
+    class CategoryController {
+        -categoryService CategoryService
+        +__construct(CategoryService categoryService, Logger logger)
+        +listCategories() void
+        +getCategory(string id) void
+        +createCategory() void
+        +updateCategory(string id) void
+        +deleteCategory(string id) void
+    }
+
     class InventoryController {
         -inventoryService InventoryService
         +__construct(InventoryService inventoryService = null, Logger logger = null)
@@ -610,9 +708,12 @@ classDiagram
 
     %% ========== Relationships ==========
     IRepository <|.. UserRepository
+    IRepository <|.. MongoCategoryRepository
     IRepository <|.. InventoryRepository
+    ICategoryRepository <|.. MongoCategoryRepository
     IInventoryRepository <|.. InventoryRepository
     IService <|.. UserService
+    IService <|.. CategoryService
     IService <|.. InventoryService
     IAuthService <|.. AuthService
     IInventoryService <|.. InventoryService
@@ -625,11 +726,15 @@ classDiagram
     AIStrategy <|.. AdvancedAnalysisStrategy
     
     UserRepository --> MongoDBManager : uses
+    MongoCategoryRepository --> MongoDBManager : uses
     InventoryRepository --> MongoDBManager : uses
     MongoTokenRepository --> MongoDBManager : uses
     
     UserService --> UserRepository : depends on
     UserService --> Logger : depends on
+    
+    CategoryService --> ICategoryRepository : depends on
+    CategoryService --> Logger : depends on
     
     InventoryService --> IInventoryRepository : depends on
     InventoryService --> Logger : depends on
@@ -660,6 +765,9 @@ classDiagram
     UserController --> UserService : depends on
     UserController --> BaseController : extends
 
+    CategoryController --> CategoryService : depends on
+    CategoryController --> BaseController : extends
+    
     InventoryController --> InventoryService : depends on
     InventoryController --> BaseController : extends
     
@@ -672,12 +780,6 @@ classDiagram
     ErrorHandler --> LoggerInterface : depends on
 
     %% ========== Planned Components (Belum Diimplementasi) ==========
-    class ICategoryRepository {
-        <<interface>>
-        +findBySlug(string slug) array|null
-        +findActive() array
-    }
-
     class ISupplierRepository {
         <<interface>>
         +findByStatus(string status) array
@@ -688,13 +790,6 @@ classDiagram
         <<interface>>
         +hash(string password) string
         +verify(string password, string hash) bool
-    }
-
-    class CategoryService {
-        +__construct(ICategoryRepository categoryRepo, Logger logger)
-        +createCategory(array data) array
-        +updateCategory(string id, array data) array
-        +getCategoryTree() array
     }
 
     class SupplierService {
@@ -708,16 +803,6 @@ classDiagram
         +__construct(AuditLogRepository auditRepo, Logger logger)
         +logAction(string userId, string action, string resource, string resourceId, array oldData, array newData) bool
         +getAuditTrail(string resourceType, string resourceId, DateTime from, DateTime to) array
-    }
-
-    class CategoryController {
-        -categoryService CategoryService
-        +__construct(CategoryService categoryService, Logger logger)
-        +listCategories() void
-        +getCategory(string id) void
-        +createCategory() void
-        +updateCategory(string id) void
-        +deleteCategory(string id) void
     }
 
     class SupplierController {
@@ -759,16 +844,6 @@ classDiagram
         +validatePassword(string password) array
     }
 
-    class Category {
-        +string id
-        +string name
-        +string slug
-        +string description
-        +bool active
-        +DateTime createdAt
-        +DateTime updatedAt
-    }
-
     class Supplier {
         +string id
         +string name
@@ -793,18 +868,15 @@ classDiagram
     }
 
     %% ========== Future Relationships ==========
-    ICategoryRepository <|.. MongoCategoryRepository
     ISupplierRepository <|.. MongoSupplierRepository
     IHashService <|.. BcryptHashService
     AIStrategy <|.. Phi3Strategy
     AIStrategy <|.. DeepSeekStrategy
 
-    CategoryController --> CategoryService
     SupplierController --> SupplierService
     ReportController --> AIService
     ReportController --> InventoryService
 
-    CategoryService --> ICategoryRepository
     SupplierService --> ISupplierRepository
     AuditLogService --> AuditLogRepository
 
@@ -812,11 +884,9 @@ classDiagram
     Inventory --> Supplier
     AuditLog --> User
 
-    MongoCategoryRepository --> MongoDBManager
     MongoSupplierRepository --> MongoDBManager
     AuditLogRepository --> MongoDBManager
 
-    CategoryService --> Logger
     SupplierService --> Logger
     AuditLogService --> Logger
 
