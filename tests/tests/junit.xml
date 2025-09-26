@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Unit\Service\CategoryServiceTest" file="/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php" tests="14" assertions="9" errors="7" warnings="0" failures="2" skipped="0" time="0.012123">
+    <testcase name="testFindByIdWithValidId" class="Tests\Unit\Service\CategoryServiceTest" classname="Tests.Unit.Service.CategoryServiceTest" file="/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php" line="29" assertions="0" time="0.009258">
+      <error type="Error">Tests\Unit\Service\CategoryServiceTest::testFindByIdWithValidId
+Error: Call to undefined method MongoDB\BSON\ObjectId::isValid()
+
+/var/www/html/inventory-ai/src/Service/CategoryService.php:34
+/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php:42</error>
+    </testcase>
+    <testcase name="testDeleteCategoryWithSubcategories" class="Tests\Unit\Service\CategoryServiceTest" classname="Tests.Unit.Service.CategoryServiceTest" file="/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php" line="138" assertions="1" time="0.000504">
+      <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Unit\Service\CategoryServiceTest::testDeleteCategoryWithSubcategories
+Failed asserting that exception of type "Error" matches expected exception "Exception". Message was: "Call to undefined method MongoDB\BSON\ObjectId::isValid()" at
+/var/www/html/inventory-ai/src/Service/CategoryService.php:215
+/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php:153
+.</failure>
+    </testcase>
+    <testcase name="testGetSubcategories" class="Tests\Unit\Service\CategoryServiceTest" classname="Tests.Unit.Service.CategoryServiceTest" file="/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php" line="179" assertions="0" time="0.000124">
+      <error type="Error">Tests\Unit\Service\CategoryServiceTest::testGetSubcategories
+Error: Call to undefined method MongoDB\BSON\ObjectId::isValid()
+
+/var/www/html/inventory-ai/src/Service/CategoryService.php:323
+/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php:191</error>
+    </testcase>
+    <testcase name="testValidateCategoryData" class="Tests\Unit\Service\CategoryServiceTest" classname="Tests.Unit.Service.CategoryServiceTest" file="/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php" line="196" assertions="1" time="0.000271"/>
+    <testcase name="testSlugExists" class="Tests\Unit\Service\CategoryServiceTest" classname="Tests.Unit.Service.CategoryServiceTest" file="/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php" line="245" assertions="1" time="0.000342"/>
+    <testcase name="testDeleteCategorySuccessfully" class="Tests\Unit\Service\CategoryServiceTest" classname="Tests.Unit.Service.CategoryServiceTest" file="/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php" line="117" assertions="0" time="0.000118">
+      <error type="Error">Tests\Unit\Service\CategoryServiceTest::testDeleteCategorySuccessfully
+Error: Call to undefined method MongoDB\BSON\ObjectId::isValid()
+
+/var/www/html/inventory-ai/src/Service/CategoryService.php:215
+/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php:133</error>
+    </testcase>
+    <testcase name="testCreateCategorySuccessfully" class="Tests\Unit\Service\CategoryServiceTest" classname="Tests.Unit.Service.CategoryServiceTest" file="/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php" line="55" assertions="0" time="0.000263">
+      <error type="Error">Tests\Unit\Service\CategoryServiceTest::testCreateCategorySuccessfully
+Error: Call to undefined method MongoDB\BSON\ObjectId::isValid()
+
+/var/www/html/inventory-ai/src/Service/CategoryService.php:34
+/var/www/html/inventory-ai/src/Service/CategoryService.php:123
+/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php:76</error>
+    </testcase>
+    <testcase name="testFindByIdWithInvalidId" class="Tests\Unit\Service\CategoryServiceTest" classname="Tests.Unit.Service.CategoryServiceTest" file="/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php" line="47" assertions="1" time="0.000170">
+      <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Unit\Service\CategoryServiceTest::testFindByIdWithInvalidId
+Failed asserting that exception of type "Error" matches expected exception "Exception". Message was: "Call to undefined method MongoDB\BSON\ObjectId::isValid()" at
+/var/www/html/inventory-ai/src/Service/CategoryService.php:34
+/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php:52
+.</failure>
+    </testcase>
+    <testcase name="testGetCategoryTree" class="Tests\Unit\Service\CategoryServiceTest" classname="Tests.Unit.Service.CategoryServiceTest" file="/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php" line="156" assertions="1" time="0.000189"/>
+    <testcase name="testCreateCategoryWithExistingSlug" class="Tests\Unit\Service\CategoryServiceTest" classname="Tests.Unit.Service.CategoryServiceTest" file="/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php" line="82" assertions="2" time="0.000390"/>
+    <testcase name="testUpdateCategorySuccessfully" class="Tests\Unit\Service\CategoryServiceTest" classname="Tests.Unit.Service.CategoryServiceTest" file="/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php" line="99" assertions="0" time="0.000214">
+      <error type="Error">Tests\Unit\Service\CategoryServiceTest::testUpdateCategorySuccessfully
+Error: Call to undefined method MongoDB\BSON\ObjectId::isValid()
+
+/var/www/html/inventory-ai/src/Service/CategoryService.php:141
+/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php:112</error>
+    </testcase>
+    <testcase name="testBulkUpdateStatus" class="Tests\Unit\Service\CategoryServiceTest" classname="Tests.Unit.Service.CategoryServiceTest" file="/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php" line="208" assertions="0" time="0.000081">
+      <error type="Error">Tests\Unit\Service\CategoryServiceTest::testBulkUpdateStatus
+Error: Call to undefined method MongoDB\BSON\ObjectId::isValid()
+
+/var/www/html/inventory-ai/src/Service/CategoryService.php:531
+/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php:217</error>
+    </testcase>
+    <testcase name="testCategoryExists" class="Tests\Unit\Service\CategoryServiceTest" classname="Tests.Unit.Service.CategoryServiceTest" file="/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php" line="258" assertions="0" time="0.000069">
+      <error type="Error">Tests\Unit\Service\CategoryServiceTest::testCategoryExists
+Error: Call to undefined method MongoDB\BSON\ObjectId::isValid()
+
+/var/www/html/inventory-ai/src/Service/CategoryService.php:611
+/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php:266</error>
+    </testcase>
+    <testcase name="testGetCategoryStatistics" class="Tests\Unit\Service\CategoryServiceTest" classname="Tests.Unit.Service.CategoryServiceTest" file="/var/www/html/inventory-ai/tests/Unit/Service/CategoryServiceTest.php" line="223" assertions="2" time="0.000129"/>
+  </testsuite>
+</testsuites>

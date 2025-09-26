@@ -1,1 +1,10 @@
 [2025-09-25 03:17:54] INFO: Controller Action: analyze_sales_trends {"controller":"App\\Controller\\AIAnalysisController","action":"analyze_sales_trends","ip":"unknown","user_agent":"unknown"}
+[2025-09-26 02:23:34] INFO: MongoDB client initialized 
+[2025-09-26 02:23:34] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-26 02:23:34] ERROR: MongoDB ping failed {"exception":"No suitable servers found (`serverSelectionTryOnce` set): [TLS handshake failed: Connection timed out calling hello on 'localhost:27017']. Topology type: Single"}
+[2025-09-26 02:47:33] INFO: MongoDB client initialized 
+[2025-09-26 02:47:33] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-26 02:47:33] ERROR: MongoDB ping failed {"exception":"No suitable servers found (`serverSelectionTryOnce` set): [TLS handshake failed: Connection timed out calling hello on 'localhost:27017']. Topology type: Single"}
+[2025-09-26 02:56:45] INFO: MongoDB client initialized 
+[2025-09-26 02:56:45] INFO: MongoDB database selected {"database":"inventory_ai"}
+[2025-09-26 02:56:45] ERROR: MongoDB ping failed {"exception":"No suitable servers found (`serverSelectionTryOnce` set): [TLS handshake failed: Connection timed out calling hello on 'localhost:27017']. Topology type: Single"}
