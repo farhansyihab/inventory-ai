@@ -26,13 +26,33 @@ class CategoryEndpointsTest extends TestCase
 
         // Enable test mode to capture responses instead of outputting
         $this->categoryController->enableTestMode();
+        
+        // Simulate authenticated user for protected endpoints
+        $this->simulateAuthentication();
     }
+
+    private function simulateAuthentication(): void
+    {
+        // Use reflection to set authenticated state
+        $reflection = new \ReflectionClass($this->categoryController);
+        $isAuthenticatedMethod = $reflection->getMethod('isAuthenticated');
+        $isAuthenticatedMethod->setAccessible(true);
+        
+        // Mock the isAuthenticated method to return true
+        $this->categoryController = $this->getMockBuilder(CategoryController::class)
+            ->setConstructorArgs([$this->mockCategoryService, $this->mockLogger])
+            ->onlyMethods(['isAuthenticated'])
+            ->getMock();
+            
+        $this->categoryController->method('isAuthenticated')->willReturn(true);
+        $this->categoryController->enableTestMode();
+    }    
 
     public function testListCategoriesSuccess(): void
     {
         $mockCategories = [
-            ['_id' => '1', 'name' => 'Category 1'],
-            ['_id' => '2', 'name' => 'Category 2']
+            ['_id' => '507f1f77bcf86cd799439011', 'name' => 'Category 1'],
+            ['_id' => '507f1f77bcf86cd799439012', 'name' => 'Category 2']
         ];
 
         $this->mockCategoryService->method('find')
@@ -180,17 +200,33 @@ class CategoryEndpointsTest extends TestCase
 
     public function testBulkUpdateStatus(): void
     {
-        // $this->markTestIncomplete('Bulk update status not fully implemented yet');
+        // Use valid MongoDB ObjectId format
+        $validCategoryIds = [
+            '507f1f77bcf86cd799439011',
+            '507f1f77bcf86cd799439012'
+        ];
+
         $requestData = [
-            'categoryIds' => ['id1', 'id2'],
+            'categoryIds' => $validCategoryIds,
             'active' => true
         ];
 
-        $mockResult = ['success' => true, 'processed' => 2];
+        $mockResult = [
+            'success' => true, 
+            'processed' => count($validCategoryIds),
+            'active' => true
+        ];
 
         $this->mockCategoryService->method('bulkUpdateStatus')
-            ->with(['id1', 'id2'], true)
+            ->with($validCategoryIds, true)
             ->willReturn($mockResult);
+
+        // Mock categoryExists for each category ID validation
+        foreach ($validCategoryIds as $categoryId) {
+            $this->mockCategoryService->method('categoryExists')
+                ->with($categoryId)
+                ->willReturn(true);
+        }
 
         $this->categoryController->setRequestData($requestData);
         $this->categoryController->bulkUpdateStatus();
@@ -198,8 +234,57 @@ class CategoryEndpointsTest extends TestCase
 
         $this->assertTrue($response['success']);
         $this->assertTrue($response['data']['success']);
+        $this->assertEquals(2, $response['data']['processed']);
     }
 
+
+    public function testBulkUpdateStatusWithInvalidIds(): void
+    {
+        $requestData = [
+            'categoryIds' => ['invalid-id-format'],
+            'active' => true
+        ];
+
+        $this->categoryController->setRequestData($requestData);
+        $this->categoryController->bulkUpdateStatus();
+        $response = $this->categoryController->getLastResponse();
+
+        $this->assertFalse($response['success']);
+        $this->assertEquals(400, $response['statusCode']);
+    }
+
+    public function testBulkUpdateStatusWithoutAuthentication(): void
+    {
+        $controller = $this->createUnauthenticatedController();
+        
+        $requestData = [
+            'categoryIds' => ['507f1f77bcf86cd799439011'],
+            'active' => true
+        ];
+
+        $controller->setRequestData($requestData);
+        $controller->bulkUpdateStatus();
+        $response = $controller->getLastResponse();
+
+        // Fix: Should be false when not authenticated
+        $this->assertFalse($response['success']);
+        $this->assertEquals(401, $response['statusCode']);
+        $this->assertStringContainsString('Authentication required', $response['message']);
+    }
+
+    private function createUnauthenticatedController(): CategoryController
+    {
+        $controller = $this->getMockBuilder(CategoryController::class)
+            ->setConstructorArgs([$this->mockCategoryService, $this->mockLogger])
+            ->onlyMethods(['isAuthenticated'])
+            ->getMock();
+            
+        $controller->method('isAuthenticated')->willReturn(false);
+        $controller->enableTestMode();
+        
+        return $controller;
+    }
+        
     public function testGetStatistics(): void
     {
         $mockStats = [
