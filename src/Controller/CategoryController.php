@@ -746,17 +746,28 @@ class CategoryController extends BaseController
     /**
      * Log controller actions
      */
-    private function logAction(string $action, array $context = []): void
-    {
-        $userId = $this->getAuthUserId();
+    // private function logAction(string $action, array $context = []): void
+    // {
+    //     $userId = $this->getAuthUserId();
         
-        $logContext = array_merge([
-            'action' => $action,
-            'userId' => $userId,
-            'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
-            'userAgent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown'
-        ], $context);
+    //     $logContext = array_merge([
+    //         'action' => $action,
+    //         'userId' => $userId,
+    //         'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+    //         'userAgent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown'
+    //     ], $context);
 
-        $this->logger->info("CategoryController: {$action}", $logContext);
+    //     $this->logger->info("CategoryController: {$action}", $logContext);
+    // }
+    protected function logAction(string $action, array $context = []): void
+    {
+        parent::logAction($action, $context);
+
+        // custom logging tambahan kalau perlu
+        $this->logger->info("CategoryController custom log", [
+            'action' => $action,
+            'context' => $context
+        ]);
     }
+
 }

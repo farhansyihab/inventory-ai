@@ -180,6 +180,7 @@ class CategoryEndpointsTest extends TestCase
 
     public function testBulkUpdateStatus(): void
     {
+        // $this->markTestIncomplete('Bulk update status not fully implemented yet');
         $requestData = [
             'categoryIds' => ['id1', 'id2'],
             'active' => true
@@ -233,4 +234,8 @@ class CategoryEndpointsTest extends TestCase
         $this->assertTrue($response['success']);
         $this->assertCount(1, $response['data']['results']);
     }
+
+
+
+
 }

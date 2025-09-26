@@ -8,3 +8,9 @@
 [2025-09-26 02:56:45] INFO: MongoDB client initialized 
 [2025-09-26 02:56:45] INFO: MongoDB database selected {"database":"inventory_ai"}
 [2025-09-26 02:56:45] ERROR: MongoDB ping failed {"exception":"No suitable servers found (`serverSelectionTryOnce` set): [TLS handshake failed: Connection timed out calling hello on 'localhost:27017']. Topology type: Single"}
+[2025-09-26 14:52:06] INFO: CategoryService initialized {"repository":"App\\Repository\\MongoCategoryRepository"}
+[2025-09-26 14:52:06] INFO: CategoryController initialized {"service":"App\\Service\\CategoryService"}
+[2025-09-26 14:52:06] INFO: Controller Action: create_category_started {"controller":"App\\Controller\\CategoryController","action":"create_category_started","ip":"unknown","user_agent":"unknown"}
+[2025-09-26 14:52:06] INFO: CategoryController custom log {"action":"create_category_started","context":[]}
+[2025-09-26 14:52:06] INFO: Controller Action: create_category_error {"controller":"App\\Controller\\CategoryController","action":"create_category_error","ip":"unknown","user_agent":"unknown","error":"http_response_code(): Cannot set response code - headers already sent (output started at /var/www/html/inventory-ai/vendor/phpunit/phpunit/src/Util/Printer.php:104)"}
+[2025-09-26 14:52:06] INFO: CategoryController custom log {"action":"create_category_error","context":{"error":"http_response_code(): Cannot set response code - headers already sent (output started at /var/www/html/inventory-ai/vendor/phpunit/phpunit/src/Util/Printer.php:104)"}}

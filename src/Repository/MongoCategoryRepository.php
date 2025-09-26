@@ -285,6 +285,7 @@ class MongoCategoryRepository implements ICategoryRepository
     public function bulkUpdateStatus(array $categoryIds, bool $active): bool
     {
         try {
+            
             $objectIds = array_map(fn($id) => new ObjectId($id), $categoryIds);
             
             $result = $this->collection->updateMany(
