@@ -31,7 +31,8 @@ class CategoryService implements IService
         try {
             $this->logger->debug('CategoryService: Finding category by ID', ['id' => $id]);
             
-            if (!ObjectId::isValid($id)) {
+            // PERBAIKAN: Gunakan regex validation seperti di Controller
+            if (!preg_match('/^[a-f\d]{24}$/i', $id)) {
                 throw new Exception('Invalid category ID format');
             }
 
@@ -138,7 +139,8 @@ class CategoryService implements IService
                 'data' => $data
             ]);
 
-            if (!ObjectId::isValid($id)) {
+            // PERBAIKAN: Gunakan regex validation seperti di Controller
+            if (!preg_match('/^[a-f\d]{24}$/i', $id)) {
                 throw new Exception('Invalid category ID format');
             }
 
@@ -212,7 +214,8 @@ class CategoryService implements IService
         try {
             $this->logger->info('CategoryService: Deleting category', ['id' => $id]);
 
-            if (!ObjectId::isValid($id)) {
+            // PERBAIKAN: Gunakan regex validation seperti di Controller
+            if (!preg_match('/^[a-f\d]{24}$/i', $id)) {
                 throw new Exception('Invalid category ID format');
             }
 
@@ -320,7 +323,8 @@ class CategoryService implements IService
         try {
             $this->logger->debug('CategoryService: Getting subcategories', ['parentId' => $parentId]);
 
-            if (!ObjectId::isValid($parentId)) {
+            // PERBAIKAN: Gunakan regex validation seperti di Controller
+            if (!preg_match('/^[a-f\d]{24}$/i', $parentId)) {
                 throw new Exception('Invalid parent category ID format');
             }
 
@@ -366,7 +370,8 @@ class CategoryService implements IService
         try {
             $this->logger->debug('CategoryService: Getting category path', ['categoryId' => $categoryId]);
 
-            if (!ObjectId::isValid($categoryId)) {
+            // PERBAIKAN: Gunakan regex validation seperti di Controller
+            if (!preg_match('/^[a-f\d]{24}$/i', $categoryId)) {
                 throw new Exception('Invalid category ID format');
             }
 
@@ -406,7 +411,8 @@ class CategoryService implements IService
                 'newParentId' => $newParentId
             ]);
 
-            if (!ObjectId::isValid($categoryId) || !ObjectId::isValid($newParentId)) {
+            // PERBAIKAN: Gunakan regex validation seperti di Controller
+            if (!preg_match('/^[a-f\d]{24}$/i', $categoryId) || !preg_match('/^[a-f\d]{24}$/i', $newParentId)) {
                 throw new Exception('Invalid category ID format');
             }
 
@@ -507,7 +513,8 @@ class CategoryService implements IService
 
         // Parent ID validation
         if (isset($data['parentId']) && !empty($data['parentId'])) {
-            if (!ObjectId::isValid($data['parentId'])) {
+            // PERBAIKAN: Gunakan regex validation seperti di Controller
+            if (!preg_match('/^[a-f\d]{24}$/i', $data['parentId'])) {
                 $errors[] = 'Invalid parent category ID format';
             }
         }
@@ -528,7 +535,8 @@ class CategoryService implements IService
 
             // Validate category IDs
             foreach ($categoryIds as $categoryId) {
-                if (!ObjectId::isValid($categoryId)) {
+                // PERBAIKAN: Gunakan regex validation seperti di Controller
+                if (!preg_match('/^[a-f\d]{24}$/i', $categoryId)) {
                     throw new Exception("Invalid category ID format: {$categoryId}");
                 }
             }
@@ -608,7 +616,8 @@ class CategoryService implements IService
     public function categoryExists(string $id): bool
     {
         try {
-            if (!ObjectId::isValid($id)) {
+            // PERBAIKAN: Gunakan regex validation seperti di Controller
+            if (!preg_match('/^[a-f\d]{24}$/i', $id)) {
                 return false;
             }
             return $this->findById($id) !== null;

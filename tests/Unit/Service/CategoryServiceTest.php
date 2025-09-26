@@ -207,7 +207,12 @@ class CategoryServiceTest extends TestCase
 
     public function testBulkUpdateStatus(): void
     {
-        $categoryIds = ['id1', 'id2', 'id3'];
+        // PERBAIKAN: Gunakan ObjectId yang valid (24 karakter hex)
+        $categoryIds = [
+            '507f1f77bcf86cd799439011',
+            '507f1f77bcf86cd799439012', 
+            '507f1f77bcf86cd799439013'
+        ];
         $active = true;
 
         $this->mockCategoryRepo->method('bulkUpdateStatus')
