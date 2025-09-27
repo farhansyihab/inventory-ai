@@ -27,22 +27,6 @@ classDiagram
         +bulkUpdateStatus(array categoryIds, bool active) bool
     }
 
-    class IInventoryRepository {
-        <<interface>>
-        +find(array filter = [], array options = []) array
-        +findById(string id) array|null
-        +findOne(array filter = []) array|null
-        +create(array data) string
-        +update(string id, array data) bool
-        +delete(string id) bool
-        +count(array filter = []) int
-        +findLowStock(int threshold = 0) array
-        +findOutOfStock() array
-        +updateQuantity(string id, int quantityChange) bool
-        +getStats() array
-        +aggregate(array pipeline) array
-    }
-
     class IService {
         <<interface>>
         +findById(string id) array|null
@@ -55,107 +39,7 @@ classDiagram
         +findOne(array filter = []) array|null
     }
 
-    class IAuthService {
-        <<interface>>
-        +register(array userData) array
-        +login(string username, string password) array
-        +refreshToken(string refreshToken) array
-        +logout(string refreshToken) bool
-        +verifyCredentials(string username, string password) array|false
-        +changePassword(string userId, string currentPassword, string newPassword) bool
-    }
-
-    class ITokenService {
-        <<interface>>
-        +generateAccessToken(array user) string
-        +generateRefreshToken(array user) string
-        +verifyAccessToken(string token) array|false
-        +verifyRefreshToken(string token) array|false
-        +revokeRefreshToken(string token) bool
-        +isRefreshTokenRevoked(string token) bool
-        +getAccessTokenExpiry() int
-        +getRefreshTokenExpiry() int
-    }
-
-    class ITokenRepository {
-        <<interface>>
-        +storeRefreshToken(string tokenHash, string userId, DateTime expiresAt) bool
-        +revokeRefreshToken(string tokenHash) bool
-        +isRefreshTokenRevoked(string tokenHash) bool
-        +findRefreshToken(string tokenHash) array|null
-        +cleanupExpiredTokens() int
-    }
-
-    class IInventoryService {
-        <<interface>>
-        +getItem(string id) array|null
-        +listItems(array filter = [], array options = []) array
-        +createItem(array data) array
-        +updateItem(string id, array data) array
-        +deleteItem(string id) bool
-        +getLowStockItems(int threshold = 0) array
-        +getOutOfStockItems() array
-        +updateItemQuantity(string id, int quantityChange) array
-        +getInventoryStats() array
-        +searchItems(string query, array options = []) array
-        +validateItemData(array data, bool isCreate = true) array
-        +getItemsByCategory(string categoryId, array options = []) array
-        +getItemsBySupplier(string supplierId, array options = []) array
-    }
-
-    class IAIService {
-        <<interface>>
-        +analyzeInventory(array inventoryData, string analysisType) array
-        +generateReport(array inventoryData, string reportType) array
-        +predictStockNeeds(array items, int forecastDays) array
-        +detectAnomalies(array inventoryData) array
-        +setStrategy(string strategyName) bool
-        +getAvailableStrategies() array
-        +isAvailable() bool
-    }
-
-    class IAdvancedAIService {
-        <<interface>>
-        +analyzeSalesTrends(array salesData, int periodDays) array
-        +predictInventoryTurnover(array items) array
-        +optimizeStockLevels(array inventoryData) array
-        +generatePurchaseRecommendations(array supplierData) array
-        +calculateSafetyStock(array itemHistory) array
-        +analyzeInventoryWithStats(array inventoryData, string analysisType) array
-    }
-
-    class IInventoryAnalysisService {
-        <<interface>>
-        +getComprehensiveAnalysis(array options) array
-        +generateWeeklyReport() array
-        +monitorCriticalItems() array
-        +predictInventoryNeeds(int forecastDays) array
-        +optimizeInventory() array
-    }
-
-    class AIStrategy {
-        <<interface>>
-        +analyze(array data, string analysisType) array
-        +generate(array data, string reportType) array
-        +isAvailable() bool
-    }
-
-    %% ========== Concrete Implementations ==========
-    class UserRepository {
-        +__construct(Collection collection = null, LoggerInterface logger = null)
-        +findUserById(string id) User|null
-        +findUserByUsername(string username) User|null
-        +findUserByEmail(string email) User|null
-        +saveUser(User user) string
-        +deleteUser(User user) bool
-        +usernameExists(string username) bool
-        +emailExists(string email) bool
-        +createIndexes() array
-        -documentToArray(mixed document) array
-        -normalizeToUTCDateTime(mixed value) UTCDateTime
-        -parseDuplicateError(string mongoMessage) string
-    }
-
+    %% ========== Concrete Implementations (UPDATED) ==========
     class Category {
         -id string|null
         -name string
@@ -223,20 +107,81 @@ classDiagram
         -normalizeToUTCDateTime(mixed value) UTCDateTime
     }
 
-    class InventoryRepository {
-        +__construct(LoggerInterface logger = null)
-        +createIndexes() array
-        -documentToArray(mixed document) array
-        -normalizeToUTCDateTime(mixed value) UTCDateTime
+    class CategoryService {
+        -categoryRepo ICategoryRepository
+        -logger Logger
+        +__construct(ICategoryRepository categoryRepo, Logger logger)
+        +findById(string id) array|null
+        +find(array filter = [], array options = []) array
+        +create(array data) array
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter = []) int
+        +validate(array data) bool
+        +findOne(array filter = []) array|null
+        +getCategoryTree() array
+        +getSubcategories(string parentId) array
+        +getRootCategories() array
+        +getCategoryPath(string categoryId) array
+        +moveCategory(string categoryId, string newParentId) array
+        +validateCategoryData(array data, bool isUpdate = false) array
+        +bulkUpdateStatus(array categoryIds, bool active) array
+        +getCategoryStatistics() array
+        +categoryExists(string id) bool
+        +slugExists(string slug, string excludeId = null) bool
+        +findBySlug(string slug) array|null
+        -updateCategoryTree(string categoryId) void
     }
 
-    class MongoTokenRepository {
+    class BaseController {
+        #logger Logger
+        #requestData array
+        #testMode bool
+        #lastResponse array|null
         +__construct(Logger logger = null)
-        +storeRefreshToken(string tokenHash, string userId, DateTime expiresAt) bool
-        +revokeRefreshToken(string tokenHash) bool
-        +isRefreshTokenRevoked(string tokenHash) bool
-        +findRefreshToken(string tokenHash) array|null
-        +cleanupExpiredTokens() int
+        +enableTestMode() void
+        +setRequestData(array data) void
+        #parseRequestData() void
+        #getRequestValue(string key, mixed default) mixed
+        #getRequestData() array
+        #jsonResponse(array data, int statusCode = 200) array|null
+        #successResponse(array data = [], string message = 'Success', int statusCode = 200) array|null
+        #errorResponse(string message, array errors = [], int statusCode = 400) array|null
+        #notFoundResponse(string message = 'Resource not found') array|null
+        #unauthorizedResponse(string message = 'Unauthorized') array|null
+        #validationErrorResponse(array errors, string message = 'Validation failed') array|null
+        #getAuthUserId() string|null
+        #isAuthenticated() bool
+        #validateRequiredFields(array fields) array
+        #logAction(string action, array context = []) void
+        #getPaginationParams() array
+        #getSortingParams() array
+        +buildTestResponse(array data = [], int statusCode = 200, bool success = true, string message = '') array
+        +getLastResponse() array
+    }
+
+    class CategoryController {
+        -categoryService CategoryService
+        +__construct(CategoryService categoryService, Logger logger)
+        +listCategories() void
+        +getCategory(string id) void
+        +getCategoryBySlug(string slug) void
+        +createCategory() void
+        +updateCategory(string id) void
+        +deleteCategory(string id) void
+        +getCategoryTree() void
+        +getSubcategories(string id) void
+        +getRootCategories() void
+        +getCategoryPath(string id) void
+        +moveCategory(string id) void
+        +bulkUpdateStatus() void
+        +getStatistics() void
+        +searchCategories() void
+        -validateCategoryId(string id) void
+        -validateCreateCategoryData(array data) array
+        -validateUpdateCategoryData(array data) array
+        -buildFilterFromRequest() array
+        -logAction(string action, array context = []) void
     }
 
     class MongoDBManager {
@@ -262,18 +207,197 @@ classDiagram
         +setLogger(LoggerInterface logger) void
     }
 
+    class Logger {
+        -logFile string
+        -defaultLevel string
+        +__construct(string logFile = null, string defaultLevel = 'INFO')
+        +log(mixed level, string|Stringable message, array context = []) void
+        +debug(string|Stringable message, array context = []) void
+        +info(string|Stringable message, array context = []) void
+        +error(string|Stringable message, array context = []) void
+        +warning(string|Stringable message, array context = []) void
+        +getLogFile() string
+    }
+
+    %% ========== NEWLY IMPLEMENTED COMPONENTS ==========
+    class Router {
+        -routes array
+        -routeGroups array
+        -notFoundHandler callable
+        -currentGroupPrefix string
+        -testMode bool
+        +__construct()
+        +enableTestMode() void
+        +get(string path, mixed handler) self
+        +post(string path, mixed handler) self
+        +put(string path, mixed handler) self
+        +delete(string path, mixed handler) self
+        +patch(string path, mixed handler) self
+        +options(string path, mixed handler) self
+        +any(string path, mixed handler) self
+        +addRoute(string method, string path, mixed handler) self
+        +group(string prefix, callable callback) self
+        +setNotFoundHandler(callable handler) self
+        +dispatch(string method, string path) mixed
+        -executeHandler(mixed handler, array params = []) mixed
+        -matchRoute(string routePath, string requestPath, array& params) bool
+        -handleNotFound() mixed
+        -normalizePath(string path) string
+        +getRoutes() array
+        +clearRoutes() void
+    }
+
+    %% ========== Relationships (UPDATED) ==========
+    IRepository <|.. MongoCategoryRepository
+    ICategoryRepository <|.. MongoCategoryRepository
+    IService <|.. CategoryService
+    
+    MongoCategoryRepository --> MongoDBManager : uses
+    CategoryService --> ICategoryRepository : depends on
+    CategoryService --> Logger : depends on
+    CategoryController --> CategoryService : depends on
+    CategoryController --> BaseController : extends
+    BaseController --> Logger : depends on
+
+    %% ========== Planned Components (Tetap Dipertahankan) ==========
+    class IInventoryRepository {
+        <<interface>>
+        +find(array filter = [], array options = []) array
+        +findById(string id) array|null
+        +findOne(array filter = []) array|null
+        +create(array data) string
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter = []) int
+        +findLowStock(int threshold = 0) array
+        +findOutOfStock() array
+        +updateQuantity(string id, int quantityChange) bool
+        +getStats() array
+        +aggregate(array pipeline) array
+    }
+
+    class IAuthService {
+        <<interface>>
+        +register(array userData) array
+        +login(string username, string password) array
+        +refreshToken(string refreshToken) array
+        +logout(string refreshToken) bool
+        +verifyCredentials(string username, string password) array|false
+        +changePassword(string userId, string currentPassword, string newPassword) bool
+    }
+
+    class ITokenService {
+        <<interface>>
+        +generateAccessToken(array user) string
+        +generateRefreshToken(array user) string
+        +verifyAccessToken(string token) array|false
+        +verifyRefreshToken(string token) array|false
+        +revokeRefreshToken(string token) bool
+        +isRefreshTokenRevoked(string token) bool
+        +getAccessTokenExpiry() int
+        +getRefreshTokenExpiry() int
+    }
+
+    class IInventoryService {
+        <<interface>>
+        +getItem(string id) array|null
+        +listItems(array filter = [], array options = []) array
+        +createItem(array data) array
+        +updateItem(string id, array data) array
+        +deleteItem(string id) bool
+        +getLowStockItems(int threshold = 0) array
+        +getOutOfStockItems() array
+        +updateItemQuantity(string id, int quantityChange) array
+        +getInventoryStats() array
+        +searchItems(string query, array options = []) array
+        +validateItemData(array data, bool isCreate = true) array
+        +getItemsByCategory(string categoryId, array options = []) array
+        +getItemsBySupplier(string supplierId, array options = []) array
+    }
+
+    class IAIService {
+        <<interface>>
+        +analyzeInventory(array inventoryData, string analysisType) array
+        +generateReport(array inventoryData, string reportType) array
+        +predictStockNeeds(array items, int forecastDays) array
+        +detectAnomalies(array inventoryData) array
+        +setStrategy(string strategyName) bool
+        +getAvailableStrategies() array
+        +isAvailable() bool
+    }
+
+    class IAdvancedAIService {
+        <<interface>>
+        +analyzeSalesTrends(array salesData, int periodDays) array
+        +predictInventoryTurnover(array items) array
+        +optimizeStockLevels(array inventoryData) array
+        +generatePurchaseRecommendations(array supplierData) array
+        +calculateSafetyStock(array itemHistory) array
+        +analyzeInventoryWithStats(array inventoryData, string analysisType) array
+    }
+
+    class IInventoryAnalysisService {
+        <<interface>>
+        +getComprehensiveAnalysis(array options) array
+        +generateWeeklyReport() array
+        +monitorCriticalItems() array
+        +predictInventoryNeeds(int forecastDays) array
+        +optimizeInventory() array
+    }
+
+    class AIStrategy {
+        <<interface>>
+        +analyze(array data, string analysisType) array
+        +generate(array data, string reportType) array
+        +isAvailable() bool
+    }
+
+    class ITokenRepository {
+        <<interface>>
+        +storeRefreshToken(string tokenHash, string userId, DateTime expiresAt) bool
+        +revokeRefreshToken(string tokenHash) bool
+        +isRefreshTokenRevoked(string tokenHash) bool
+        +findRefreshToken(string tokenHash) array|null
+        +cleanupExpiredTokens() int
+    }
+
+    %% ========== Future Concrete Implementations ==========
+    class UserRepository {
+        +__construct(Collection collection = null, LoggerInterface logger = null)
+        +findUserById(string id) User|null
+        +findUserByUsername(string username) User|null
+        +findUserByEmail(string email) User|null
+        +saveUser(User user) string
+        +deleteUser(User user) bool
+        +usernameExists(string username) bool
+        +emailExists(string email) bool
+        +createIndexes() array
+        -documentToArray(mixed document) array
+        -normalizeToUTCDateTime(mixed value) UTCDateTime
+        -parseDuplicateError(string mongoMessage) string
+    }
+
+    class InventoryRepository {
+        +__construct(LoggerInterface logger = null)
+        +createIndexes() array
+        -documentToArray(mixed document) array
+        -normalizeToUTCDateTime(mixed value) UTCDateTime
+    }
+
+    class MongoTokenRepository {
+        +__construct(Logger logger = null)
+        +storeRefreshToken(string tokenHash, string userId, DateTime expiresAt) bool
+        +revokeRefreshToken(string tokenHash) bool
+        +isRefreshTokenRevoked(string tokenHash) bool
+        +findRefreshToken(string tokenHash) array|null
+        +cleanupExpiredTokens() int
+    }
+
     class UserService {
         +__construct(UserRepository userRepository, Logger logger)
         +findByUsername(string username) array|null
         +findByEmail(string email) array|null
         -convertToArray(array userData) array
-    }
-
-    class CategoryService {
-        +__construct(ICategoryRepository categoryRepo, Logger logger)
-        +createCategory(array data) array
-        +updateCategory(string id, array data) array
-        +getCategoryTree() array
     }
 
     class InventoryService {
@@ -460,31 +584,6 @@ classDiagram
         +getSummary() string
     }
 
-    class BaseController {
-        #logger Logger
-        #requestData array
-        #testMode bool
-        #lastResponse array|null
-        +__construct(Logger logger = null)
-        +enableTestMode() void
-        +setRequestData(array data) void
-        #parseRequestData() void
-        #getRequestValue(string key, mixed default) mixed
-        #getRequestData() array
-        #jsonResponse(array data, int statusCode = 200) array|null
-        #successResponse(array data = [], string message = 'Success', int statusCode = 200) array|null
-        #errorResponse(string message, array errors = [], int statusCode = 400) array|null
-        #notFoundResponse(string message = 'Resource not found') array|null
-        #unauthorizedResponse(string message = 'Unauthorized') array|null
-        #validationErrorResponse(array errors, string message = 'Validation failed') array|null
-        #getAuthUserId() string|null
-        #isAuthenticated() bool
-        #validateRequiredFields(array fields) array
-        #logAction(string action, array context = []) void
-        #getPaginationParams() array
-        #getSortingParams() array
-    }
-
     class AuthController {
         -authService AuthService
         -userService UserService
@@ -505,16 +604,6 @@ classDiagram
         +createUser() void
         +updateUser(string id) void
         +deleteUser(string id) void
-    }
-
-    class CategoryController {
-        -categoryService CategoryService
-        +__construct(CategoryService categoryService, Logger logger)
-        +listCategories() void
-        +getCategory(string id) void
-        +createCategory() void
-        +updateCategory(string id) void
-        +deleteCategory(string id) void
     }
 
     class InventoryController {
@@ -557,45 +646,6 @@ classDiagram
         -sendErrorResponse(Throwable exception) void
         -getErrorType(int errno) string
         +setDisplayErrors(bool displayErrors) void
-    }
-
-    class Router {
-        -routes array
-        -routeGroups array
-        -notFoundHandler callable
-        -currentGroupPrefix string
-        -testMode bool
-        +__construct()
-        +enableTestMode() void
-        +get(string path, mixed handler) self
-        +post(string path, mixed handler) self
-        +put(string path, mixed handler) self
-        +delete(string path, mixed handler) self
-        +patch(string path, mixed handler) self
-        +options(string path, mixed handler) self
-        +any(string path, mixed handler) self
-        +addRoute(string method, string path, mixed handler) self
-        +group(string prefix, callable callback) self
-        +setNotFoundHandler(callable handler) self
-        +dispatch(string method, string path) mixed
-        -executeHandler(mixed handler, array params = []) mixed
-        -matchRoute(string routePath, string requestPath, array& params) bool
-        -handleNotFound() mixed
-        -normalizePath(string path) string
-        +getRoutes() array
-        +clearRoutes() void
-    }
-
-    class Logger {
-        -logFile string
-        -defaultLevel string
-        +__construct(string logFile = null, string defaultLevel = 'INFO')
-        +log(mixed level, string|Stringable message, array context = []) void
-        +debug(string|Stringable message, array context = []) void
-        +info(string|Stringable message, array context = []) void
-        +error(string|Stringable message, array context = []) void
-        +warning(string|Stringable message, array context = []) void
-        +getLogFile() string
     }
 
     class HttpClient {
@@ -706,79 +756,6 @@ classDiagram
         +toArray() array
     }
 
-    %% ========== Relationships ==========
-    IRepository <|.. UserRepository
-    IRepository <|.. MongoCategoryRepository
-    IRepository <|.. InventoryRepository
-    ICategoryRepository <|.. MongoCategoryRepository
-    IInventoryRepository <|.. InventoryRepository
-    IService <|.. UserService
-    IService <|.. CategoryService
-    IService <|.. InventoryService
-    IAuthService <|.. AuthService
-    IInventoryService <|.. InventoryService
-    ITokenService <|.. JwtTokenService
-    ITokenRepository <|.. MongoTokenRepository
-    IAIService <|.. AIService
-    IAdvancedAIService <|.. AIService
-    IInventoryAnalysisService <|.. InventoryAnalysisService
-    AIStrategy <|.. OllamaStrategy
-    AIStrategy <|.. AdvancedAnalysisStrategy
-    
-    UserRepository --> MongoDBManager : uses
-    MongoCategoryRepository --> MongoDBManager : uses
-    InventoryRepository --> MongoDBManager : uses
-    MongoTokenRepository --> MongoDBManager : uses
-    
-    UserService --> UserRepository : depends on
-    UserService --> Logger : depends on
-    
-    CategoryService --> ICategoryRepository : depends on
-    CategoryService --> Logger : depends on
-    
-    InventoryService --> IInventoryRepository : depends on
-    InventoryService --> Logger : depends on
-    
-    AuthService --> UserService : depends on
-    AuthService --> ITokenService : depends on
-    AuthService --> Logger : depends on
-    
-    JwtTokenService --> ITokenRepository : depends on
-    JwtTokenService --> Logger : depends on
-    
-    AIService --> AIStrategy : depends on
-    AIService --> Logger : depends on
-    
-    OllamaStrategy --> HttpClient : depends on
-    OllamaStrategy --> Logger : depends on
-    
-    AdvancedAnalysisStrategy --> Logger : depends on
-    
-    InventoryAnalysisService --> AIService : depends on
-    InventoryAnalysisService --> InventoryService : depends on
-    InventoryAnalysisService --> Logger : depends on
-    
-    AuthController --> AuthService : depends on
-    AuthController --> UserService : depends on
-    AuthController --> BaseController : extends
-    
-    UserController --> UserService : depends on
-    UserController --> BaseController : extends
-
-    CategoryController --> CategoryService : depends on
-    CategoryController --> BaseController : extends
-    
-    InventoryController --> InventoryService : depends on
-    InventoryController --> BaseController : extends
-    
-    AIAnalysisController --> InventoryAnalysisService : depends on
-    AIAnalysisController --> AIService : depends on
-    AIAnalysisController --> BaseController : extends
-    
-    BaseController --> Logger : depends on
-    
-    ErrorHandler --> LoggerInterface : depends on
-
     %% ========== Planned Components (Belum Diimplementasi) ==========
     class ISupplierRepository {
         <<interface>>
@@ -868,6 +845,64 @@ classDiagram
     }
 
     %% ========== Future Relationships ==========
+    IRepository <|.. UserRepository
+    IRepository <|.. InventoryRepository
+    IInventoryRepository <|.. InventoryRepository
+    IAuthService <|.. AuthService
+    IInventoryService <|.. InventoryService
+    ITokenService <|.. JwtTokenService
+    ITokenRepository <|.. MongoTokenRepository
+    IAIService <|.. AIService
+    IAdvancedAIService <|.. AIService
+    IInventoryAnalysisService <|.. InventoryAnalysisService
+    AIStrategy <|.. OllamaStrategy
+    AIStrategy <|.. AdvancedAnalysisStrategy
+    
+    UserRepository --> MongoDBManager : uses
+    InventoryRepository --> MongoDBManager : uses
+    MongoTokenRepository --> MongoDBManager : uses
+    
+    UserService --> UserRepository : depends on
+    UserService --> Logger : depends on
+    
+    InventoryService --> IInventoryRepository : depends on
+    InventoryService --> Logger : depends on
+    
+    AuthService --> UserService : depends on
+    AuthService --> ITokenService : depends on
+    AuthService --> Logger : depends on
+    
+    JwtTokenService --> ITokenRepository : depends on
+    JwtTokenService --> Logger : depends on
+    
+    AIService --> AIStrategy : depends on
+    AIService --> Logger : depends on
+    
+    OllamaStrategy --> HttpClient : depends on
+    OllamaStrategy --> Logger : depends on
+    
+    AdvancedAnalysisStrategy --> Logger : depends on
+    
+    InventoryAnalysisService --> AIService : depends on
+    InventoryAnalysisService --> InventoryService : depends on
+    InventoryAnalysisService --> Logger : depends on
+    
+    AuthController --> AuthService : depends on
+    AuthController --> UserService : depends on
+    AuthController --> BaseController : extends
+    
+    UserController --> UserService : depends on
+    UserController --> BaseController : extends
+    
+    InventoryController --> InventoryService : depends on
+    InventoryController --> BaseController : extends
+    
+    AIAnalysisController --> InventoryAnalysisService : depends on
+    AIAnalysisController --> AIService : depends on
+    AIAnalysisController --> BaseController : extends
+    
+    ErrorHandler --> LoggerInterface : depends on
+
     ISupplierRepository <|.. MongoSupplierRepository
     IHashService <|.. BcryptHashService
     AIStrategy <|.. Phi3Strategy
