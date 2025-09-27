@@ -64,9 +64,9 @@ src/
 
 ### Phase 3: Advanced Features - Running  ⏳
   - ✅ Category Management ✅
-  - ⏳ Dashboard Service & Metrics ⏳   
-  - 📅 Supplier Management 
+  - ✅ Dashboard Service & Metrics ✅   
   - 📅 Reporting System
+  - 📅 Supplier Management   
   - 📅 Deployment Preparation
 ---
 ## Class Diagram
@@ -321,17 +321,156 @@ classDiagram
         +clearRoutes() void
     }
 
-    %% ========== Relationships (UPDATED) ==========
-    IRepository <|.. MongoCategoryRepository
-    ICategoryRepository <|.. MongoCategoryRepository
-    IService <|.. CategoryService
-    
-    MongoCategoryRepository --> MongoDBManager : uses
-    CategoryService --> ICategoryRepository : depends on
-    CategoryService --> Logger : depends on
-    CategoryController --> CategoryService : depends on
-    CategoryController --> BaseController : extends
-    BaseController --> Logger : depends on
+    %% ========== NEW DASHBOARD COMPONENTS ==========
+    class DashboardController {
+        -dashboardService DashboardService
+        -logger LoggerInterface
+        +__construct(DashboardService dashboardService, LoggerInterface logger)
+        +getMetrics(Request request) JsonResponse
+        +getHealth(Request request) JsonResponse
+        +clearCache(Request request) JsonResponse
+        +getCacheStats(Request request) JsonResponse
+        -getHttpStatusCode(DashboardException e) int
+    }
+
+    class DashboardService {
+        -inventoryMetrics InventoryMetrics
+        -userMetrics UserMetrics
+        -aiMetrics AIMetrics
+        -systemMetrics SystemMetrics
+        -logger LoggerInterface
+        -cache array
+        -cacheTtl int
+        +__construct(InventoryMetrics inventoryMetrics, UserMetrics userMetrics, AIMetrics aiMetrics, SystemMetrics systemMetrics, LoggerInterface logger)
+        +getDashboardMetrics(bool forceRefresh = false, bool detailed = false) DashboardMetrics
+        +getCacheStats() array
+        +clearCache() void
+        +setCacheTtl(int seconds) void
+        -collectAllMetrics(bool detailed) array
+        -generateTrends(array metrics) array
+        -generateAlerts(array metrics) array
+        -generateCacheKey(bool detailed) string
+        -isCacheValid(string cacheKey) bool
+        -cacheMetrics(string cacheKey, DashboardMetrics metrics) void
+        -cleanupCache() void
+        -getFallbackInventoryMetrics() array
+        -getFallbackUserMetrics() array
+        -getFallbackAIMetrics() array
+        -getFallbackSystemMetrics() array
+    }
+
+    class DashboardMetrics {
+        -generatedAt DateTime
+        -inventory array
+        -users array
+        -ai array
+        -system array
+        -trends array
+        -alerts array
+        +__construct(DateTime generatedAt, array inventory = [], array users = [], array ai = [], array system = [], array trends = [], array alerts = [])
+        +getGeneratedAt() DateTime
+        +getInventory() array
+        +getUsers() array
+        +getAi() array
+        +getSystem() array
+        +getTrends() array
+        +getAlerts() array
+        +setInventory(array inventory) self
+        +setUsers(array users) self
+        +setAi(array ai) self
+        +setSystem(array system) self
+        +setTrends(array trends) self
+        +setAlerts(array alerts) self
+        +toArray() array
+        +jsonSerialize() array
+        +isValid() bool
+        +getSummary() string
+    }
+
+    class DashboardException {
+        -errorCode string
+        -context array
+        +SERVICE_UNAVAILABLE = 'DASH_001'
+        +INVALID_DATA = 'DASH_002'
+        +CACHE_ERROR = 'DASH_003'
+        +__construct(string message = '', string errorCode = '', array context = [], int code = 0, Throwable previous = null)
+        +getErrorCode() string
+        +getContext() array
+        +serviceUnavailable(string serviceName, Throwable previous = null) self
+        +invalidData(string message, array context = []) self
+        +cacheError(string message, Throwable previous = null) self
+    }
+
+    class AIMetrics {
+        -aiService AIService
+        -logger LoggerInterface
+        +__construct(AIService aiService, LoggerInterface logger)
+        +getAIMetrics(string period = '7d') array
+        +getAIAlerts() array
+        -calculateStartDate(string period) DateTime
+        -calculatePerformanceMetrics(array analyses) array
+        -calculateAccuracyMetrics(array analyses) array
+        -getStrategyMetrics(array analyses) array
+        -getRecentAnalyses(array analyses, int limit) array
+    }
+
+    class InventoryMetrics {
+        -inventoryService InventoryService
+        -logger LoggerInterface
+        +__construct(InventoryService inventoryService, LoggerInterface logger)
+        +getInventoryMetrics(bool detailed = false) array
+        +getInventoryAlerts() array
+        -getValueAnalysis() array
+        -getMovementMetrics() array
+    }
+
+    class UserMetrics {
+        -userService UserService
+        -logger LoggerInterface
+        +__construct(UserService userService, LoggerInterface logger)
+        +getUserMetrics() array
+        +getUserAlerts() array
+        -getRoleDistribution() array
+        -getTodayLoginCount() int
+        -getCurrentlyActiveUsers() int
+        -getAverageSessionTime() string
+        -getRecentActivity(int limit = 10) array
+    }
+
+    class SystemMetrics {
+        -dbManager MongoDBManager
+        -performanceBenchmark PerformanceBenchmark
+        -logger LoggerInterface
+        -cache array
+        -cacheHits int
+        -cacheMisses int
+        +__construct(MongoDBManager dbManager, PerformanceBenchmark performanceBenchmark, LoggerInterface logger)
+        +getSystemMetrics() array
+        +getSystemAlerts() array
+        +recordCacheHit() void
+        +recordCacheMiss() void
+        -checkSystemHealth() array
+        -getPerformanceMetrics() array
+        -getDatabaseMetrics() array
+        -getMemoryMetrics() array
+        -getCacheMetrics() array
+        -calculateRequestsPerMinute(array benchmarkResults) int
+        -calculateErrorRate(array benchmarkResults) float
+        -getAverageResponseTime() float
+        -convertToBytes(string size) int
+        -formatBytes(int bytes, int precision = 2) string
+    }
+
+    class MetricsCalculator {
+        +calculateHealthStatus(int lowStockCount, int outOfStockCount, int totalItems) string
+        +calculateDatabaseHealth(float latency, float errorRate, float throughput) float
+        +calculateCacheEfficiency(float hitRate, float memoryUsage, float responseTimeImprovement) float
+        +determineTrend(float current, float previous) string
+        +calculateChangePercentage(float current, float previous) float
+        +calculateMovingAverage(array data, int period = 7) float
+        +calculateSuccessRate(int successful, int total) float
+        +calculateAverageConfidence(array analyses) float
+    }
 
     %% ========== Planned Components (Tetap Dipertahankan) ==========
     class IInventoryRepository {
@@ -833,174 +972,323 @@ classDiagram
     %% ========== Planned Components (Belum Diimplementasi) ==========
     class ISupplierRepository {
         <<interface>>
-        +findByStatus(string status) array
+        +find(array filter = [], array options = []) array
+        +findById(string id) array|null
+        +findOne(array filter = []) array|null
+        +create(array data) string
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter = []) int
+        +findByCategory(string categoryId) array
+        +getSupplierPerformance(string supplierId) array
+        +findActiveSuppliers() array
         +getSupplierStats() array
     }
 
-    class IHashService {
+    class ISupplierService {
         <<interface>>
-        +hash(string password) string
-        +verify(string password, string hash) bool
-    }
-
-    class SupplierService {
-        +__construct(ISupplierRepository supplierRepo, Logger logger)
+        +getSupplier(string id) array|null
+        +listSuppliers(array filter = [], array options = []) array
         +createSupplier(array data) array
         +updateSupplier(string id, array data) array
+        +deleteSupplier(string id) bool
+        +getSuppliersByCategory(string categoryId) array
         +getSupplierPerformance(string supplierId) array
-    }
-
-    class AuditLogService {
-        +__construct(AuditLogRepository auditRepo, Logger logger)
-        +logAction(string userId, string action, string resource, string resourceId, array oldData, array newData) bool
-        +getAuditTrail(string resourceType, string resourceId, DateTime from, DateTime to) array
+        +getActiveSuppliers() array
+        +getSupplierStats() array
+        +validateSupplierData(array data, bool isCreate = true) array
     }
 
     class SupplierController {
-        -supplierService SupplierService
-        +__construct(SupplierService supplierService, Logger logger)
+        -supplierService ISupplierService
+        +__construct(ISupplierService supplierService = null, Logger logger = null)
         +listSuppliers() void
         +getSupplier(string id) void
         +createSupplier() void
         +updateSupplier(string id) void
         +deleteSupplier(string id) void
+        +getPerformance(string id) void
+        +getStats() void
     }
 
-    class ReportController {
-        -aiService AIService
+    class ReportGenerator {
         -inventoryService InventoryService
-        +__construct(AIService aiService, InventoryService inventoryService, Logger logger)
-        +generateInventoryReport() void
-        +generateSalesReport() void
-        +generateStockPrediction() void
+        -supplierService ISupplierService
+        -categoryService CategoryService
+        -logger Logger
+        +__construct(InventoryService inventoryService, ISupplierService supplierService, CategoryService categoryService, Logger logger)
+        +generateInventoryReport(array options) array
+        +generateStockAlertReport() array
+        +generateSupplierReport(array options) array
+        +generateCategoryReport(string categoryId) array
+        +generateComprehensiveReport(array options) array
+        +exportToCsv(array data, string filename) bool
+        +exportToPdf(array data, string filename) bool
+        -formatReportData(array data, string reportType) array
+        -calculateReportMetrics(array data) array
+    }
+
+    class CacheManager {
+        -cache array
+        -ttl array
+        -maxSize int
+        -hits int
+        -misses int
+        +__construct(int maxSize = 1000)
+        +get(string key) mixed
+        +set(string key, mixed value, int ttl = 3600) void
+        +delete(string key) bool
+        +clear() void
+        +exists(string key) bool
+        +getStats() array
+        +cleanup() void
+        -isExpired(string key) bool
+        -evictIfNeeded() void
+    }
+
+    class NotificationService {
+        -logger Logger
+        -enabled bool
+        +__construct(Logger logger, bool enabled = true)
+        +sendLowStockAlert(array items) bool
+        +sendOutOfStockAlert(array items) bool
+        +sendInventoryReport(array report) bool
+        +sendSystemAlert(string message, string level) bool
+        -logNotification(string type, array data) void
+        -shouldSendNotification(string type) bool
+    }
+
+    class EmailNotifier {
+        -smtpConfig array
+        -logger Logger
+        +__construct(array smtpConfig, Logger logger)
+        +sendEmail(string to, string subject, string body) bool
+        +sendBulkEmails(array recipients, string subject, string body) array
+        -validateEmail(string email) bool
+        -logEmail(string to, string subject, bool success) void
+    }
+
+    class SMSNotifier {
+        -apiConfig array
+        -logger Logger
+        +__construct(array apiConfig, Logger logger)
+        +sendSMS(string to, string message) bool
+        +sendBulkSMS(array recipients, string message) array
+        -validatePhone(string phone) bool
+        -logSMS(string to, string message, bool success) void
+    }
+
+    class ConfigManager {
+        -static array config
+        -static string configPath
+        +load(string configPath) void
+        +get(string key, mixed default = null) mixed
+        +set(string key, mixed value) void
+        +has(string key) bool
+        +getAll() array
+        +reload() void
+        +save() bool
+        -validateConfig(array config) bool
+    }
+
+    class Request {
+        -get array
+        -post array
+        -server array
+        -headers array
+        -cookies array
+        -files array
+        -input string
+        +__construct(array get = [], array post = [], array server = [], array cookies = [], array files = [], string input = null)
+        +get(string key, mixed default = null) mixed
+        +post(string key, mixed default = null) mixed
+        +server(string key, mixed default = null) mixed
+        +header(string key, mixed default = null) mixed
+        +cookie(string key, mixed default = null) mixed
+        +file(string key) mixed
+        +method() string
+        +path() string
+        +isGet() bool
+        +isPost() bool
+        +isPut() bool
+        +isDelete() bool
+        +isAjax() bool
+        +isSecure() bool
+        +ip() string
+        +userAgent() string
+        +getInput() string
+        +json() array
+        +has(string type, string key) bool
+        +all(string type = null) array
+    }
+
+    class Response {
+        -content string
+        -statusCode int
+        -headers array
+        +__construct(string content = '', int statusCode = 200, array headers = [])
+        +setContent(string content) self
+        +setStatusCode(int statusCode) self
+        +setHeader(string name, string value) self
+        +json(array data, int statusCode = 200) self
+        +redirect(string url, int statusCode = 302) self
+        +send() void
+        +getContent() string
+        +getStatusCode() int
+        +getHeaders() array
+    }
+
+    class Middleware {
+        <<interface>>
+        +handle(Request request, callable next) Response
     }
 
     class AuthMiddleware {
         -tokenService ITokenService
-        +__construct(ITokenService tokenService)
-        +verifyAccessToken(Request request, Response response, callable next) mixed
-        +requireAuthentication() mixed
+        -excludedRoutes array
+        +__construct(ITokenService tokenService, array excludedRoutes = [])
+        +handle(Request request, callable next) Response
+        -extractToken(Request request) string|null
+        -shouldExclude(Request request) bool
     }
+
+    class LoggingMiddleware {
+        -logger Logger
+        +__construct(Logger logger)
+        +handle(Request request, callable next) Response
+        -logRequest(Request request) void
+        -logResponse(Response response, float duration) void
+    }
+
+    class RateLimitingMiddleware {
+        -maxRequests int
+        -windowSeconds int
+        -storage array
+        +__construct(int maxRequests = 100, int windowSeconds = 3600)
+        +handle(Request request, callable next) Response
+        -getClientIdentifier(Request request) string
+        -isRateLimited(string identifier) bool
+        -incrementRequestCount(string identifier) void
+        -cleanupExpiredEntries() void
+    }
+
+    class ValidationMiddleware {
+        -rules array
+        +__construct(array rules = [])
+        +handle(Request request, callable next) Response
+        +setRules(array rules) void
+        -validate(Request request) array
+        -validateField(mixed value, string rules) array
+    }
+
+    class SecurityMiddleware {
+        -corsConfig array
+        +__construct(array corsConfig = [])
+        +handle(Request request, callable next) Response
+        -addSecurityHeaders(Response response) Response
+        -handleCORS(Request request, Response response) Response
+        -isValidOrigin(string origin) bool
+    }
+
+    %% ========== RELATIONSHIPS ==========
+    IRepository <|.. ICategoryRepository
+    IRepository <|.. IInventoryRepository
+    IRepository <|.. ISupplierRepository
+    IRepository <|.. ITokenRepository
     
-    class RoleMiddleware {
-        +__construct(array allowedRoles)
-        +requireRole(string role) mixed
-        +requireAnyRole(array roles) mixed
-    }
+    IService <|.. IAuthService
+    IService <|.. IInventoryService
+    IService <|.. ISupplierService
     
-    class Validator {
-        +validate(array schema, array data) array
-        +sanitize(array data) array
-        +validateEmail(string email) bool
-        +validatePassword(string password) array
-    }
-
-    class Supplier {
-        +string id
-        +string name
-        +string contactEmail
-        +string phone
-        +string address
-        +string status
-        +DateTime createdAt
-        +DateTime updatedAt
-    }
-
-    class AuditLog {
-        +string id
-        +string userId
-        +string action
-        +string resource
-        +string resourceId
-        +array oldData
-        +array newData
-        +DateTime timestamp
-        +string ipAddress
-    }
-
-    %% ========== Future Relationships ==========
-    IRepository <|.. UserRepository
-    IRepository <|.. InventoryRepository
+    ICategoryRepository <|.. MongoCategoryRepository
     IInventoryRepository <|.. InventoryRepository
+    ISupplierRepository <|.. SupplierRepository
+    ITokenRepository <|.. MongoTokenRepository
+    
     IAuthService <|.. AuthService
     IInventoryService <|.. InventoryService
+    ISupplierService <|.. SupplierService
     ITokenService <|.. JwtTokenService
-    ITokenRepository <|.. MongoTokenRepository
+    
+    IAIService <|.. IAdvancedAIService
     IAIService <|.. AIService
     IAdvancedAIService <|.. AIService
-    IInventoryAnalysisService <|.. InventoryAnalysisService
+    
     AIStrategy <|.. OllamaStrategy
     AIStrategy <|.. AdvancedAnalysisStrategy
     
-    UserRepository --> MongoDBManager : uses
-    InventoryRepository --> MongoDBManager : uses
-    MongoTokenRepository --> MongoDBManager : uses
+    BaseController <|-- CategoryController
+    BaseController <|-- AuthController
+    BaseController <|-- UserController
+    BaseController <|-- InventoryController
+    BaseController <|-- AIAnalysisController
+    BaseController <|-- DashboardController
+    BaseController <|-- SupplierController
     
-    UserService --> UserRepository : depends on
-    UserService --> Logger : depends on
+    Middleware <|.. AuthMiddleware
+    Middleware <|.. LoggingMiddleware
+    Middleware <|.. RateLimitingMiddleware
+    Middleware <|.. ValidationMiddleware
+    Middleware <|.. SecurityMiddleware
     
-    InventoryService --> IInventoryRepository : depends on
-    InventoryService --> Logger : depends on
+    CategoryController --> CategoryService : uses
+    CategoryService --> MongoCategoryRepository : uses
+    MongoCategoryRepository --> MongoDBManager : uses
     
-    AuthService --> UserService : depends on
-    AuthService --> ITokenService : depends on
-    AuthService --> Logger : depends on
+    AuthController --> AuthService : uses
+    AuthService --> UserService : uses
+    AuthService --> JwtTokenService : uses
+    UserService --> UserRepository : uses
+    JwtTokenService --> MongoTokenRepository : uses
     
-    JwtTokenService --> ITokenRepository : depends on
-    JwtTokenService --> Logger : depends on
+    InventoryController --> InventoryService : uses
+    InventoryService --> InventoryRepository : uses
     
-    AIService --> AIStrategy : depends on
-    AIService --> Logger : depends on
+    AIAnalysisController --> InventoryAnalysisService : uses
+    InventoryAnalysisService --> AIService : uses
+    InventoryAnalysisService --> InventoryService : uses
+    AIService --> OllamaStrategy : uses
+    AIService --> AdvancedAnalysisStrategy : uses
     
-    OllamaStrategy --> HttpClient : depends on
-    OllamaStrategy --> Logger : depends on
+    DashboardController --> DashboardService : uses
+    DashboardService --> InventoryMetrics : uses
+    DashboardService --> UserMetrics : uses
+    DashboardService --> AIMetrics : uses
+    DashboardService --> SystemMetrics : uses
+    InventoryMetrics --> InventoryService : uses
+    UserMetrics --> UserService : uses
+    AIMetrics --> AIService : uses
+    SystemMetrics --> MongoDBManager : uses
+    SystemMetrics --> PerformanceBenchmark : uses
     
-    AdvancedAnalysisStrategy --> Logger : depends on
+    SupplierController --> SupplierService : uses
+    SupplierService --> SupplierRepository : uses
     
-    InventoryAnalysisService --> AIService : depends on
-    InventoryAnalysisService --> InventoryService : depends on
-    InventoryAnalysisService --> Logger : depends on
+    ReportGenerator --> InventoryService : uses
+    ReportGenerator --> SupplierService : uses
+    ReportGenerator --> CategoryService : uses
     
-    AuthController --> AuthService : depends on
-    AuthController --> UserService : depends on
-    AuthController --> BaseController : extends
+    NotificationService --> EmailNotifier : uses
+    NotificationService --> SMSNotifier : uses
     
-    UserController --> UserService : depends on
-    UserController --> BaseController : extends
+    OllamaStrategy --> HttpClient : uses
     
-    InventoryController --> InventoryService : depends on
-    InventoryController --> BaseController : extends
+    ErrorHandler --> Logger : uses
     
-    AIAnalysisController --> InventoryAnalysisService : depends on
-    AIAnalysisController --> AIService : depends on
-    AIAnalysisController --> BaseController : extends
+    %% ========== NEW RELATIONSHIPS ==========
+    Router --> CategoryController : routes
+    Router --> AuthController : routes
+    Router --> UserController : routes
+    Router --> InventoryController : routes
+    Router --> AIAnalysisController : routes
+    Router --> DashboardController : routes
+    Router --> SupplierController : routes
     
-    ErrorHandler --> LoggerInterface : depends on
-
-    ISupplierRepository <|.. MongoSupplierRepository
-    IHashService <|.. BcryptHashService
-    AIStrategy <|.. Phi3Strategy
-    AIStrategy <|.. DeepSeekStrategy
-
-    SupplierController --> SupplierService
-    ReportController --> AIService
-    ReportController --> InventoryService
-
-    SupplierService --> ISupplierRepository
-    AuditLogService --> AuditLogRepository
-
-    Inventory --> Category
-    Inventory --> Supplier
-    AuditLog --> User
-
-    MongoSupplierRepository --> MongoDBManager
-    AuditLogRepository --> MongoDBManager
-
-    SupplierService --> Logger
-    AuditLogService --> Logger
-
-    AuthMiddleware --> ITokenService
-    RoleMiddleware --> AuthMiddleware
+    DashboardMetrics --> MetricsCalculator : uses
+    InventoryMetrics --> MetricsCalculator : uses
+    UserMetrics --> MetricsCalculator : uses
+    AIMetrics --> MetricsCalculator : uses
+    SystemMetrics --> MetricsCalculator : uses
 ```
 
 ---
