@@ -126,7 +126,17 @@ class DashboardMetrics implements JsonSerializable
 
     public function isValid(): bool
     {
-        return !empty($this->inventory) || !empty($this->users) || !empty($this->ai) || !empty($this->system);
+        // Metrics dianggap valid jika setidaknya satu kategori memiliki data
+        // atau jika ada alerts yang perlu ditampilkan
+        $hasData = !empty($this->inventory) || !empty($this->users) || 
+                  !empty($this->ai) || !empty($this->system) ||
+                  !empty($this->alerts);
+        
+        // Juga valid jika ada struktur dasar meskipun datanya kosong
+        $hasBasicStructure = isset($this->inventory) && isset($this->users) && 
+                           isset($this->ai) && isset($this->system);
+        
+        return $hasData || $hasBasicStructure;
     }
 
     public function getSummary(): string
@@ -136,20 +146,46 @@ class DashboardMetrics implements JsonSerializable
         if (!empty($this->inventory)) {
             $parts[] = sprintf(
                 "Inventory: %d items (%d low stock, %d out of stock)",
-                $this->inventory['totalItems'] ?? 0,
-                $this->inventory['lowStockCount'] ?? 0,
-                $this->inventory['outOfStockCount'] ?? 0
+                $this->inventory['totalItems'] ?? $this->inventory['overview']['totalItems'] ?? 0,
+                $this->inventory['lowStockCount'] ?? $this->inventory['stockLevels']['lowStockCount'] ?? 0,
+                $this->inventory['outOfStockCount'] ?? $this->inventory['stockLevels']['outOfStockCount'] ?? 0
             );
         }
 
         if (!empty($this->users)) {
-            $parts[] = sprintf("Users: %d active", $this->users['activeUsers'] ?? 0);
+            $activeUsers = $this->users['activeUsers'] ?? $this->users['demographics']['activeUsers'] ?? 0;
+            $parts[] = sprintf("Users: %d active", $activeUsers);
         }
 
         if (!empty($this->ai)) {
-            $parts[] = sprintf("AI: %.1f%% success rate", $this->ai['successRate'] ?? 0);
+            $successRate = $this->ai['successRate'] ?? $this->ai['performance']['successRate'] ?? 0;
+            $parts[] = sprintf("AI: %.1f%% success rate", $successRate);
         }
 
         return implode(' | ', $parts);
+    }
+
+    public function hasCriticalAlerts(): bool
+    {
+        foreach ($this->alerts as $alert) {
+            if (($alert['level'] ?? '') === 'critical') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function getAlertCount(): array
+    {
+        $counts = ['critical' => 0, 'warning' => 0, 'info' => 0];
+        
+        foreach ($this->alerts as $alert) {
+            $level = $alert['level'] ?? 'info';
+            if (isset($counts[$level])) {
+                $counts[$level]++;
+            }
+        }
+        
+        return $counts;
     }
 }

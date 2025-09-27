@@ -1,0 +1,278 @@
+Session 3.1 Dashboard Test Log - Sab 27 Sep 2025 17:50:21 WIB
+===========================================
+Setting up dashboard test data...
+Dashboard test data setup completed.
+[2025-09-27 17:50:21] Starting complete unit test suite for Session 3.1
+[2025-09-27 17:50:21] Starting model tests: tests/Unit/Model/DashboardMetricsTest.php
+PHPUnit 9.6.27 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.12
+Configuration: /var/www/html/inventory-ai/tests/phpunit.xml
+Random Seed:   1758970222
+Warning:       No code coverage driver available
+
+Dashboard Metrics (Tests\Unit\Model\DashboardMetrics)
+ ✔ Initialization [2.11 ms]
+ ✔ To array [0.11 ms]
+ ✔ Json serialize [0.03 ms]
+ ✔ Is valid [0.09 ms]
+ ✔ Get summary [0.13 ms]
+ ✔ Setters [0.03 ms]
+ ✔ Empty summary [0.02 ms]
+ ✔ Has critical alerts [0.06 ms]
+ ✔ Get alert count [0.04 ms]
+
+Time: 00:00.007, Memory: 6.00 MB
+
+OK (9 tests, 33 assertions)
+[2025-09-27 17:50:22] Starting service tests: tests/Unit/Service/DashboardServiceTest.php
+PHPUnit 9.6.27 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.12
+Configuration: /var/www/html/inventory-ai/tests/phpunit.xml
+Random Seed:   1758970222
+Warning:       No code coverage driver available
+
+Dashboard Service (Tests\Unit\Service\DashboardService)
+ ✔ Get dashboard metrics success [0.19 ms]
+ ✔ Get dashboard metrics with force refresh [0.23 ms]
+ ✔ Get dashboard metrics with service failure [9.54 ms]
+ ✔ Cache management [0.14 ms]
+ ✔ Alerts generation [0.61 ms]
+ ✔ Fallback metrics [0.35 ms]
+
+Time: 00:00.015, Memory: 6.00 MB
+
+OK (6 tests, 20 assertions)
+[2025-09-27 17:50:22] Starting metrics calculator tests: tests/Unit/Service/Metrics/MetricsCalculatorTest.php
+PHPUnit 9.6.27 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.12
+Configuration: /var/www/html/inventory-ai/tests/phpunit.xml
+Random Seed:   1758970222
+Warning:       No code coverage driver available
+
+Metrics Calculator (Tests\Unit\Service\Metrics\MetricsCalculator)
+ ✔ Calculate health status [1.92 ms]
+ ✔ Calculate database health [0.66 ms]
+ ✔ Calculate cache efficiency [0.04 ms]
+ ✔ Determine trend [0.02 ms]
+ ✔ Calculate change percentage [0.04 ms]
+ ✔ Calculate moving average [0.02 ms]
+ ✔ Calculate success rate [0.02 ms]
+ ✔ Calculate average confidence [0.03 ms]
+
+Time: 00:00.007, Memory: 6.00 MB
+
+OK (8 tests, 29 assertions)
+[2025-09-27 17:50:22] Starting metrics test: tests/Unit/Service/Metrics/InventoryMetricsTest.php
+PHPUnit 9.6.27 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.12
+Configuration: /var/www/html/inventory-ai/tests/phpunit.xml
+Random Seed:   1758970222
+Warning:       No code coverage driver available
+
+Inventory Metrics (Tests\Unit\Service\Metrics\InventoryMetrics)
+ ✘ Inventory metrics creation [2.02 ms]
+   │
+   │ Error: Typed property Tests\Unit\Service\Metrics\InventoryMetricsTest::$inventoryMetrics must not be accessed before initialization
+   │
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/InventoryMetricsTest.php:40
+   │
+
+ ✘ Get inventory metrics returns array [0.07 ms]
+   │
+   │ Error: Typed property Tests\Unit\Service\Metrics\InventoryMetricsTest::$inventoryMetrics must not be accessed before initialization
+   │
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/InventoryMetricsTest.php:45
+   │
+
+ ✘ Get inventory alerts returns array [0.03 ms]
+   │
+   │ Error: Typed property Tests\Unit\Service\Metrics\InventoryMetricsTest::$inventoryMetrics must not be accessed before initialization
+   │
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/InventoryMetricsTest.php:55
+   │
+
+ ✘ Inventory metrics structure [0.03 ms]
+   │
+   │ Error: Typed property Tests\Unit\Service\Metrics\InventoryMetricsTest::$inventoryMetrics must not be accessed before initialization
+   │
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/InventoryMetricsTest.php:62
+   │
+
+ ✘ Inventory metrics with detailed true [0.03 ms]
+   │
+   │ Error: Typed property Tests\Unit\Service\Metrics\InventoryMetricsTest::$inventoryMetrics must not be accessed before initialization
+   │
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/InventoryMetricsTest.php:81
+   │
+
+Time: 00:00.011, Memory: 6.00 MB
+
+
+ERRORS!
+Tests: 5, Assertions: 0, Errors: 5.
+[2025-09-27 17:50:22] Starting metrics test: tests/Unit/Service/Metrics/UserMetricsTest.php
+PHPUnit 9.6.27 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.12
+Configuration: /var/www/html/inventory-ai/tests/phpunit.xml
+Random Seed:   1758970222
+Warning:       No code coverage driver available
+
+User Metrics (Tests\Unit\Service\Metrics\UserMetrics)
+ ✘ User metrics creation [5.63 ms]
+   │
+   │ TypeError: App\Service\Metrics\UserMetrics::__construct(): Argument #1 ($userService) must be of type App\Service\UserService, class@anonymous given, called in /var/www/html/inventory-ai/tests/Unit/Service/Metrics/UserMetricsTest.php on line 32
+   │
+   │ /var/www/html/inventory-ai/src/Service/Metrics/UserMetrics.php:16
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/UserMetricsTest.php:32
+   │
+
+ ✘ Get user metrics returns array [0.08 ms]
+   │
+   │ TypeError: App\Service\Metrics\UserMetrics::__construct(): Argument #1 ($userService) must be of type App\Service\UserService, class@anonymous given, called in /var/www/html/inventory-ai/tests/Unit/Service/Metrics/UserMetricsTest.php on line 32
+   │
+   │ /var/www/html/inventory-ai/src/Service/Metrics/UserMetrics.php:16
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/UserMetricsTest.php:32
+   │
+
+ ✘ Get user alerts returns array [0.04 ms]
+   │
+   │ TypeError: App\Service\Metrics\UserMetrics::__construct(): Argument #1 ($userService) must be of type App\Service\UserService, class@anonymous given, called in /var/www/html/inventory-ai/tests/Unit/Service/Metrics/UserMetricsTest.php on line 32
+   │
+   │ /var/www/html/inventory-ai/src/Service/Metrics/UserMetrics.php:16
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/UserMetricsTest.php:32
+   │
+
+ ✘ User metrics structure [0.04 ms]
+   │
+   │ TypeError: App\Service\Metrics\UserMetrics::__construct(): Argument #1 ($userService) must be of type App\Service\UserService, class@anonymous given, called in /var/www/html/inventory-ai/tests/Unit/Service/Metrics/UserMetricsTest.php on line 32
+   │
+   │ /var/www/html/inventory-ai/src/Service/Metrics/UserMetrics.php:16
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/UserMetricsTest.php:32
+   │
+
+ ✘ User metrics values [0.07 ms]
+   │
+   │ TypeError: App\Service\Metrics\UserMetrics::__construct(): Argument #1 ($userService) must be of type App\Service\UserService, class@anonymous given, called in /var/www/html/inventory-ai/tests/Unit/Service/Metrics/UserMetricsTest.php on line 32
+   │
+   │ /var/www/html/inventory-ai/src/Service/Metrics/UserMetrics.php:16
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/UserMetricsTest.php:32
+   │
+
+Time: 00:00.015, Memory: 8.00 MB
+
+
+ERRORS!
+Tests: 5, Assertions: 0, Errors: 5.
+[2025-09-27 17:50:22] Starting metrics test: tests/Unit/Service/Metrics/AIMetricsTest.php
+PHPUnit 9.6.27 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.12
+Configuration: /var/www/html/inventory-ai/tests/phpunit.xml
+Random Seed:   1758970222
+Warning:       No code coverage driver available
+
+AIMetrics (Tests\Unit\Service\Metrics\AIMetrics)
+ ✘ A i metrics creation [5.71 ms]
+   │
+   │ TypeError: App\Service\Metrics\AIMetrics::__construct(): Argument #1 ($aiService) must be of type App\Service\AIService, class@anonymous given, called in /var/www/html/inventory-ai/tests/Unit/Service/Metrics/AIMetricsTest.php on line 35
+   │
+   │ /var/www/html/inventory-ai/src/Service/Metrics/AIMetrics.php:16
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/AIMetricsTest.php:35
+   │
+
+ ✘ Get a i metrics returns array [0.08 ms]
+   │
+   │ TypeError: App\Service\Metrics\AIMetrics::__construct(): Argument #1 ($aiService) must be of type App\Service\AIService, class@anonymous given, called in /var/www/html/inventory-ai/tests/Unit/Service/Metrics/AIMetricsTest.php on line 35
+   │
+   │ /var/www/html/inventory-ai/src/Service/Metrics/AIMetrics.php:16
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/AIMetricsTest.php:35
+   │
+
+ ✘ Get a i alerts returns array [0.03 ms]
+   │
+   │ TypeError: App\Service\Metrics\AIMetrics::__construct(): Argument #1 ($aiService) must be of type App\Service\AIService, class@anonymous given, called in /var/www/html/inventory-ai/tests/Unit/Service/Metrics/AIMetricsTest.php on line 35
+   │
+   │ /var/www/html/inventory-ai/src/Service/Metrics/AIMetrics.php:16
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/AIMetricsTest.php:35
+   │
+
+ ✘ A i metrics structure [0.05 ms]
+   │
+   │ TypeError: App\Service\Metrics\AIMetrics::__construct(): Argument #1 ($aiService) must be of type App\Service\AIService, class@anonymous given, called in /var/www/html/inventory-ai/tests/Unit/Service/Metrics/AIMetricsTest.php on line 35
+   │
+   │ /var/www/html/inventory-ai/src/Service/Metrics/AIMetrics.php:16
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/AIMetricsTest.php:35
+   │
+
+ ✘ A i metrics with different periods [0.04 ms]
+   │
+   │ TypeError: App\Service\Metrics\AIMetrics::__construct(): Argument #1 ($aiService) must be of type App\Service\AIService, class@anonymous given, called in /var/www/html/inventory-ai/tests/Unit/Service/Metrics/AIMetricsTest.php on line 35
+   │
+   │ /var/www/html/inventory-ai/src/Service/Metrics/AIMetrics.php:16
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/AIMetricsTest.php:35
+   │
+
+Time: 00:00.015, Memory: 8.00 MB
+
+
+ERRORS!
+Tests: 5, Assertions: 0, Errors: 5.
+[2025-09-27 17:50:22] Starting metrics test: tests/Unit/Service/Metrics/SystemMetricsTest.php
+PHPUnit 9.6.27 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.12
+Configuration: /var/www/html/inventory-ai/tests/phpunit.xml
+Random Seed:   1758970222
+Warning:       No code coverage driver available
+
+System Metrics (Tests\Unit\Service\Metrics\SystemMetrics)
+ ✘ System metrics creation [5.85 ms]
+   │
+   │ TypeError: App\Service\Metrics\SystemMetrics::__construct(): Argument #1 ($dbManager) must be of type App\Manager\MongoDBManager, class@anonymous given, called in /var/www/html/inventory-ai/tests/Unit/Service/Metrics/SystemMetricsTest.php on line 38
+   │
+   │ /var/www/html/inventory-ai/src/Service/Metrics/SystemMetrics.php:20
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/SystemMetricsTest.php:38
+   │
+
+ ✘ Get system metrics returns array [0.12 ms]
+   │
+   │ TypeError: App\Service\Metrics\SystemMetrics::__construct(): Argument #1 ($dbManager) must be of type App\Manager\MongoDBManager, class@anonymous given, called in /var/www/html/inventory-ai/tests/Unit/Service/Metrics/SystemMetricsTest.php on line 38
+   │
+   │ /var/www/html/inventory-ai/src/Service/Metrics/SystemMetrics.php:20
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/SystemMetricsTest.php:38
+   │
+
+ ✘ Get system alerts returns array [0.04 ms]
+   │
+   │ TypeError: App\Service\Metrics\SystemMetrics::__construct(): Argument #1 ($dbManager) must be of type App\Manager\MongoDBManager, class@anonymous given, called in /var/www/html/inventory-ai/tests/Unit/Service/Metrics/SystemMetricsTest.php on line 38
+   │
+   │ /var/www/html/inventory-ai/src/Service/Metrics/SystemMetrics.php:20
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/SystemMetricsTest.php:38
+   │
+
+ ✘ System metrics structure [0.06 ms]
+   │
+   │ TypeError: App\Service\Metrics\SystemMetrics::__construct(): Argument #1 ($dbManager) must be of type App\Manager\MongoDBManager, class@anonymous given, called in /var/www/html/inventory-ai/tests/Unit/Service/Metrics/SystemMetricsTest.php on line 38
+   │
+   │ /var/www/html/inventory-ai/src/Service/Metrics/SystemMetrics.php:20
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/SystemMetricsTest.php:38
+   │
+
+ ✘ System metrics values [0.05 ms]
+   │
+   │ TypeError: App\Service\Metrics\SystemMetrics::__construct(): Argument #1 ($dbManager) must be of type App\Manager\MongoDBManager, class@anonymous given, called in /var/www/html/inventory-ai/tests/Unit/Service/Metrics/SystemMetricsTest.php on line 38
+   │
+   │ /var/www/html/inventory-ai/src/Service/Metrics/SystemMetrics.php:20
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/SystemMetricsTest.php:38
+   │
+
+Time: 00:00.015, Memory: 8.00 MB
+
+
+ERRORS!
+Tests: 5, Assertions: 0, Errors: 5.

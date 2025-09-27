@@ -10,16 +10,16 @@ use Psr\Log\LoggerInterface;
 
 class SystemMetrics
 {
-    private MongoDBManager $dbManager;
-    private PerformanceBenchmark $performanceBenchmark;
+    private $dbManager; // Hapus type hint
+    private $performanceBenchmark; // Hapus type hint
     private LoggerInterface $logger;
     private array $cache = [];
     private int $cacheHits = 0;
     private int $cacheMisses = 0;
 
     public function __construct(
-        MongoDBManager $dbManager,
-        PerformanceBenchmark $performanceBenchmark,
+        $dbManager, // Hapus type hint
+        $performanceBenchmark, // Hapus type hint
         LoggerInterface $logger
     ) {
         $this->dbManager = $dbManager;
