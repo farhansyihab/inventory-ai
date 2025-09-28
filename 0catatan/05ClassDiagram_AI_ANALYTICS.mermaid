@@ -1,0 +1,557 @@
+classDiagram
+    note for AIService "Orchestrator utama untuk AI capabilities dengan multiple strategy support"
+
+    %% ========== CORE INTERFACES ==========
+    class IAIService {
+        <<interface>>
+        +analyzeInventory(array inventoryData, string analysisType) array
+        +generateReport(array inventoryData, string reportType) array
+        +predictStockNeeds(array items, int forecastDays) array
+        +detectAnomalies(array inventoryData) array
+        +setStrategy(string strategyName) bool
+        +getAvailableStrategies() array
+        +isAvailable() bool
+    }
+
+    class IAdvancedAIService {
+        <<interface>>
+        +analyzeSalesTrends(array salesData, int periodDays) array
+        +predictInventoryTurnover(array items) array
+        +optimizeStockLevels(array inventoryData) array
+        +generatePurchaseRecommendations(array supplierData) array
+        +calculateSafetyStock(array itemHistory) array
+        +analyzeInventoryWithStats(array inventoryData, string analysisType) array
+    }
+
+    class IInventoryAnalysisService {
+        <<interface>>
+        +getComprehensiveAnalysis(array options) array
+        +generateWeeklyReport() array
+        +monitorCriticalItems() array
+        +predictInventoryNeeds(int forecastDays) array
+        +optimizeInventory() array
+    }
+
+    class AIStrategy {
+        <<interface>>
+        +analyze(array data, string analysisType) array
+        +generate(array data, string reportType) array
+        +isAvailable() bool
+    }
+
+    class IInventoryService {
+        <<interface>>
+        +getItem(string id) array|null
+        +listItems(array filter = [], array options = []) array
+        +createItem(array data) array
+        +updateItem(string id, array data) array
+        +deleteItem(string id) bool
+        +getLowStockItems(int threshold = 0) array
+        +getOutOfStockItems() array
+        +updateItemQuantity(string id, int quantityChange) array
+        +getInventoryStats() array
+        +searchItems(string query, array options = []) array
+        +validateItemData(array data, bool isCreate = true) array
+        +getItemsByCategory(string categoryId, array options = []) array
+        +getItemsBySupplier(string supplierId, array options = []) array
+    }
+
+    class IService {
+        <<interface>>
+        +findById(string id) array|null
+        +find(array filter = [], array options = []) array
+        +create(array data) array
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter = []) int
+        +validate(array data) bool
+        +findOne(array filter = []) array|null
+    }
+
+    class Middleware {
+        <<interface>>
+        +handle(Request request, callable next) Response
+    }
+
+    %% ========== SERVICE LAYER ==========
+    class InventoryService {
+        -inventoryRepo IInventoryRepository
+        -logger Logger
+        +__construct(IInventoryRepository inventoryRepo, Logger logger)
+        +getItem(string id) array|null
+        +listItems(array filter, array options) array
+        +createItem(array data) array
+        +updateItem(string id, array data) array
+        +deleteItem(string id) bool
+        +getLowStockItems(int threshold) array
+        +getOutOfStockItems() array
+        +updateItemQuantity(string id, int quantityChange) array
+        +getInventoryStats() array
+        +searchItems(string query, array options) array
+        +validateItemData(array data, bool isCreate) array
+        +getItemsByCategory(string categoryId, array options) array
+        +getItemsBySupplier(string supplierId, array options) array
+        -calculateInventoryHealth(array stats) string
+    }
+
+    %% ========== AI CORE SERVICES ==========
+    class AIService {
+        -strategies array
+        -activeStrategy AIStrategy|null
+        -logger Logger
+        -enabled bool
+        -fallbackEnabled bool
+        +__construct(Logger logger, bool enabled, bool fallbackEnabled)
+        +registerStrategy(string name, AIStrategy strategy) bool
+        +setStrategy(string strategyName) bool
+        +analyzeInventory(array inventoryData, string analysisType) array
+        +generateReport(array inventoryData, string reportType) array
+        +predictStockNeeds(array items, int forecastDays) array
+        +detectAnomalies(array inventoryData) array
+        +getAvailableStrategies() array
+        +getActiveStrategy() string|null
+        +isAvailable() bool
+        +enableFallback(bool enabled) void
+        +analyzeSalesTrends(array salesData, int periodDays) array
+        +predictInventoryTurnover(array items) array
+        +optimizeStockLevels(array inventoryData) array
+        +generatePurchaseRecommendations(array supplierData) array
+        +calculateSafetyStock(array itemHistory) array
+        +analyzeInventoryWithStats(array inventoryData, string analysisType) array
+        -validateInventoryData(array data) void
+        -getFallbackAnalysis(array inventoryData, string analysisType) array
+        -getFallbackReport(array inventoryData, string reportType) array
+        -validateSalesData(array salesData) void
+        -validateInventoryItems(array items) void
+        -validateStockOptimizationData(array inventoryData) void
+        -validateSupplierData(array supplierData) void
+        -validateItemHistory(array itemHistory) void
+        -getFallbackSalesTrends(array salesData, int periodDays) array
+        -getFallbackTurnoverPrediction(array items) array
+        -getFallbackStockOptimization(array inventoryData) array
+        -getFallbackPurchaseRecommendations(array supplierData) array
+        -getFallbackSafetyStock(array itemHistory) array
+        -getFallbackInventoryAnalysis(array inventoryData, string analysisType) array
+        -logAIAction(string action, array context, float duration) void
+    }
+
+    class InventoryAnalysisService {
+        -aiService AIService
+        -inventoryService IInventoryService
+        -logger Logger
+        -cache array
+        -cacheTtl int
+        -performanceMetrics array
+        +__construct(AIService aiService, IInventoryService inventoryService, Logger logger, int cacheTtl)
+        +getComprehensiveAnalysis(array options) array
+        +generateWeeklyReport() array
+        +monitorCriticalItems() array
+        +predictInventoryNeeds(int forecastDays) array
+        +optimizeInventory() array
+        +getPerformanceMetrics() array
+        +clearCache() void
+        +setCacheTtl(int seconds) void
+        -executeParallel(array operations) array
+        -parallelExecution(array operations) array
+        -optimizedAIAnalysis(array data) array
+        -batchStockOptimization(array items) array
+        -optimizedSalesTrendsAnalysis(array items) array
+        -stratifiedSample(array items, int sampleSize) array
+        -generateCacheKey(string type, array params) string
+        -getFromCache(string key) array|null
+        -setCache(string key, array data) void
+        -calculatePerformanceMetrics(float startTime) array
+        -calculateOverallRisk(array recommendations) string
+        -processIncrementalWeeklyData() array
+        -generateIncrementalInsights(DateTime startDate) array
+        -calculateIncrementalMetrics(DateTime startDate) array
+        -analyzeSalesTrends(array items) array
+        -prepareOptimizationData(array items) array
+        -estimateDailyUsage(array item) float
+        -calculateUrgencyLevel(array item) string
+        -calculateWeeklyMetrics(array stats, array recentItems) array
+        -calculateTurnoverRatio(array stats) float
+        -calculateOutOfStockPercentage(array stats) float
+        -generatePurchaseRecommendations(array items) array
+        -prepareSupplierData(array items) array
+        -calculateSavingsPotential(array currentItems, array optimizationResult) array
+        -generateImplementationPlan(array optimizationResult) array
+        -getFallbackAnalysis() array
+        -getFallbackWeeklyReport() array
+        -getFallbackMonitoring() array
+        -getFallbackPrediction(int days) array
+        -getFallbackOptimization() array
+        -validateAnalysisOptions(array options) bool
+    }
+
+    %% ========== AI STRATEGIES ==========
+    class OllamaStrategy {
+        -httpClient HttpClient
+        -logger Logger
+        -baseUrl string
+        -model string
+        -defaultOptions array
+        -timeout int
+        -retryAttempts int
+        +__construct(HttpClient httpClient, Logger logger, string baseUrl, string model, array defaultOptions, int timeout, int retryAttempts)
+        +analyze(array data, string analysisType) array
+        +generate(array data, string reportType) array
+        +isAvailable() bool
+        +getModelInfo() array
+        +setModel(string model) void
+        +setTimeout(int timeout) void
+        -callOllamaAPI(string prompt, array options) array
+        -buildAnalysisPrompt(array data, string analysisType) string
+        -buildReportPrompt(array data, string reportType) string
+        -parseAnalysisResponse(array response, string analysisType) array
+        -parseReportResponse(array response, string reportType) array
+        -validateData(array data) void
+        -performBasicAnalysis(array data, string analysisType) array
+        -analyzeSalesTrends(array data) array
+        -analyzeInventoryTurnover(array data) array
+        -optimizeStockLevels(array data) array
+        -generatePurchaseRecommendations(array data) array
+        -calculateSafetyStock(array data) array
+        -buildSalesTrendsPrompt(array data) string
+        -buildInventoryTurnoverPrompt(array data) string
+        -buildStockOptimizationPrompt(array data) string
+        -buildPurchaseRecommendationsPrompt(array data) string
+        -buildSafetyStockPrompt(array data) string
+        -parseSalesTrendsResponse(array response) array
+        -parseInventoryTurnoverResponse(array response) array
+        -parseStockOptimizationResponse(array response) array
+        -parsePurchaseRecommendationsResponse(array response) array
+        -parseSafetyStockResponse(array response) array
+        -handleAPIError(Exception e, string operation) array
+        -retryOperation(callable operation, string operationName) array
+    }
+
+    class AdvancedAnalysisStrategy {
+        -logger Logger
+        -mlModels array
+        -mlEnabled bool
+        -statisticalMethods array
+        +__construct(Logger logger, bool mlEnabled, array statisticalMethods)
+        +analyze(array data, string analysisType) array
+        +generate(array data, string reportType) array
+        +isAvailable() bool
+        +getMLModelStatus() array
+        +enableML(bool enabled) void
+        -analyzeSalesTrendsWithML(array data) array
+        -predictTurnoverWithML(array data) array
+        -optimizeStockWithML(array data) array
+        -linearRegressionAnalysis(array salesData) array
+        -randomForestTurnoverPrediction(array item) float
+        -geneticAlgorithmOptimization(array item) array
+        -timeSeriesAnalysis(array historicalData) array
+        -clusterAnalysis(array items) array
+        -initializeMLModels() array
+        -validateData(array data) void
+        -calculateConfidence(array data) float
+        -basicSalesTrendAnalysis(array salesData, int periodDays) array
+        -basicTurnoverPrediction(array items) array
+        -basicStockOptimization(array inventoryData) array
+        -fallbackAnalysis(array data, string analysisType) array
+        -fallbackReport(array data, string reportType) array
+        -calculateStatisticalSignificance(array data) float
+        -performHypothesisTesting(array dataset1, array dataset2) array
+    }
+
+    class FallbackStrategy {
+        -logger Logger
+        +__construct(Logger logger)
+        +analyze(array data, string analysisType) array
+        +generate(array data, string reportType) array
+        +isAvailable() bool
+        -basicInventoryAnalysis(array data) array
+        -basicStockPrediction(array items, int days) array
+        -basicAnomalyDetection(array data) array
+        -generateBasicReport(array data, string reportType) array
+    }
+
+    %% ========== DATA MODELS ==========
+    class AnalysisResult {
+        -analysisType string
+        -findings array
+        -recommendations array
+        -confidenceScore float
+        -supportingData array
+        -isFallback bool
+        -errorMessage string|null
+        -timestamp DateTime
+        -executionTime float
+        -strategyUsed string
+        +__construct(string analysisType, array findings, array recommendations, float confidenceScore, array supportingData, bool isFallback, string errorMessage, DateTime timestamp, float executionTime, string strategyUsed)
+        +getAnalysisType() string
+        +getFindings() array
+        +getRecommendations() array
+        +getConfidenceScore() float
+        +getSupportingData() array
+        +isFallback() bool
+        +getErrorMessage() string|null
+        +getTimestamp() DateTime
+        +getExecutionTime() float
+        +getStrategyUsed() string
+        +toArray() array
+        +isValid() bool
+        +getSummary() string
+        +hasHighConfidence() bool
+        +static createSuccess(string analysisType, array findings, array recommendations, float confidenceScore, array supportingData, string strategyUsed, float executionTime) AnalysisResult
+        +static createFallback(string analysisType, array findings, array recommendations, float confidenceScore, array supportingData, string strategyUsed, float executionTime) AnalysisResult
+        +static createError(string analysisType, string errorMessage, string strategyUsed, float executionTime) AnalysisResult
+    }
+
+    class InventoryAnalysis {
+        -summary array
+        -criticalItems array
+        -trends array
+        -predictions array
+        -optimizationSuggestions array
+        -riskAssessment array
+        -timestamp DateTime
+        +__construct(array summary, array criticalItems, array trends, array predictions, array optimizationSuggestions, array riskAssessment, DateTime timestamp)
+        +getSummary() array
+        +getCriticalItems() array
+        +getTrends() array
+        +getPredictions() array
+        +getOptimizationSuggestions() array
+        +getRiskAssessment() array
+        +getTimestamp() DateTime
+        +toArray() array
+        +getOverallRiskLevel() string
+        +getUrgentActions() array
+        +static fromAnalysisResult(AnalysisResult result) InventoryAnalysis
+    }
+
+    class PredictionResult {
+        -itemId string
+        -itemName string
+        -predictedDemand array
+        -confidenceInterval array
+        -recommendedStock int
+        -riskLevel string
+        -timestamp DateTime
+        +__construct(string itemId, string itemName, array predictedDemand, array confidenceInterval, int recommendedStock, string riskLevel, DateTime timestamp)
+        +getItemId() string
+        +getItemName() string
+        +getPredictedDemand() array
+        +getConfidenceInterval() array
+        +getRecommendedStock() int
+        +getRiskLevel() string
+        +getTimestamp() DateTime
+        +toArray() array
+        +isHighRisk() bool
+        +getDemandForecast(int days) array
+    }
+
+    class OptimizationResult {
+        -currentState array
+        -optimizedState array
+        -savingsPotential array
+        -implementationPlan array
+        -risks array
+        -confidenceScore float
+        +__construct(array currentState, array optimizedState, array savingsPotential, array implementationPlan, array risks, float confidenceScore)
+        +getCurrentState() array
+        +getOptimizedState() array
+        +getSavingsPotential() array
+        +getImplementationPlan() array
+        +getRisks() array
+        +getConfidenceScore() float
+        +toArray() array
+        +getTotalSavings() float
+        +getPaybackPeriod() float
+        +isFeasible() bool
+    }
+
+    %% ========== INFRASTRUCTURE ==========
+    class HttpClient {
+        -defaultOptions array
+        -logger Logger
+        +__construct(array defaultOptions, Logger logger)
+        +get(string url, array options) array
+        +post(string url, mixed data, array options) array
+        +put(string url, mixed data, array options) array
+        +delete(string url, array options) array
+        +isUrlReachable(string url, float timeout) bool
+        +setDefaultOptions(array options) void
+        +getDefaultOptions() array
+        -request(string method, string url, mixed data, array options) array
+        -createStreamContext(string method, mixed data, array options) resource
+        -executeRequest(string url, resource context, array options) array
+        -handleError(int statusCode, string response) void
+        -logRequest(string method, string url, array options) void
+    }
+
+    class Logger {
+        -logFile string
+        -defaultLevel string
+        +__construct(string logFile, string defaultLevel)
+        +log(mixed level, string|Stringable message, array context) void
+        +debug(string|Stringable message, array context) void
+        +info(string|Stringable message, array context) void
+        +error(string|Stringable message, array context) void
+        +warning(string|Stringable message, array context) void
+        +getLogFile() string
+    }
+
+    class PerformanceMonitor {
+        -metrics array
+        -enabled bool
+        +__construct(bool enabled)
+        +startMeasurement(string operation) string
+        +endMeasurement(string operationId) array
+        +getMetrics() array
+        +clearMetrics() void
+        -calculateStatistics(array measurements) array
+    }
+
+    %% ========== CONTROLLER LAYER ==========
+    class BaseController {
+        #logger Logger
+        #requestData array
+        #testMode bool
+        #lastResponse array|null
+        +__construct(Logger logger)
+        +enableTestMode() void
+        +setRequestData(array data) void
+        #parseRequestData() void
+        #getRequestValue(string key, mixed default) mixed
+        #getRequestData() array
+        #jsonResponse(array data, int statusCode) array|null
+        #successResponse(array data, string message, int statusCode) array|null
+        #errorResponse(string message, array errors, int statusCode) array|null
+        #notFoundResponse(string message) array|null
+        #unauthorizedResponse(string message) array|null
+        #validationErrorResponse(array errors, string message) array|null
+        #getAuthUserId() string|null
+        #isAuthenticated() bool
+        #validateRequiredFields(array fields) array
+        #logAction(string action, array context) void
+        #getPaginationParams() array
+        #getSortingParams() array
+        +buildTestResponse(array data, int statusCode, bool success, string message) array
+        +getLastResponse() array
+    }
+
+    class AIAnalysisController {
+        -analysisService InventoryAnalysisService
+        -aiService AIService
+        -logger Logger
+        +__construct(InventoryAnalysisService analysisService, AIService aiService, Logger logger)
+        +getComprehensiveAnalysis(Request request) JsonResponse
+        +generateWeeklyReport(Request request) JsonResponse
+        +monitorCriticalItems(Request request) JsonResponse
+        +predictInventoryNeeds(Request request) JsonResponse
+        +optimizeInventory(Request request) JsonResponse
+        +analyzeSalesTrends(Request request) JsonResponse
+        +getAIStatus(Request request) JsonResponse
+        +getStrategies(Request request) JsonResponse
+        +setStrategy(Request request) JsonResponse
+        +getPerformanceMetrics(Request request) JsonResponse
+        -validateAnalysisRequest(array data) array
+        -buildAnalysisResponse(AnalysisResult result) array
+        -buildInventoryAnalysisResponse(InventoryAnalysis analysis) array
+        -buildPredictionResponse(array predictions) array
+        -buildOptimizationResponse(OptimizationResult optimization) array
+        -logAIAction(string action, array context, float duration) void
+    }
+
+    %% ========== REQUEST/RESPONSE ==========
+    class Request {
+        -get array
+        -post array
+        -server array
+        -headers array
+        -cookies array
+        -files array
+        -input string
+        +__construct(array get, array post, array server, array cookies, array files, string input)
+        +get(string key, mixed default) mixed
+        +post(string key, mixed default) mixed
+        +server(string key, mixed default) mixed
+        +header(string key, mixed default) mixed
+        +cookie(string key, mixed default) mixed
+        +file(string key) mixed
+        +method() string
+        +path() string
+        +isGet() bool
+        +isPost() bool
+        +isPut() bool
+        +isDelete() bool
+        +isAjax() bool
+        +isSecure() bool
+        +ip() string
+        +userAgent() string
+        +getInput() string
+        +json() array
+        +has(string type, string key) bool
+        +all(string type) array
+    }
+
+    class JsonResponse {
+        -data array
+        -statusCode int
+        -headers array
+        +__construct(array data, int statusCode, array headers)
+        +setData(array data) self
+        +setStatusCode(int statusCode) self
+        +setHeader(string name, string value) self
+        +send() void
+        +getData() array
+        +getStatusCode() int
+        +getHeaders() array
+    }
+
+    %% ========== MIDDLEWARE ==========
+    class AuthMiddleware {
+        -tokenService ITokenService
+        -excludedRoutes array
+        +__construct(ITokenService tokenService, array excludedRoutes)
+        +handle(Request request, callable next) Response
+        -extractToken(Request request) string|null
+        -shouldExclude(Request request) bool
+    }
+
+    class RateLimitingMiddleware {
+        -maxRequests int
+        -windowSeconds int
+        -storage array
+        +__construct(int maxRequests, int windowSeconds)
+        +handle(Request request, callable next) Response
+        -getClientIdentifier(Request request) string
+        -isRateLimited(string identifier) bool
+        -incrementRequestCount(string identifier) void
+        -cleanupExpiredEntries() void
+    }
+
+    %% ========== RELATIONSHIPS ==========
+    IAIService <|.. AIService
+    IAdvancedAIService <|.. AIService
+    IInventoryAnalysisService <|.. InventoryAnalysisService
+    AIStrategy <|.. OllamaStrategy
+    AIStrategy <|.. AdvancedAnalysisStrategy
+    AIStrategy <|.. FallbackStrategy
+
+    IService <|.. IInventoryService
+    IInventoryService <|.. InventoryService
+
+    BaseController <|-- AIAnalysisController
+
+    AIService --> OllamaStrategy : uses
+    AIService --> AdvancedAnalysisStrategy : uses
+    AIService --> FallbackStrategy : uses
+
+    InventoryAnalysisService --> AIService : uses
+    InventoryAnalysisService --> IInventoryService : uses
+
+    OllamaStrategy --> HttpClient : uses
+
+    AIAnalysisController --> InventoryAnalysisService : uses
+    AIAnalysisController --> AIService : uses
+
+    AnalysisResult --> InventoryAnalysis : converts to
+    PredictionResult --> AnalysisResult : extends
+    OptimizationResult --> AnalysisResult : extends
+
+    AuthMiddleware --> ITokenService : uses

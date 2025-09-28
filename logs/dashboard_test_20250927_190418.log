@@ -1,0 +1,182 @@
+Session 3.1 Dashboard Test Log - Sab 27 Sep 2025 19:04:18 WIB
+===========================================
+Setting up dashboard test data...
+Dashboard test data setup completed.
+[2025-09-27 19:04:18] Starting complete unit test suite for Session 3.1
+[2025-09-27 19:04:18] Starting model tests: tests/Unit/Model/DashboardMetricsTest.php
+PHPUnit 9.6.27 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.12
+Configuration: /var/www/html/inventory-ai/tests/phpunit.xml
+Random Seed:   1758974658
+Warning:       No code coverage driver available
+
+Dashboard Metrics (Tests\Unit\Model\DashboardMetrics)
+ ✔ Initialization [0.11 ms]
+ ✔ To array [0.13 ms]
+ ✔ Json serialize [2.01 ms]
+ ✔ Is valid [0.08 ms]
+ ✔ Get summary [0.14 ms]
+ ✔ Setters [0.03 ms]
+ ✔ Empty summary [0.02 ms]
+ ✔ Has critical alerts [0.07 ms]
+ ✔ Get alert count [0.07 ms]
+
+Time: 00:00.007, Memory: 6.00 MB
+
+OK (9 tests, 33 assertions)
+[2025-09-27 19:04:19] Starting service tests: tests/Unit/Service/DashboardServiceTest.php
+PHPUnit 9.6.27 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.12
+Configuration: /var/www/html/inventory-ai/tests/phpunit.xml
+Random Seed:   1758974659
+Warning:       No code coverage driver available
+
+Dashboard Service (Tests\Unit\Service\DashboardService)
+ ✔ Get dashboard metrics success [0.16 ms]
+ ✔ Get dashboard metrics with force refresh [9.51 ms]
+ ✔ Get dashboard metrics with service failure [0.30 ms]
+ ✔ Cache management [0.13 ms]
+ ✔ Alerts generation [0.63 ms]
+ ✔ Fallback metrics [0.26 ms]
+
+Time: 00:00.016, Memory: 6.00 MB
+
+OK (6 tests, 20 assertions)
+[2025-09-27 19:04:19] Starting metrics calculator tests: tests/Unit/Service/Metrics/MetricsCalculatorTest.php
+PHPUnit 9.6.27 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.12
+Configuration: /var/www/html/inventory-ai/tests/phpunit.xml
+Random Seed:   1758974659
+Warning:       No code coverage driver available
+
+Metrics Calculator (Tests\Unit\Service\Metrics\MetricsCalculator)
+ ✔ Calculate health status [0.02 ms]
+ ✔ Calculate database health [0.05 ms]
+ ✔ Calculate cache efficiency [0.75 ms]
+ ✔ Determine trend [0.05 ms]
+ ✔ Calculate change percentage [0.02 ms]
+ ✔ Calculate moving average [0.03 ms]
+ ✔ Calculate success rate [2.03 ms]
+ ✔ Calculate average confidence [0.02 ms]
+
+Time: 00:00.008, Memory: 6.00 MB
+
+OK (8 tests, 29 assertions)
+[2025-09-27 19:04:19] Starting metrics test: tests/Unit/Service/Metrics/InventoryMetricsTest.php
+PHPUnit 9.6.27 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.12
+Configuration: /var/www/html/inventory-ai/tests/phpunit.xml
+Random Seed:   1758974659
+Warning:       No code coverage driver available
+
+Inventory Metrics (Tests\Unit\Service\Metrics\InventoryMetrics)
+ ✔ Inventory metrics creation [0.12 ms]
+ ✔ Get inventory metrics returns array [7.81 ms]
+ ✔ Get inventory alerts returns array [0.05 ms]
+ ✔ Inventory metrics structure [0.07 ms]
+ ✔ Inventory metrics with detailed true [0.09 ms]
+ ✔ Inventory metrics values [0.19 ms]
+
+Time: 00:00.012, Memory: 6.00 MB
+
+OK (6 tests, 21 assertions)
+[2025-09-27 19:04:19] Starting metrics test: tests/Unit/Service/Metrics/UserMetricsTest.php
+PHPUnit 9.6.27 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.12
+Configuration: /var/www/html/inventory-ai/tests/phpunit.xml
+Random Seed:   1758974659
+Warning:       No code coverage driver available
+
+User Metrics (Tests\Unit\Service\Metrics\UserMetrics)
+ ✔ User metrics creation [0.22 ms]
+ ✔ Get user metrics returns array [11.57 ms]
+ ✔ Get user alerts returns array [0.07 ms]
+ ✔ User metrics structure [0.17 ms]
+ ✔ User metrics values [0.28 ms]
+
+Time: 00:00.016, Memory: 8.00 MB
+
+OK (5 tests, 20 assertions)
+[2025-09-27 19:04:19] Starting metrics test: tests/Unit/Service/Metrics/AIMetricsTest.php
+PHPUnit 9.6.27 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.12
+Configuration: /var/www/html/inventory-ai/tests/phpunit.xml
+Random Seed:   1758974659
+Warning:       No code coverage driver available
+
+AIMetrics (Tests\Unit\Service\Metrics\AIMetrics)
+ ✔ A i metrics creation [0.63 ms]
+ ✘ Get a i metrics returns array [8.08 ms]
+   │
+   │ App\Exception\DashboardException: Service AIService is temporarily unavailable
+   │
+   │ /var/www/html/inventory-ai/src/Exception/DashboardException.php:42
+   │ /var/www/html/inventory-ai/src/Service/Metrics/AIMetrics.php:60
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/AIMetricsTest.php:32
+   │
+
+ ✘ Get a i alerts returns array [0.17 ms]
+   │
+   │ App\Exception\DashboardException: Service AIService is temporarily unavailable
+   │
+   │ /var/www/html/inventory-ai/src/Exception/DashboardException.php:42
+   │ /var/www/html/inventory-ai/src/Service/Metrics/AIMetrics.php:60
+   │ /var/www/html/inventory-ai/src/Service/Metrics/AIMetrics.php:142
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/AIMetricsTest.php:43
+   │
+
+ ✘ A i metrics structure [0.17 ms]
+   │
+   │ App\Exception\DashboardException: Service AIService is temporarily unavailable
+   │
+   │ /var/www/html/inventory-ai/src/Exception/DashboardException.php:42
+   │ /var/www/html/inventory-ai/src/Service/Metrics/AIMetrics.php:60
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/AIMetricsTest.php:50
+   │
+
+ ✘ A i metrics with different periods [0.24 ms]
+   │
+   │ App\Exception\DashboardException: Service AIService is temporarily unavailable
+   │
+   │ /var/www/html/inventory-ai/src/Exception/DashboardException.php:42
+   │ /var/www/html/inventory-ai/src/Service/Metrics/AIMetrics.php:60
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/AIMetricsTest.php:72
+   │
+
+ ✘ A i metrics values [0.26 ms]
+   │
+   │ App\Exception\DashboardException: Service AIService is temporarily unavailable
+   │
+   │ /var/www/html/inventory-ai/src/Exception/DashboardException.php:42
+   │ /var/www/html/inventory-ai/src/Service/Metrics/AIMetrics.php:60
+   │ /var/www/html/inventory-ai/tests/Unit/Service/Metrics/AIMetricsTest.php:83
+   │
+
+Time: 00:00.019, Memory: 8.00 MB
+
+
+ERRORS!
+Tests: 6, Assertions: 1, Errors: 5.
+[2025-09-27 19:04:19] Starting metrics test: tests/Unit/Service/Metrics/SystemMetricsTest.php
+PHPUnit 9.6.27 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.12
+Configuration: /var/www/html/inventory-ai/tests/phpunit.xml
+Random Seed:   1758974659
+Warning:       No code coverage driver available
+
+System Metrics (Tests\Unit\Service\Metrics\SystemMetrics)
+ ✔ System metrics creation [0.12 ms]
+ ✔ Get system metrics returns array [0.25 ms]
+ ✔ Get system alerts returns array [0.06 ms]
+ ✔ System metrics structure [6.74 ms]
+
+Time: 00:00.011, Memory: 6.00 MB
+
+OK (4 tests, 8 assertions)

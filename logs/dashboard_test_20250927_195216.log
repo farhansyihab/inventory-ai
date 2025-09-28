@@ -1,0 +1,23 @@
+Session 3.1 Dashboard Test Log - Sab 27 Sep 2025 19:52:16 WIB
+===========================================
+Setting up dashboard test data...
+Dashboard test data setup completed.
+[2025-09-27 19:52:16] Starting integration tests: tests/Integration/Controller/DashboardControllerTest.php
+PHPUnit 9.6.29 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.12
+Configuration: /var/www/html/inventory-ai/tests/phpunit.xml
+Random Seed:   1758977537
+Warning:       No code coverage driver available
+
+Dashboard Controller (Tests\Integration\Controller\DashboardController)
+ ✔ Get metrics success [0.30 ms]
+ ✔ Get metrics service unavailable [13.40 ms]
+ ✔ Get health [0.51 ms]
+ ✔ Clear cache [0.26 ms]
+ ✔ Get cache stats [0.37 ms]
+ ✔ Unexpected error [0.14 ms]
+
+Time: 00:00.019, Memory: 8.00 MB
+
+OK (6 tests, 20 assertions)

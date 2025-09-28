@@ -1,0 +1,459 @@
+classDiagram
+    note for CategoryService "Mengelola hierarki kategori dengan tree structure dan path tracking"
+
+    %% ========== INTERFACES ==========
+    class IRepository {
+        <<interface>>
+        +findById(string id) array|null
+        +find(array filter = [], array options = []) array
+        +create(array data) string
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter = []) int
+        +findOne(array filter = []) array|null
+    }
+
+    class ICategoryRepository {
+        <<interface>>
+        +findBySlug(string slug) array|null
+        +findActive() array
+        +findByParentId(string parentId) array
+        +findRootCategories() array
+        +getCategoryTree() array
+        +findByDepth(int depth) array
+        +updatePath(string categoryId, array path, int depth) bool
+        +slugExists(string slug, string excludeId = null) bool
+        +getCategoriesWithCounts() array
+        +bulkUpdateStatus(array categoryIds, bool active) bool
+    }
+
+    class IService {
+        <<interface>>
+        +findById(string id) array|null
+        +find(array filter = [], array options = []) array
+        +create(array data) array
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter = []) int
+        +validate(array data) bool
+        +findOne(array filter = []) array|null
+    }
+
+    class Middleware {
+        <<interface>>
+        +handle(Request request, callable next) Response
+    }
+
+    %% ========== DOMAIN MODEL ==========
+    class Category {
+        -id string|null
+        -name string
+        -slug string
+        -description string
+        -active bool
+        -parentId string|null
+        -depth int
+        -path array
+        -createdAt DateTime
+        -updatedAt DateTime
+        +__construct(string name, string slug, string description, bool active, string parentId, string id, DateTime createdAt, DateTime updatedAt)
+        +getId() string|null
+        +getName() string
+        +getSlug() string
+        +getDescription() string
+        +isActive() bool
+        +getParentId() string|null
+        +getDepth() int
+        +getPath() array
+        +getCreatedAt() DateTime
+        +getUpdatedAt() DateTime
+        +setName(string name) void
+        +setSlug(string slug) void
+        +setDescription(string description) void
+        +setActive(bool active) void
+        +setParentId(string parentId) void
+        +setDepth(int depth) void
+        +setPath(array path) void
+        +setUpdatedAt(DateTime updatedAt) void
+        +validate() void
+        +toDocument() array
+        +fromDocument(array document) Category
+        +toArray() array
+        +__toString() string
+        +isRoot() bool
+        +hasChildren() bool
+        +getFullPath() string
+        +getAncestorIds() array
+        +isDescendantOf(string categoryId) bool
+        +isAncestorOf(string categoryId) bool
+        -parseDate(mixed dateValue) DateTime
+        -generateSlug(string name) string
+        -validateName(string name) void
+        -validateSlug(string slug) void
+    }
+
+    class CategoryTree {
+        -rootNodes array
+        -allCategories array
+        +__construct(array categories)
+        +getRootCategories() array
+        +getCategory(string id) Category|null
+        +getChildren(string parentId) array
+        +getDescendants(string categoryId) array
+        +getAncestors(string categoryId) array
+        +getDepth(string categoryId) int
+        +getSubtree(string categoryId) array
+        +toArray() array
+        +toNestedArray() array
+        +findBySlug(string slug) Category|null
+        +getLeafCategories() array
+        +getCategoriesAtDepth(int depth) array
+        -buildTree(array categories) void
+        -buildNode(Category category, array categories) array
+        -findCategoryById(string id, array categories) Category|null
+    }
+
+    class CategoryPath {
+        -segments array
+        -categoryIds array
+        -names array
+        +__construct(array segments, array categoryIds, array names)
+        +getSegments() array
+        +getCategoryIds() array
+        +getNames() array
+        +getDepth() int
+        +toString(string separator) string
+        +toArray() array
+        +getParentPath() CategoryPath|null
+        +isRoot() bool
+        +static fromCategory(Category category) CategoryPath
+        +static fromArray(array data) CategoryPath
+    }
+
+    %% ========== REPOSITORY LAYER ==========
+    class MongoCategoryRepository {
+        -collection Collection
+        -logger Logger
+        -cache array
+        +__construct(Logger logger)
+        +createIndexes() array
+        +findById(string id) array|null
+        +find(array filter, array options) array
+        +findOne(array filter) array|null
+        +create(array data) string
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter) int
+        +findBySlug(string slug) array|null
+        +findActive() array
+        +findByParentId(string parentId) array
+        +findRootCategories() array
+        +getCategoryTree() array
+        +findByDepth(int depth) array
+        +updatePath(string categoryId, array path, int depth) bool
+        +slugExists(string slug, string excludeId) bool
+        +getCategoriesWithCounts() array
+        +bulkUpdateStatus(array categoryIds, bool active) bool
+        +getCategoryStatistics() array
+        +findCategoriesWithChildren() array
+        +rebuildAllPaths() array
+        -documentToArray(mixed document) array
+        -normalizeToUTCDateTime(mixed value) UTCDateTime
+        -buildCategoryTree(array categories) array
+        -updateDescendantPaths(string categoryId, array newPath, int newDepth) bool
+        -getAllDescendants(string categoryId) array
+        -clearCache() void
+        -getFromCache(string key) mixed
+        -setCache(string key, mixed value) void
+    }
+
+    %% ========== SERVICE LAYER ==========
+    class CategoryService {
+        -categoryRepo ICategoryRepository
+        -logger Logger
+        -cacheEnabled bool
+        +__construct(ICategoryRepository categoryRepo, Logger logger, bool cacheEnabled)
+        +findById(string id) array|null
+        +find(array filter, array options) array
+        +create(array data) array
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter) int
+        +validate(array data) bool
+        +findOne(array filter) array|null
+        +getCategoryTree() array
+        +getSubcategories(string parentId) array
+        +getRootCategories() array
+        +getCategoryPath(string categoryId) array
+        +moveCategory(string categoryId, string newParentId) array
+        +validateCategoryData(array data, bool isUpdate) array
+        +bulkUpdateStatus(array categoryIds, bool active) array
+        +getCategoryStatistics() array
+        +categoryExists(string id) bool
+        +slugExists(string slug, string excludeId) bool
+        +findBySlug(string slug) array|null
+        +getAncestors(string categoryId) array
+        +getDescendants(string categoryId) array
+        +getCategoriesByLevel(int level) array
+        +rebuildCategoryTree() array
+        +searchCategories(string query, array options) array
+        -updateCategoryTree(string categoryId) void
+        -validateMoveOperation(string categoryId, string newParentId) void
+        -calculateNewPath(string categoryId, string newParentId) array
+        -updateCategoryAndDescendants(string categoryId, array newPath, int newDepth) void
+        -clearCategoryCache() void
+        -getCachedCategoryTree() array|null
+        -cacheCategoryTree(array tree) void
+    }
+
+    class CategoryValidationService {
+        -categoryService CategoryService
+        -logger Logger
+        +__construct(CategoryService categoryService, Logger logger)
+        +validateCategoryCreation(array data) array
+        +validateCategoryUpdate(string id, array data) array
+        +validateCategoryMove(string categoryId, string newParentId) array
+        +validateBulkOperation(array categoryIds, string operation) array
+        +validateSlug(string slug, string excludeId) array
+        +validateParentChildRelationship(string parentId, string childId) array
+        +checkForCircularReference(string categoryId, string potentialParentId) bool
+        +validateCategoryDeletion(string categoryId) array
+        -validateRequiredFields(array data) array
+        -validateSlugFormat(string slug) array
+        -validateName(string name) array
+        -validateDescription(string description) array
+        -validateParentExists(string parentId) bool
+        -validateCategoryExists(string categoryId) bool
+        -getAllDescendants(string categoryId) array
+    }
+
+    class CategoryImportExportService {
+        -categoryService CategoryService
+        -logger Logger
+        +__construct(CategoryService categoryService, Logger logger)
+        +exportCategories(array options) array
+        +importCategories(array data, bool overwrite) array
+        +exportCategoryTree() array
+        +importCategoryTree(array treeData) array
+        +generateTemplate() array
+        +validateImportData(array data) array
+        -convertToExportFormat(array categories) array
+        -convertFromImportFormat(array data) array
+        -buildTreeFromFlatList(array items) array
+        -validateTreeStructure(array tree) array
+    }
+
+    %% ========== INFRASTRUCTURE ==========
+    class MongoDBManager {
+        -static Client client
+        -static Database database
+        -static LoggerInterface logger
+        +initialize(LoggerInterface logger) void
+        +getClient() Client
+        +getDatabase() Database
+        +getCollection(string name) Collection
+        +ping() bool
+        +startSession() Session|null
+        +getConnectionInfo() array
+        +createIndexes(string collectionName, array indexes) array
+        +collectionExists(string collectionName) bool
+        +getStats() array
+        +getCollectionStats(string collectionName) array
+        +dropCollection(string collectionName) array
+        +getServerInfo() array
+        +getServerVersion() array
+    }
+
+    class Logger {
+        -logFile string
+        -defaultLevel string
+        +__construct(string logFile, string defaultLevel)
+        +log(mixed level, string|Stringable message, array context) void
+        +debug(string|Stringable message, array context) void
+        +info(string|Stringable message, array context) void
+        +error(string|Stringable message, array context) void
+        +warning(string|Stringable message, array context) void
+        +getLogFile() string
+    }
+
+    %% ========== CONTROLLER LAYER ==========
+    class BaseController {
+        #logger Logger
+        #requestData array
+        #testMode bool
+        #lastResponse array|null
+        +__construct(Logger logger)
+        +enableTestMode() void
+        +setRequestData(array data) void
+        #parseRequestData() void
+        #getRequestValue(string key, mixed default) mixed
+        #getRequestData() array
+        #jsonResponse(array data, int statusCode) array|null
+        #successResponse(array data, string message, int statusCode) array|null
+        #errorResponse(string message, array errors, int statusCode) array|null
+        #notFoundResponse(string message) array|null
+        #unauthorizedResponse(string message) array|null
+        #validationErrorResponse(array errors, string message) array|null
+        #getAuthUserId() string|null
+        #isAuthenticated() bool
+        #validateRequiredFields(array fields) array
+        #logAction(string action, array context) void
+        #getPaginationParams() array
+        #getSortingParams() array
+        +buildTestResponse(array data, int statusCode, bool success, string message) array
+        +getLastResponse() array
+    }
+
+    class CategoryController {
+        -categoryService CategoryService
+        -validationService CategoryValidationService
+        -importExportService CategoryImportExportService
+        -logger Logger
+        +__construct(CategoryService categoryService, CategoryValidationService validationService, CategoryImportExportService importExportService, Logger logger)
+        +listCategories(Request request) JsonResponse
+        +getCategory(Request request) JsonResponse
+        +getCategoryBySlug(Request request) JsonResponse
+        +createCategory(Request request) JsonResponse
+        +updateCategory(Request request) JsonResponse
+        +deleteCategory(Request request) JsonResponse
+        +getCategoryTree(Request request) JsonResponse
+        +getSubcategories(Request request) JsonResponse
+        +getRootCategories(Request request) JsonResponse
+        +getCategoryPath(Request request) JsonResponse
+        +moveCategory(Request request) JsonResponse
+        +bulkUpdateStatus(Request request) JsonResponse
+        +getStatistics(Request request) JsonResponse
+        +searchCategories(Request request) JsonResponse
+        +exportCategories(Request request) JsonResponse
+        +importCategories(Request request) JsonResponse
+        +rebuildTree(Request request) JsonResponse
+        -validateCategoryId(string id) void
+        -validateCreateCategoryData(array data) array
+        -validateUpdateCategoryData(array data, string id) array
+        -buildFilterFromRequest(Request request) array
+        -buildCategoryResponse(array category) array
+        -buildTreeResponse(array tree) array
+        -logCategoryAction(string action, array context) void
+        -handleCategoryException(Exception e, string operation) JsonResponse
+    }
+
+    %% ========== REQUEST/RESPONSE ==========
+    class Request {
+        -get array
+        -post array
+        -server array
+        -headers array
+        -cookies array
+        -files array
+        -input string
+        +__construct(array get, array post, array server, array cookies, array files, string input)
+        +get(string key, mixed default) mixed
+        +post(string key, mixed default) mixed
+        +server(string key, mixed default) mixed
+        +header(string key, mixed default) mixed
+        +cookie(string key, mixed default) mixed
+        +file(string key) mixed
+        +method() string
+        +path() string
+        +isGet() bool
+        +isPost() bool
+        +isPut() bool
+        +isDelete() bool
+        +isAjax() bool
+        +isSecure() bool
+        +ip() string
+        +userAgent() string
+        +getInput() string
+        +json() array
+        +has(string type, string key) bool
+        +all(string type) array
+    }
+
+    class JsonResponse {
+        -data array
+        -statusCode int
+        -headers array
+        +__construct(array data, int statusCode, array headers)
+        +setData(array data) self
+        +setStatusCode(int statusCode) self
+        +setHeader(string name, string value) self
+        +send() void
+        +getData() array
+        +getStatusCode() int
+        +getHeaders() array
+    }
+
+    %% ========== MIDDLEWARE ==========
+    class AuthMiddleware {
+        -tokenService ITokenService
+        -excludedRoutes array
+        +__construct(ITokenService tokenService, array excludedRoutes)
+        +handle(Request request, callable next) Response
+        -extractToken(Request request) string|null
+        -shouldExclude(Request request) bool
+    }
+
+    class ValidationMiddleware {
+        -rules array
+        +__construct(array rules)
+        +handle(Request request, callable next) Response
+        +setRules(array rules) void
+        -validate(Request request) array
+        -validateField(mixed value, string rules) array
+    }
+
+    class LoggingMiddleware {
+        -logger Logger
+        +__construct(Logger logger)
+        +handle(Request request, callable next) Response
+        -logRequest(Request request) void
+        -logResponse(Response response, float duration) void
+    }
+
+    %% ========== EXCEPTIONS ==========
+    class CategoryException {
+        -errorCode string
+        -categoryId string|null
+        +CATEGORY_NOT_FOUND = 'CAT_001'
+        +DUPLICATE_SLUG = 'CAT_002'
+        +INVALID_PARENT = 'CAT_003'
+        +CIRCULAR_REFERENCE = 'CAT_004'
+        +DELETE_WITH_CHILDREN = 'CAT_005'
+        +VALIDATION_ERROR = 'CAT_006'
+        +__construct(string message, string errorCode, string categoryId, int code, Throwable previous)
+        +getErrorCode() string
+        +getCategoryId() string|null
+        +static notFound(string categoryId) CategoryException
+        +static duplicateSlug(string slug) CategoryException
+        +static invalidParent(string categoryId, string parentId) CategoryException
+        +static circularReference(string categoryId, string parentId) CategoryException
+        +static deleteWithChildren(string categoryId) CategoryException
+    }
+
+    %% ========== RELATIONSHIPS ==========
+    IRepository <|.. ICategoryRepository
+    ICategoryRepository <|.. MongoCategoryRepository
+    
+    IService <|.. CategoryService
+    
+    BaseController <|-- CategoryController
+    
+    CategoryController --> CategoryService : uses
+    CategoryController --> CategoryValidationService : uses
+    CategoryController --> CategoryImportExportService : uses
+    
+    CategoryService --> ICategoryRepository : uses
+    CategoryService --> CategoryTree : creates
+    
+    CategoryValidationService --> CategoryService : uses
+    
+    CategoryImportExportService --> CategoryService : uses
+    
+    MongoCategoryRepository --> MongoDBManager : uses
+    MongoCategoryRepository --> Category : converts to/from
+    
+    Category --> CategoryPath : has
+    CategoryTree --> Category : contains
+    
+    AuthMiddleware --> ITokenService : uses
+    ValidationMiddleware --> CategoryValidationService : uses

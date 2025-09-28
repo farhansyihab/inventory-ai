@@ -1,0 +1,472 @@
+classDiagram
+    note for MongoDBManager "Singleton pattern untuk MongoDB connection management"
+
+    %% ========== CORE INTERFACES ==========
+    class Middleware {
+        <<interface>>
+        +handle(Request request, callable next) Response
+    }
+
+    %% ========== DATABASE LAYER ==========
+    class MongoDBManager {
+        -static Client client
+        -static Database database
+        -static LoggerInterface logger
+        -static string connectionString
+        -static array options
+        -static bool initialized
+        +initialize(LoggerInterface logger, string connectionString, array options) void
+        +getClient() Client
+        +getDatabase() Database
+        +getCollection(string name) Collection
+        +ping() bool
+        +startSession() Session|null
+        +getConnectionInfo() array
+        +createIndexes(string collectionName, array indexes) array
+        +collectionExists(string collectionName) bool
+        +getStats() array
+        +getCollectionStats(string collectionName) array
+        +dropCollection(string collectionName) array
+        +getServerInfo() array
+        +getServerVersion() array
+        +reset() void
+        +getLogger() LoggerInterface
+        +setLogger(LoggerInterface logger) void
+        -connect() void
+        -validateConnection() bool
+        -handleConnectionError(Exception e) void
+    }
+
+    class DatabaseConnection {
+        -client Client
+        -database Database
+        -logger LoggerInterface
+        -connectionString string
+        -options array
+        -lastActivity DateTime
+        +__construct(string connectionString, array options, LoggerInterface logger)
+        +connect() void
+        +disconnect() void
+        +isConnected() bool
+        +getDatabase() Database
+        +getCollection(string name) Collection
+        +ping() bool
+        +getStats() array
+        +getLastActivity() DateTime
+        +updateActivity() void
+        -createClient() Client
+        -validateOptions(array options) array
+    }
+
+    %% ========== LOGGING SYSTEM ==========
+    class Logger {
+        -logFile string
+        -defaultLevel string
+        -logLevels array
+        -maxFileSize int
+        -backupCount int
+        +LEVEL_DEBUG = 'debug'
+        +LEVEL_INFO = 'info'
+        +LEVEL_WARNING = 'warning'
+        +LEVEL_ERROR = 'error'
+        +LEVEL_CRITICAL = 'critical'
+        +__construct(string logFile, string defaultLevel, int maxFileSize, int backupCount)
+        +log(mixed level, string|Stringable message, array context) void
+        +debug(string|Stringable message, array context) void
+        +info(string|Stringable message, array context) void
+        +error(string|Stringable message, array context) void
+        +warning(string|Stringable message, array context) void
+        +critical(string|Stringable message, array context) void
+        +getLogFile() string
+        +setLogLevel(string level) void
+        +rotateLog() bool
+        -shouldLog(string level) bool
+        -formatMessage(string level, string message, array context) string
+        -writeToFile(string message) void
+        -createLogDirectory() void
+    }
+
+    class LogEntry {
+        -timestamp DateTime
+        -level string
+        -message string
+        -context array
+        -channel string
+        -extra array
+        +__construct(string level, string message, array context, string channel, array extra)
+        +getTimestamp() DateTime
+        +getLevel() string
+        +getMessage() string
+        +getContext() array
+        +getChannel() string
+        +getExtra() array
+        +toArray() array
+        +toString() string
+        +static create(string level, string message, array context) LogEntry
+    }
+
+    %% ========== ROUTING SYSTEM ==========
+    class Router {
+        -routes array
+        -routeGroups array
+        -notFoundHandler callable
+        -currentGroupPrefix string
+        -testMode bool
+        -middleware array
+        +__construct()
+        +enableTestMode() void
+        +get(string path, mixed handler) self
+        +post(string path, mixed handler) self
+        +put(string path, mixed handler) self
+        +delete(string path, mixed handler) self
+        +patch(string path, mixed handler) self
+        +options(string path, mixed handler) self
+        +any(string path, mixed handler) self
+        +addRoute(string method, string path, mixed handler) self
+        +group(string prefix, callable callback) self
+        +setNotFoundHandler(callable handler) self
+        +dispatch(string method, string path) mixed
+        +addMiddleware(Middleware middleware) self
+        +addGroupMiddleware(Middleware middleware) self
+        -executeHandler(mixed handler, array params) mixed
+        -matchRoute(string routePath, string requestPath, array& params) bool
+        -handleNotFound() mixed
+        -normalizePath(string path) string
+        +getRoutes() array
+        +clearRoutes() void
+        -applyMiddleware(Request request, callable next) Response
+    }
+
+    class Route {
+        -method string
+        -path string
+        -handler callable
+        -middleware array
+        -name string|null
+        +__construct(string method, string path, callable handler, array middleware, string name)
+        +getMethod() string
+        +getPath() string
+        +getHandler() callable
+        +getMiddleware() array
+        +getName() string|null
+        +addMiddleware(Middleware middleware) void
+        +setName(string name) void
+        +matches(string method, string path) bool
+        +extractParameters(string requestPath) array
+    }
+
+    class RouteGroup {
+        -prefix string
+        -middleware array
+        -routes array
+        +__construct(string prefix, array middleware)
+        +getPrefix() string
+        +getMiddleware() array
+        +getRoutes() array
+        +addRoute(Route route) void
+        +addMiddleware(Middleware middleware) void
+    }
+
+    %% ========== HTTP LAYER ==========
+    class Request {
+        -get array
+        -post array
+        -server array
+        -headers array
+        -cookies array
+        -files array
+        -input string
+        -jsonData array|null
+        -parsed bool
+        +__construct(array get, array post, array server, array cookies, array files, string input)
+        +get(string key, mixed default) mixed
+        +post(string key, mixed default) mixed
+        +server(string key, mixed default) mixed
+        +header(string key, mixed default) mixed
+        +cookie(string key, mixed default) mixed
+        +file(string key) mixed
+        +method() string
+        +path() string
+        +isGet() bool
+        +isPost() bool
+        +isPut() bool
+        +isDelete() bool
+        +isAjax() bool
+        +isSecure() bool
+        +ip() string
+        +userAgent() string
+        +getInput() string
+        +json() array
+        +has(string type, string key) bool
+        +all(string type) array
+        +getContentType() string
+        +getAccept() string
+        +isJson() bool
+        +getBearerToken() string|null
+        -parseJsonInput() void
+        -parseHeaders() void
+        -normalizeServerVars() void
+    }
+
+    class Response {
+        -content string
+        -statusCode int
+        -headers array
+        -cookies array
+        +__construct(string content, int statusCode, array headers)
+        +setContent(string content) self
+        +setStatusCode(int statusCode) self
+        +setHeader(string name, string value) self
+        +setCookie(string name, string value, int expire, string path, string domain, bool secure, bool httpOnly) self
+        +json(array data, int statusCode) self
+        +redirect(string url, int statusCode) self
+        +send() void
+        +getContent() string
+        +getStatusCode() int
+        +getHeaders() array
+        +getCookies() array
+        -sendHeaders() void
+        -sendCookies() void
+        -sendBody() void
+    }
+
+    class JsonResponse {
+        -data array
+        -statusCode int
+        -headers array
+        -encodingOptions int
+        +__construct(array data, int statusCode, array headers, int encodingOptions)
+        +setData(array data) self
+        +setStatusCode(int statusCode) self
+        +setHeader(string name, string value) self
+        +setEncodingOptions(int options) self
+        +send() void
+        +getData() array
+        +getStatusCode() int
+        +getHeaders() array
+        -encodeData() string
+        -setJsonHeaders() void
+    }
+
+    %% ========== CONTROLLER BASE ==========
+    class BaseController {
+        #logger Logger
+        #requestData array
+        #testMode bool
+        #lastResponse array|null
+        +__construct(Logger logger)
+        +enableTestMode() void
+        +setRequestData(array data) void
+        #parseRequestData() void
+        #getRequestValue(string key, mixed default) mixed
+        #getRequestData() array
+        #jsonResponse(array data, int statusCode) array|null
+        #successResponse(array data, string message, int statusCode) array|null
+        #errorResponse(string message, array errors, int statusCode) array|null
+        #notFoundResponse(string message) array|null
+        #unauthorizedResponse(string message) array|null
+        #validationErrorResponse(array errors, string message) array|null
+        #getAuthUserId() string|null
+        #isAuthenticated() bool
+        #validateRequiredFields(array fields) array
+        #logAction(string action, array context) void
+        #getPaginationParams() array
+        #getSortingParams() array
+        +buildTestResponse(array data, int statusCode, bool success, string message) array
+        +getLastResponse() array
+        #getRequest() Request
+        #setResponseHeaders(array headers) void
+    }
+
+    %% ========== ERROR HANDLING ==========
+    class ErrorHandler {
+        -logger LoggerInterface
+        -displayErrors bool
+        -environment string
+        -registered bool
+        +__construct(LoggerInterface logger, bool displayErrors, string environment)
+        +register() void
+        +handleError(int errno, string errstr, string errfile, int errline) bool
+        +handleException(Throwable exception) void
+        +handleShutdown() void
+        +setDisplayErrors(bool displayErrors) void
+        +setEnvironment(string environment) void
+        -sendErrorResponse(Throwable exception) void
+        -getErrorType(int errno) string
+        -shouldReportError(int errno) bool
+        -formatErrorResponse(Throwable exception, int statusCode) array
+        -logError(Throwable exception) void
+    }
+
+    class AppException {
+        -errorCode string
+        -context array
+        -timestamp DateTime
+        +__construct(string message, string errorCode, array context, int code, Throwable previous)
+        +getErrorCode() string
+        +getContext() array
+        +getTimestamp() DateTime
+        +toArray() array
+        +static create(string message, string errorCode, array context) AppException
+    }
+
+    %% ========== CONFIGURATION MANAGEMENT ==========
+    class ConfigManager {
+        -static array config
+        -static string configPath
+        -static bool loaded
+        -static LoggerInterface logger
+        +load(string configPath, LoggerInterface logger) void
+        +get(string key, mixed default) mixed
+        +set(string key, mixed value) void
+        +has(string key) bool
+        +getAll() array
+        +reload() void
+        +save() bool
+        +getEnvironment() string
+        +isProduction() bool
+        +isDevelopment() bool
+        +isTesting() bool
+        -validateConfig(array config) bool
+        -parseConfigFile(string filePath) array
+        -mergeConfig(array baseConfig, array customConfig) array
+        -resolveEnvironmentVariables(array config) array
+    }
+
+    class Configuration {
+        -data array
+        -environment string
+        +__construct(array data, string environment)
+        +get(string key, mixed default) mixed
+        +set(string key, mixed value) void
+        +has(string key) bool
+        +getAll() array
+        +getEnvironment() string
+        +isProduction() bool
+        +isDevelopment() bool
+        +getDatabaseConfig() array
+        +getLoggingConfig() array
+        +getAppConfig() array
+        -getNestedValue(array data, string key) mixed
+    }
+
+    %% ========== HTTP CLIENT ==========
+    class HttpClient {
+        -defaultOptions array
+        -logger LoggerInterface
+        -timeout float
+        -verifySSL bool
+        +__construct(array defaultOptions, LoggerInterface logger, float timeout, bool verifySSL)
+        +get(string url, array options) array
+        +post(string url, mixed data, array options) array
+        +put(string url, mixed data, array options) array
+        +delete(string url, array options) array
+        +patch(string url, mixed data, array options) array
+        +head(string url, array options) array
+        +isUrlReachable(string url, float timeout) bool
+        +setDefaultOptions(array options) void
+        +getDefaultOptions() array
+        +setTimeout(float timeout) void
+        +setVerifySSL(bool verify) void
+        -request(string method, string url, mixed data, array options) array
+        -createStreamContext(string method, mixed data, array options) resource
+        -executeRequest(string url, resource context, array options) array
+        -handleError(int statusCode, string response, string url) void
+        -logRequest(string method, string url, array options, float duration) void
+        -prepareData(mixed data) string
+        -parseResponse(string response, array meta) array
+    }
+
+    class HttpResponse {
+        -statusCode int
+        -headers array
+        -body string
+        -meta array
+        -duration float
+        +__construct(int statusCode, array headers, string body, array meta, float duration)
+        +getStatusCode() int
+        +getHeaders() array
+        +getBody() string
+        +getMeta() array
+        +getDuration() float
+        +isSuccess() bool
+        +isRedirect() bool
+        +isClientError() bool
+        +isServerError() bool
+        +json() array
+        +toArray() array
+    }
+
+    %% ========== PERFORMANCE MONITORING ==========
+    class PerformanceBenchmark {
+        -static array benchmarks
+        -static bool enabled
+        -static float startTime
+        -static int startMemory
+        +enable() void
+        +disable() void
+        +measure(callable fn, string operation, array context) mixed
+        +measureBatch(array operations, bool parallel) array
+        +getResults() array
+        +getLatestResult() array|null
+        +clear() void
+        +generateReport() array
+        +meetsThreshold(string operation, float maxDuration, int maxMemory) bool
+        +startTimer() void
+        +stopTimer() float
+        +getMemoryUsage() int
+        +getPeakMemoryUsage() int
+        -recordBenchmark(string operation, float duration, int memoryUsed, array context) void
+        -measureParallel(array operations) array
+        -formatMemory(int bytes) string
+    }
+
+    class BenchmarkResult {
+        -operation string
+        -duration float
+        -memoryUsed int
+        -peakMemory int
+        -context array
+        -timestamp DateTime
+        +__construct(string operation, float duration, int memoryUsed, int peakMemory, array context, DateTime timestamp)
+        +getOperation() string
+        +getDuration() float
+        +getMemoryUsed() int
+        +getPeakMemory() int
+        +getContext() array
+        +getTimestamp() DateTime
+        +toArray() array
+        +isWithinThreshold(float maxDuration, int maxMemory) bool
+    }
+
+    %% ========== RELATIONSHIPS ==========
+    Middleware <|.. AuthMiddleware
+    Middleware <|.. LoggingMiddleware
+    Middleware <|.. RateLimitingMiddleware
+
+    MongoDBManager --> DatabaseConnection : uses
+    MongoDBManager --> Logger : uses
+    
+    Router --> Route : contains
+    Router --> RouteGroup : contains
+    Router --> Middleware : uses
+    
+    Route --> Middleware : has
+    
+    BaseController --> Logger : uses
+    BaseController --> Request : uses
+    BaseController --> Response : creates
+    
+    ErrorHandler --> Logger : uses
+    ErrorHandler --> AppException : creates
+    
+    ConfigManager --> Configuration : creates
+    ConfigManager --> Logger : uses
+    
+    HttpClient --> Logger : uses
+    HttpClient --> HttpResponse : returns
+    
+    PerformanceBenchmark --> BenchmarkResult : creates
+    PerformanceBenchmark --> Logger : uses
+    
+    Logger --> LogEntry : creates

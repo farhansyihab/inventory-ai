@@ -1,0 +1,76 @@
+Session 3.1 Dashboard Test Log - Sab 27 Sep 2025 19:24:18 WIB
+===========================================
+Setting up dashboard test data...
+Dashboard test data setup completed.
+[2025-09-27 19:24:18] Starting metrics test: tests/Unit/Service/Metrics/InventoryMetricsTest.php
+PHPUnit 9.6.27 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.12
+Configuration: /var/www/html/inventory-ai/tests/phpunit.xml
+Random Seed:   1758975858
+Warning:       No code coverage driver available
+
+Inventory Metrics (Tests\Unit\Service\Metrics\InventoryMetrics)
+ ✔ Inventory metrics creation [0.13 ms]
+ ✔ Get inventory metrics returns array [0.07 ms]
+ ✔ Get inventory alerts returns array [7.39 ms]
+ ✔ Inventory metrics structure [0.16 ms]
+ ✔ Inventory metrics with detailed true [0.04 ms]
+ ✔ Inventory metrics values [0.17 ms]
+
+Time: 00:00.012, Memory: 6.00 MB
+
+OK (6 tests, 21 assertions)
+[2025-09-27 19:24:18] Starting metrics test: tests/Unit/Service/Metrics/UserMetricsTest.php
+PHPUnit 9.6.27 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.12
+Configuration: /var/www/html/inventory-ai/tests/phpunit.xml
+Random Seed:   1758975858
+Warning:       No code coverage driver available
+
+User Metrics (Tests\Unit\Service\Metrics\UserMetrics)
+ ✔ User metrics creation [0.22 ms]
+ ✔ Get user metrics returns array [0.56 ms]
+ ✔ Get user alerts returns array [0.09 ms]
+ ✔ User metrics structure [0.06 ms]
+ ✔ User metrics values [11.21 ms]
+
+Time: 00:00.016, Memory: 8.00 MB
+
+OK (5 tests, 20 assertions)
+[2025-09-27 19:24:18] Starting metrics test: tests/Unit/Service/Metrics/AIMetricsTest.php
+PHPUnit 9.6.27 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.12
+Configuration: /var/www/html/inventory-ai/tests/phpunit.xml
+Random Seed:   1758975859
+Warning:       No code coverage driver available
+
+AIMetrics (Tests\Unit\Service\Metrics\AIMetrics)
+ ✔ A i metrics creation [0.28 ms]
+ ✔ Get a i metrics returns array [2.18 ms]
+ ✔ Get a i metrics with fallback [0.47 ms]
+ ✔ Get a i alerts returns array [12.06 ms]
+ ✔ A i metrics basic structure [0.52 ms]
+
+Time: 00:00.021, Memory: 6.00 MB
+
+OK (5 tests, 13 assertions)
+[2025-09-27 19:24:19] Starting metrics test: tests/Unit/Service/Metrics/SystemMetricsTest.php
+PHPUnit 9.6.27 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.12
+Configuration: /var/www/html/inventory-ai/tests/phpunit.xml
+Random Seed:   1758975859
+Warning:       No code coverage driver available
+
+System Metrics (Tests\Unit\Service\Metrics\SystemMetrics)
+ ✔ System metrics creation [0.17 ms]
+ ✔ Get system metrics returns array [6.90 ms]
+ ✔ Get system alerts returns array [0.08 ms]
+ ✔ System metrics structure [0.06 ms]
+
+Time: 00:00.011, Memory: 6.00 MB
+
+OK (4 tests, 8 assertions)
