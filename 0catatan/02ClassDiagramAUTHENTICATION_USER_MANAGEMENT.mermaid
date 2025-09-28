@@ -1,0 +1,559 @@
+classDiagram
+    note for AuthService "Mengelola autentikasi, registrasi, dan manajemen sesi pengguna"
+
+    %% ========== INTERFACES ==========
+    class IRepository {
+        <<interface>>
+        +findById(string id) array|null
+        +find(array filter = [], array options = []) array
+        +create(array data) string
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter = []) int
+        +findOne(array filter = []) array|null
+    }
+
+    class ITokenRepository {
+        <<interface>>
+        +storeRefreshToken(string tokenHash, string userId, DateTime expiresAt) bool
+        +revokeRefreshToken(string tokenHash) bool
+        +isRefreshTokenRevoked(string tokenHash) bool
+        +findRefreshToken(string tokenHash) array|null
+        +cleanupExpiredTokens() int
+        +revokeAllUserTokens(string userId) bool
+    }
+
+    class IService {
+        <<interface>>
+        +findById(string id) array|null
+        +find(array filter = [], array options = []) array
+        +create(array data) array
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter = []) int
+        +validate(array data) bool
+        +findOne(array filter = []) array|null
+    }
+
+    class IAuthService {
+        <<interface>>
+        +register(array userData) array
+        +login(string username, string password) array
+        +refreshToken(string refreshToken) array
+        +logout(string refreshToken) bool
+        +verifyCredentials(string username, string password) array|false
+        +changePassword(string userId, string currentPassword, string newPassword) bool
+        +validateToken(string token) array|false
+    }
+
+    class IUserService {
+        <<interface>>
+        +findByUsername(string username) array|null
+        +findByEmail(string email) array|null
+        +getUserActivity(string userId, DateRange range) array
+        +getUserStats() array
+        +getActiveUsersCount() int
+        +updateProfile(string userId, array data) array
+        +deactivateUser(string userId) bool
+    }
+
+    class ITokenService {
+        <<interface>>
+        +generateAccessToken(array user) string
+        +generateRefreshToken(array user) string
+        +verifyAccessToken(string token) array|false
+        +verifyRefreshToken(string token) array|false
+        +revokeRefreshToken(string token) bool
+        +isRefreshTokenRevoked(string token) bool
+        +getAccessTokenExpiry() int
+        +getRefreshTokenExpiry() int
+    }
+
+    class Middleware {
+        <<interface>>
+        +handle(Request request, callable next) Response
+    }
+
+    %% ========== DOMAIN MODELS ==========
+    class User {
+        -id string|null
+        -username string
+        -email string
+        -passwordHash string
+        -role string
+        -active bool
+        -lastLogin DateTime|null
+        -loginAttempts int
+        -lockedUntil DateTime|null
+        -createdAt DateTime
+        -updatedAt DateTime
+        +ROLE_ADMIN = 'admin'
+        +ROLE_MANAGER = 'manager'
+        +ROLE_STAFF = 'staff'
+        +VALID_ROLES = [ROLE_ADMIN, ROLE_MANAGER, ROLE_STAFF]
+        +MAX_LOGIN_ATTEMPTS = 5
+        +LOCKOUT_DURATION = 900
+        +__construct(string username, string email, string passwordHash, string role, string id, DateTime createdAt, DateTime updatedAt, bool active, DateTime lastLogin, int loginAttempts, DateTime lockedUntil)
+        +getId() string|null
+        +getUsername() string
+        +getEmail() string
+        +getPasswordHash() string
+        +getRole() string
+        +isActive() bool
+        +getLastLogin() DateTime|null
+        +getLoginAttempts() int
+        +getLockedUntil() DateTime|null
+        +getCreatedAt() DateTime
+        +getUpdatedAt() DateTime
+        +setUsername(string username) void
+        +setEmail(string email) void
+        +setPasswordHash(string hash) void
+        +setRole(string role) void
+        +setActive(bool active) void
+        +setLastLogin(DateTime lastLogin) void
+        +setLoginAttempts(int attempts) void
+        +setLockedUntil(DateTime lockedUntil) void
+        +setUpdatedAt(DateTime updatedAt) void
+        +toDocument() array
+        +fromDocument(mixed document) User
+        -parseDate(mixed dateValue) DateTime
+        +validate() void
+        +isAdmin() bool
+        +isManager() bool
+        +isStaff() bool
+        +isLocked() bool
+        +incrementLoginAttempts() void
+        +resetLoginAttempts() void
+        +lockAccount() void
+        +unlockAccount() void
+        +toArray() array
+        +__toString() string
+    }
+
+    class RefreshToken {
+        -tokenHash string
+        -userId string
+        -expiresAt DateTime
+        -revoked bool
+        -createdAt DateTime
+        +__construct(string tokenHash, string userId, DateTime expiresAt, bool revoked, DateTime createdAt)
+        +getTokenHash() string
+        +getUserId() string
+        +getExpiresAt() DateTime
+        +isRevoked() bool
+        +getCreatedAt() DateTime
+        +revoke() void
+        +isExpired() bool
+        +isValid() bool
+        +toArray() array
+        +static create(string token, string userId, int expiresIn) RefreshToken
+    }
+
+    class AuthResult {
+        -success bool
+        -user array|null
+        -accessToken string|null
+        -refreshToken string|null
+        -message string
+        -errorCode string|null
+        +__construct(bool success, array user, string accessToken, string refreshToken, string message, string errorCode)
+        +isSuccess() bool
+        +getUser() array|null
+        +getAccessToken() string|null
+        +getRefreshToken() string|null
+        +getMessage() string
+        +getErrorCode() string|null
+        +toArray() array
+        +static success(array user, string accessToken, string refreshToken, string message) AuthResult
+        +static error(string message, string errorCode) AuthResult
+    }
+
+    class UserSession {
+        -sessionId string
+        -userId string
+        -ipAddress string
+        -userAgent string
+        -loginTime DateTime
+        -lastActivity DateTime
+        -expiresAt DateTime
+        -active bool
+        +__construct(string sessionId, string userId, string ipAddress, string userAgent, DateTime loginTime, DateTime lastActivity, DateTime expiresAt, bool active)
+        +getSessionId() string
+        +getUserId() string
+        +getIpAddress() string
+        +getUserAgent() string
+        +getLoginTime() DateTime
+        +getLastActivity() DateTime
+        +getExpiresAt() DateTime
+        +isActive() bool
+        +updateActivity() void
+        +invalidate() void
+        +isExpired() bool
+        +toArray() array
+    }
+
+    %% ========== REPOSITORY LAYER ==========
+    class UserRepository {
+        -collection Collection
+        -logger Logger
+        +__construct(Collection collection, Logger logger)
+        +findUserById(string id) User|null
+        +findUserByUsername(string username) User|null
+        +findUserByEmail(string email) User|null
+        +saveUser(User user) string
+        +deleteUser(User user) bool
+        +usernameExists(string username) bool
+        +emailExists(string email) bool
+        +updateLastLogin(string userId, DateTime loginTime) bool
+        +incrementLoginAttempts(string userId) bool
+        +resetLoginAttempts(string userId) bool
+        +lockUserAccount(string userId, DateTime lockedUntil) bool
+        +unlockUserAccount(string userId) bool
+        +findActiveUsers() array
+        +getUserStats() array
+        +createIndexes() array
+        -documentToArray(mixed document) array
+        -normalizeToUTCDateTime(mixed value) UTCDateTime
+        -parseDuplicateError(string mongoMessage) string
+    }
+
+    class MongoTokenRepository {
+        -collection Collection
+        -logger Logger
+        +__construct(Logger logger)
+        +storeRefreshToken(string tokenHash, string userId, DateTime expiresAt) bool
+        +revokeRefreshToken(string tokenHash) bool
+        +isRefreshTokenRevoked(string tokenHash) bool
+        +findRefreshToken(string tokenHash) array|null
+        +cleanupExpiredTokens() int
+        +revokeAllUserTokens(string userId) bool
+        +getUserTokens(string userId) array
+        -documentToArray(mixed document) array
+        -normalizeToUTCDateTime(mixed value) UTCDateTime
+    }
+
+    class SessionRepository {
+        -collection Collection
+        -logger Logger
+        +__construct(Logger logger)
+        +createSession(UserSession session) bool
+        +updateSessionActivity(string sessionId, DateTime activityTime) bool
+        +invalidateSession(string sessionId) bool
+        +invalidateUserSessions(string userId) bool
+        +findSession(string sessionId) UserSession|null
+        +findUserSessions(string userId) array
+        +cleanupExpiredSessions() int
+        -documentToArray(mixed document) array
+    }
+
+    %% ========== SERVICE LAYER ==========
+    class UserService {
+        -userRepository UserRepository
+        -logger Logger
+        +__construct(UserRepository userRepository, Logger logger)
+        +findByUsername(string username) array|null
+        +findByEmail(string email) array|null
+        +getUserActivity(string userId, DateRange range) array
+        +getUserStats() array
+        +getActiveUsersCount() int
+        +updateProfile(string userId, array data) array
+        +deactivateUser(string userId) bool
+        +createUser(array userData) array
+        +updateUser(string userId, array data) array
+        +deleteUser(string userId) bool
+        +listUsers(array filter, array options) array
+        +changeUserRole(string userId, string newRole) array
+        +validateUserData(array data, bool isCreate) array
+        -convertToArray(array userData) array
+        -validatePasswordStrength(string password) array
+        -generateUsername(string email) string
+        -hashPassword(string password) string
+    }
+
+    class AuthService {
+        -userService UserService
+        -tokenService ITokenService
+        -tokenRepository ITokenRepository
+        -sessionRepository SessionRepository
+        -logger Logger
+        -maxLoginAttempts int
+        -lockoutDuration int
+        +__construct(UserService userService, ITokenService tokenService, ITokenRepository tokenRepository, SessionRepository sessionRepository, Logger logger, int maxLoginAttempts, int lockoutDuration)
+        +register(array userData) AuthResult
+        +login(string username, string password) AuthResult
+        +refreshToken(string refreshToken) AuthResult
+        +logout(string refreshToken) bool
+        +verifyCredentials(string username, string password) array|false
+        +changePassword(string userId, string currentPassword, string newPassword) bool
+        +validateToken(string token) array|false
+        +invalidateUserSessions(string userId) bool
+        +getUserSessions(string userId) array
+        +validatePasswordStrength(string password) array
+        -generateTokens(array user) array
+        -validateUserAccount(User user) void
+        -handleFailedLogin(User user) void
+        -handleSuccessfulLogin(User user) void
+        -createUserSession(User user, Request request) string
+        -validateRegistrationData(array userData) array
+        -checkRateLimit(string identifier) bool
+    }
+
+    class JwtTokenService {
+        -secretKey string
+        -algorithm string
+        -accessTokenExpiry int
+        -refreshTokenExpiry int
+        -logger Logger
+        -tokenRepository ITokenRepository
+        +__construct(string secretKey, string algorithm, int accessTokenExpiry, int refreshTokenExpiry, Logger logger, ITokenRepository tokenRepository)
+        +generateAccessToken(array user) string
+        +generateRefreshToken(array user) string
+        +verifyAccessToken(string token) array|false
+        +verifyRefreshToken(string token) array|false
+        +revokeRefreshToken(string token) bool
+        +isRefreshTokenRevoked(string token) bool
+        +getAccessTokenExpiry() int
+        +getRefreshTokenExpiry() int
+        +decodeToken(string token) array
+        -signToken(array payload) string
+        -verifySignature(string token) bool
+        -validateTokenPayload(array payload) bool
+        -hashToken(string token) string
+    }
+
+    class PasswordService {
+        -cost int
+        +__construct(int cost)
+        +hash(string password) string
+        +verify(string password, string hash) bool
+        +needsRehash(string hash) bool
+        +validateStrength(string password) array
+        +generateRandomPassword(int length) string
+    }
+
+    %% ========== INFRASTRUCTURE ==========
+    class MongoDBManager {
+        -static Client client
+        -static Database database
+        -static LoggerInterface logger
+        +initialize(LoggerInterface logger) void
+        +getClient() Client
+        +getDatabase() Database
+        +getCollection(string name) Collection
+        +ping() bool
+    }
+
+    class Logger {
+        -logFile string
+        -defaultLevel string
+        +__construct(string logFile, string defaultLevel)
+        +log(mixed level, string|Stringable message, array context) void
+        +debug(string|Stringable message, array context) void
+        +info(string|Stringable message, array context) void
+        +error(string|Stringable message, array context) void
+        +warning(string|Stringable message, array context) void
+        +getLogFile() string
+    }
+
+    %% ========== CONTROLLER LAYER ==========
+    class BaseController {
+        #logger Logger
+        #requestData array
+        #testMode bool
+        #lastResponse array|null
+        +__construct(Logger logger)
+        +enableTestMode() void
+        +setRequestData(array data) void
+        #parseRequestData() void
+        #getRequestValue(string key, mixed default) mixed
+        #getRequestData() array
+        #jsonResponse(array data, int statusCode) array|null
+        #successResponse(array data, string message, int statusCode) array|null
+        #errorResponse(string message, array errors, int statusCode) array|null
+        #notFoundResponse(string message) array|null
+        #unauthorizedResponse(string message) array|null
+        #validationErrorResponse(array errors, string message) array|null
+        #getAuthUserId() string|null
+        #isAuthenticated() bool
+        #validateRequiredFields(array fields) array
+        #logAction(string action, array context) void
+        #getPaginationParams() array
+        #getSortingParams() array
+        +buildTestResponse(array data, int statusCode, bool success, string message) array
+        +getLastResponse() array
+    }
+
+    class AuthController {
+        -authService AuthService
+        -userService UserService
+        -logger Logger
+        +__construct(AuthService authService, UserService userService, Logger logger)
+        +register(Request request) JsonResponse
+        +login(Request request) JsonResponse
+        +refreshToken(Request request) JsonResponse
+        +logout(Request request) JsonResponse
+        +profile(Request request) JsonResponse
+        +changePassword(Request request) JsonResponse
+        +getSessions(Request request) JsonResponse
+        +invalidateSessions(Request request) JsonResponse
+        -validateRegistrationData(array data) array
+        -validateLoginData(array data) array
+        -validatePasswordChangeData(array data) array
+        -buildAuthResponse(AuthResult result) array
+        -logAuthAction(string action, array context) void
+    }
+
+    class UserController {
+        -userService UserService
+        -authService AuthService
+        -logger Logger
+        +__construct(UserService userService, AuthService authService, Logger logger)
+        +listUsers(Request request) JsonResponse
+        +getUser(Request request) JsonResponse
+        +createUser(Request request) JsonResponse
+        +updateUser(Request request) JsonResponse
+        +deleteUser(Request request) JsonResponse
+        +updateProfile(Request request) JsonResponse
+        +changeUserRole(Request request) JsonResponse
+        +getUserStats(Request request) JsonResponse
+        -validateUserCreationData(array data) array
+        -validateUserUpdateData(array data, string userId) array
+        -validateRoleChangeData(array data) array
+        -buildUserResponse(array user) array
+        -buildUsersResponse(array users) array
+        -logUserAction(string action, array context) void
+    }
+
+    %% ========== REQUEST/RESPONSE ==========
+    class Request {
+        -get array
+        -post array
+        -server array
+        -headers array
+        -cookies array
+        -files array
+        -input string
+        +__construct(array get, array post, array server, array cookies, array files, string input)
+        +get(string key, mixed default) mixed
+        +post(string key, mixed default) mixed
+        +server(string key, mixed default) mixed
+        +header(string key, mixed default) mixed
+        +cookie(string key, mixed default) mixed
+        +file(string key) mixed
+        +method() string
+        +path() string
+        +isGet() bool
+        +isPost() bool
+        +isPut() bool
+        +isDelete() bool
+        +isAjax() bool
+        +isSecure() bool
+        +ip() string
+        +userAgent() string
+        +getInput() string
+        +json() array
+        +has(string type, string key) bool
+        +all(string type) array
+    }
+
+    class JsonResponse {
+        -data array
+        -statusCode int
+        -headers array
+        +__construct(array data, int statusCode, array headers)
+        +setData(array data) self
+        +setStatusCode(int statusCode) self
+        +setHeader(string name, string value) self
+        +send() void
+        +getData() array
+        +getStatusCode() int
+        +getHeaders() array
+    }
+
+    %% ========== MIDDLEWARE ==========
+    class AuthMiddleware {
+        -tokenService ITokenService
+        -excludedRoutes array
+        +__construct(ITokenService tokenService, array excludedRoutes)
+        +handle(Request request, callable next) Response
+        -extractToken(Request request) string|null
+        -shouldExclude(Request request) bool
+    }
+
+    class RoleMiddleware {
+        -allowedRoles array
+        +__construct(array allowedRoles)
+        +handle(Request request, callable next) Response
+        -hasRequiredRole(array user) bool
+    }
+
+    class RateLimitingMiddleware {
+        -maxRequests int
+        -windowSeconds int
+        -storage array
+        +__construct(int maxRequests, int windowSeconds)
+        +handle(Request request, callable next) Response
+        -getClientIdentifier(Request request) string
+        -isRateLimited(string identifier) bool
+        -incrementRequestCount(string identifier) void
+        -cleanupExpiredEntries() void
+    }
+
+    %% ========== EXCEPTIONS ==========
+    class AuthException {
+        -errorCode string
+        +INVALID_CREDENTIALS = 'AUTH_001'
+        +ACCOUNT_LOCKED = 'AUTH_002'
+        +INVALID_TOKEN = 'AUTH_003'
+        +EXPIRED_TOKEN = 'AUTH_004'
+        +INSUFFICIENT_PERMISSIONS = 'AUTH_005'
+        +USER_EXISTS = 'AUTH_006'
+        +__construct(string message, string errorCode, int code, Throwable previous)
+        +getErrorCode() string
+        +static invalidCredentials() AuthException
+        +static accountLocked() AuthException
+        +static invalidToken() AuthException
+        +static expiredToken() AuthException
+        +static insufficientPermissions() AuthException
+        +static userExists() AuthException
+    }
+
+    %% ========== RELATIONSHIPS ==========
+    IRepository <|.. UserRepository
+    ITokenRepository <|.. MongoTokenRepository
+    
+    IService <|.. IAuthService
+    IService <|.. IUserService
+    IAuthService <|.. AuthService
+    IUserService <|.. UserService
+    ITokenService <|.. JwtTokenService
+    
+    BaseController <|-- AuthController
+    BaseController <|-- UserController
+    
+    AuthController --> AuthService : uses
+    AuthController --> UserService : uses
+    
+    UserController --> UserService : uses
+    UserController --> AuthService : uses
+    
+    AuthService --> UserService : uses
+    AuthService --> ITokenService : uses
+    AuthService --> ITokenRepository : uses
+    AuthService --> SessionRepository : uses
+    
+    UserService --> UserRepository : uses
+    
+    JwtTokenService --> ITokenRepository : uses
+    
+    UserRepository --> MongoDBManager : uses
+    UserRepository --> User : converts to/from
+    
+    MongoTokenRepository --> MongoDBManager : uses
+    MongoTokenRepository --> RefreshToken : manages
+    
+    SessionRepository --> MongoDBManager : uses
+    SessionRepository --> UserSession : manages
+    
+    AuthMiddleware --> ITokenService : uses
+    RoleMiddleware --> AuthService : uses

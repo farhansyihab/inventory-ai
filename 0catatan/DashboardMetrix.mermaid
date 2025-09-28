@@ -1,0 +1,581 @@
+classDiagram
+    note for DashboardService "Orchestrator utama untuk mengumpulkan dan mengelola semua metrik dashboard"
+
+    %% ========== CORE INTERFACES ==========
+    class IService {
+        <<interface>>
+        +findById(string id) array|null
+        +find(array filter = [], array options = []) array
+        +create(array data) array
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter = []) int
+        +validate(array data) bool
+        +findOne(array filter = []) array|null
+    }
+
+    class IInventoryService {
+        <<interface>>
+        +getItem(string id) array|null
+        +listItems(array filter = [], array options = []) array
+        +createItem(array data) array
+        +updateItem(string id, array data) array
+        +deleteItem(string id) bool
+        +getLowStockItems(int threshold = 0) array
+        +getOutOfStockItems() array
+        +updateItemQuantity(string id, int quantityChange) array
+        +getInventoryStats() array
+        +searchItems(string query, array options = []) array
+        +validateItemData(array data, bool isCreate = true) array
+        +getItemsByCategory(string categoryId, array options = []) array
+        +getItemsBySupplier(string supplierId, array options = []) array
+    }
+
+    class IUserService {
+        <<interface>>
+        +findByUsername(string username) array|null
+        +findByEmail(string email) array|null
+        +getUserActivity(string userId, DateRange range) array
+        +getUserStats() array
+        +getActiveUsersCount() int
+    }
+
+    class IAIService {
+        <<interface>>
+        +analyzeInventory(array inventoryData, string analysisType) array
+        +generateReport(array inventoryData, string reportType) array
+        +predictStockNeeds(array items, int forecastDays) array
+        +detectAnomalies(array inventoryData) array
+        +setStrategy(string strategyName) bool
+        +getAvailableStrategies() array
+        +isAvailable() bool
+    }
+
+    class Middleware {
+        <<interface>>
+        +handle(Request request, callable next) Response
+    }
+
+    %% ========== SERVICE LAYER ==========
+    class InventoryService {
+        -inventoryRepo IInventoryRepository
+        -logger Logger
+        +__construct(IInventoryRepository inventoryRepo, Logger logger)
+        +getItem(string id) array|null
+        +listItems(array filter, array options) array
+        +createItem(array data) array
+        +updateItem(string id, array data) array
+        +deleteItem(string id) bool
+        +getLowStockItems(int threshold) array
+        +getOutOfStockItems() array
+        +updateItemQuantity(string id, int quantityChange) array
+        +getInventoryStats() array
+        +searchItems(string query, array options) array
+        +validateItemData(array data, bool isCreate) array
+        +getItemsByCategory(string categoryId, array options) array
+        +getItemsBySupplier(string supplierId, array options) array
+        -calculateInventoryHealth(array stats) string
+    }
+
+    class UserService {
+        -userRepository UserRepository
+        -logger Logger
+        +__construct(UserRepository userRepository, Logger logger)
+        +findByUsername(string username) array|null
+        +findByEmail(string email) array|null
+        +getUserActivity(string userId, DateRange range) array
+        +getUserStats() array
+        +getActiveUsersCount() int
+        +getRoleDistribution() array
+        +getSessionMetrics() array
+        -convertToArray(array userData) array
+    }
+
+    class AIService {
+        -strategies array
+        -activeStrategy AIStrategy|null
+        -logger Logger
+        -enabled bool
+        +__construct(Logger logger, bool enabled)
+        +registerStrategy(string name, AIStrategy strategy) void
+        +setStrategy(string strategyName) bool
+        +analyzeInventory(array inventoryData, string analysisType) array
+        +generateReport(array inventoryData, string reportType) array
+        +predictStockNeeds(array items, int forecastDays) array
+        +detectAnomalies(array inventoryData) array
+        +getAvailableStrategies() array
+        +isAvailable() bool
+        +getPerformanceMetrics() array
+        +getUsageStats() array
+    }
+
+    %% ========== DASHBOARD MODELS ==========
+    class DashboardMetrics {
+        -generatedAt DateTime
+        -inventory array
+        -users array
+        -ai array
+        -system array
+        -trends array
+        -alerts array
+        -metadata array
+        +__construct(DateTime generatedAt, array inventory, array users, array ai, array system, array trends, array alerts, array metadata)
+        +getGeneratedAt() DateTime
+        +getInventory() array
+        +getUsers() array
+        +getAi() array
+        +getSystem() array
+        +getTrends() array
+        +getAlerts() array
+        +getMetadata() array
+        +setInventory(array inventory) self
+        +setUsers(array users) self
+        +setAi(array ai) self
+        +setSystem(array system) self
+        +setTrends(array trends) self
+        +setAlerts(array alerts) self
+        +setMetadata(array metadata) self
+        +toArray() array
+        +jsonSerialize() array
+        +isValid() bool
+        +getSummary() string
+        +getHealthScore() float
+        +hasCriticalAlerts() bool
+        +static createEmpty() DashboardMetrics
+        +static createFromArray(array data) DashboardMetrics
+    }
+
+    class DashboardException {
+        -errorCode string
+        -context array
+        +SERVICE_UNAVAILABLE = 'DASH_001'
+        +INVALID_DATA = 'DASH_002'
+        +CACHE_ERROR = 'DASH_003'
+        +METRICS_ERROR = 'DASH_004'
+        +__construct(string message, string errorCode, array context, int code, Throwable previous)
+        +getErrorCode() string
+        +getContext() array
+        +static serviceUnavailable(string serviceName, Throwable previous) self
+        +static invalidData(string message, array context) self
+        +static cacheError(string message, Throwable previous) self
+        +static metricsError(string metricType, Throwable previous) self
+    }
+
+    class HealthStatus {
+        -status string
+        -score float
+        -message string
+        -indicators array
+        +HEALTHY = 'healthy'
+        +WARNING = 'warning'
+        +CRITICAL = 'critical'
+        +UNKNOWN = 'unknown'
+        +__construct(string status, float score, string message, array indicators)
+        +getStatus() string
+        +getScore() float
+        +getMessage() string
+        +getIndicators() array
+        +isHealthy() bool
+        +isWarning() bool
+        +isCritical() bool
+        +toArray() array
+        +static calculateOverall(array healthStatuses) HealthStatus
+    }
+
+    class TrendData {
+        -currentValue float
+        -previousValue float
+        -trend string
+        -changePercentage float
+        -isPositive bool
+        +TREND_UP = 'up'
+        +TREND_DOWN = 'down'
+        +TREND_STABLE = 'stable'
+        +__construct(float currentValue, float previousValue, string trend, float changePercentage, bool isPositive)
+        +getCurrentValue() float
+        +getPreviousValue() float
+        +getTrend() string
+        +getChangePercentage() float
+        +isPositive() bool
+        +toArray() array
+        +static calculateTrend(float current, float previous) TrendData
+    }
+
+    class Alert {
+        -level string
+        -type string
+        -message string
+        -context array
+        -timestamp DateTime
+        -acknowledged bool
+        +LEVEL_INFO = 'info'
+        +LEVEL_WARNING = 'warning'
+        +LEVEL_CRITICAL = 'critical'
+        +TYPE_INVENTORY = 'inventory'
+        +TYPE_SYSTEM = 'system'
+        +TYPE_AI = 'ai'
+        +TYPE_USER = 'user'
+        +__construct(string level, string type, string message, array context, DateTime timestamp, bool acknowledged)
+        +getLevel() string
+        +getType() string
+        +getMessage() string
+        +getContext() array
+        +getTimestamp() DateTime
+        +isAcknowledged() bool
+        +acknowledge() void
+        +isCritical() bool
+        +toArray() array
+        +static createLowStockAlert(array items) Alert
+        +static createSystemAlert(string message, array context) Alert
+    }
+
+    %% ========== METRICS SERVICES ==========
+    class DashboardService {
+        -inventoryMetrics InventoryMetrics
+        -userMetrics UserMetrics
+        -aiMetrics AIMetrics
+        -systemMetrics SystemMetrics
+        -logger LoggerInterface
+        -cache array
+        -cacheTtl int
+        -cacheHits int
+        -cacheMisses int
+        +__construct(InventoryMetrics inventoryMetrics, UserMetrics userMetrics, AIMetrics aiMetrics, SystemMetrics systemMetrics, LoggerInterface logger)
+        +getDashboardMetrics(bool forceRefresh, bool detailed) DashboardMetrics
+        +getHealthStatus() HealthStatus
+        +getCacheStats() array
+        +clearCache() void
+        +setCacheTtl(int seconds) void
+        +getPerformanceMetrics() array
+        +forceRefresh() void
+        -collectAllMetrics(bool detailed) array
+        -generateTrends(array currentMetrics, array previousMetrics) array
+        -generateAlerts(array metrics) array
+        -generateCacheKey(bool detailed) string
+        -isCacheValid(string cacheKey) bool
+        -cacheMetrics(string cacheKey, DashboardMetrics metrics) void
+        -cleanupCache() void
+        -getFallbackMetrics() DashboardMetrics
+        -calculateOverallHealth(array metrics) HealthStatus
+        -recordCacheHit() void
+        -recordCacheMiss() void
+    }
+
+    class InventoryMetrics {
+        -inventoryService IInventoryService
+        -logger LoggerInterface
+        -calculator MetricsCalculator
+        +__construct(IInventoryService inventoryService, LoggerInterface logger, MetricsCalculator calculator)
+        +getInventoryMetrics(bool detailed) array
+        +getInventoryAlerts() array
+        +getInventoryTrends(DateRange range) array
+        +getHealthStatus() HealthStatus
+        -getValueAnalysis() array
+        -getMovementMetrics() array
+        -getStockLevelMetrics() array
+        -getCategoryDistribution() array
+        -getSupplierMetrics() array
+        -calculateTurnoverRate(array items) float
+        -calculateStockoutRisk(array items) float
+        -getAgingInventory() array
+    }
+
+    class UserMetrics {
+        -userService IUserService
+        -logger LoggerInterface
+        -calculator MetricsCalculator
+        +__construct(IUserService userService, LoggerInterface logger, MetricsCalculator calculator)
+        +getUserMetrics() array
+        +getUserAlerts() array
+        +getUserTrends(DateRange range) array
+        +getHealthStatus() HealthStatus
+        -getRoleDistribution() array
+        -getActivityMetrics() array
+        -getSessionMetrics() array
+        -getTodayLoginCount() int
+        -getCurrentlyActiveUsers() int
+        -getAverageSessionTime() string
+        -getRecentActivity(int limit) array
+        -calculateEngagementRate(array activityData) float
+        -getUserGrowth(DateRange range) array
+    }
+
+    class AIMetrics {
+        -aiService IAIService
+        -logger LoggerInterface
+        -calculator MetricsCalculator
+        +__construct(IAIService aiService, LoggerInterface logger, MetricsCalculator calculator)
+        +getAIMetrics(string period) array
+        +getAIAlerts() array
+        +getAITrends(DateRange range) array
+        +getHealthStatus() HealthStatus
+        -calculateStartDate(string period) DateTime
+        -calculatePerformanceMetrics(array analyses) array
+        -calculateAccuracyMetrics(array analyses) array
+        -getStrategyMetrics(array analyses) array
+        -getRecentAnalyses(array analyses, int limit) array
+        -getUsageStatistics() array
+        -getCostMetrics() array
+        -calculateROI(array usageData) float
+    }
+
+    class SystemMetrics {
+        -dbManager MongoDBManager
+        -performanceBenchmark PerformanceBenchmark
+        -logger LoggerInterface
+        -calculator MetricsCalculator
+        -cache array
+        -cacheHits int
+        -cacheMisses int
+        +__construct(MongoDBManager dbManager, PerformanceBenchmark performanceBenchmark, LoggerInterface logger, MetricsCalculator calculator)
+        +getSystemMetrics() array
+        +getSystemAlerts() array
+        +getSystemTrends(DateRange range) array
+        +getHealthStatus() HealthStatus
+        +recordCacheHit() void
+        +recordCacheMiss() void
+        -checkSystemHealth() array
+        -getPerformanceMetrics() array
+        -getDatabaseMetrics() array
+        -getMemoryMetrics() array
+        -getCacheMetrics() array
+        -getRequestMetrics() array
+        -calculateRequestsPerMinute(array benchmarkResults) int
+        -calculateErrorRate(array benchmarkResults) float
+        -getAverageResponseTime() float
+        -convertToBytes(string size) int
+        -formatBytes(int bytes, int precision) string
+        -getUptime() string
+        -getLoadAverage() array
+    }
+
+    class MetricsCalculator {
+        +calculateHealthStatus(int lowStockCount, int outOfStockCount, int totalItems) string
+        +calculateDatabaseHealth(float latency, float errorRate, float throughput) float
+        +calculateCacheEfficiency(float hitRate, float memoryUsage, float responseTimeImprovement) float
+        +determineTrend(float current, float previous) string
+        +calculateChangePercentage(float current, float previous) float
+        +calculateMovingAverage(array data, int period) float
+        +calculateSuccessRate(int successful, int total) float
+        +calculateAverageConfidence(array analyses) float
+        +calculateGrowthRate(array values) float
+        +calculateCorrelation(array dataset1, array dataset2) float
+        +calculateStandardDeviation(array values) float
+        +calculatePercentile(array values, float percentile) float
+        +calculateRiskScore(array factors, array weights) float
+        +normalizeValue(float value, float min, float max) float
+    }
+
+    %% ========== INFRASTRUCTURE ==========
+    class MongoDBManager {
+        -static Client client
+        -static Database database
+        -static LoggerInterface logger
+        +initialize(LoggerInterface logger) void
+        +getClient() Client
+        +getDatabase() Database
+        +getCollection(string name) Collection
+        +ping() bool
+        +startSession() Session|null
+        +getConnectionInfo() array
+        +getStats() array
+        +getCollectionStats(string collectionName) array
+        +getServerInfo() array
+        +getServerVersion() array
+    }
+
+    class PerformanceBenchmark {
+        -static array benchmarks
+        -static bool enabled
+        +enable() void
+        +disable() void
+        +measure(callable fn, string operation, array context) mixed
+        +measureBatch(array operations, bool parallel) array
+        +getResults() array
+        +getLatestResult() array|null
+        +clear() void
+        +generateReport() array
+        +meetsThreshold(string operation, float maxDuration, int maxMemory) bool
+        -recordBenchmark(string operation, float duration, int memoryUsed, array context) void
+        -measureParallel(array operations) array
+    }
+
+    class Logger {
+        -logFile string
+        -defaultLevel string
+        +__construct(string logFile, string defaultLevel)
+        +log(mixed level, string|Stringable message, array context) void
+        +debug(string|Stringable message, array context) void
+        +info(string|Stringable message, array context) void
+        +error(string|Stringable message, array context) void
+        +warning(string|Stringable message, array context) void
+        +getLogFile() string
+    }
+
+    %% ========== CONTROLLER LAYER ==========
+    class BaseController {
+        #logger Logger
+        #requestData array
+        #testMode bool
+        #lastResponse array|null
+        +__construct(Logger logger)
+        +enableTestMode() void
+        +setRequestData(array data) void
+        #parseRequestData() void
+        #getRequestValue(string key, mixed default) mixed
+        #getRequestData() array
+        #jsonResponse(array data, int statusCode) array|null
+        #successResponse(array data, string message, int statusCode) array|null
+        #errorResponse(string message, array errors, int statusCode) array|null
+        #notFoundResponse(string message) array|null
+        #unauthorizedResponse(string message) array|null
+        #validationErrorResponse(array errors, string message) array|null
+        #getAuthUserId() string|null
+        #isAuthenticated() bool
+        #validateRequiredFields(array fields) array
+        #logAction(string action, array context) void
+        #getPaginationParams() array
+        #getSortingParams() array
+        +buildTestResponse(array data, int statusCode, bool success, string message) array
+        +getLastResponse() array
+    }
+
+    class DashboardController {
+        -dashboardService DashboardService
+        -logger Logger
+        +__construct(DashboardService dashboardService, Logger logger)
+        +getMetrics(Request request) JsonResponse
+        +getHealth(Request request) JsonResponse
+        +getAlerts(Request request) JsonResponse
+        +getTrends(Request request) JsonResponse
+        +clearCache(Request request) JsonResponse
+        +getCacheStats(Request request) JsonResponse
+        +forceRefresh(Request request) JsonResponse
+        -buildMetricsResponse(DashboardMetrics metrics, float responseTime) JsonResponse
+        -buildHealthResponse(HealthStatus healthStatus) JsonResponse
+        -buildAlertsResponse(array alerts) JsonResponse
+        -buildTrendsResponse(array trends) JsonResponse
+        -getHttpStatusCode(DashboardException e) int
+        -logDashboardAccess(string action, array context) void
+    }
+
+    %% ========== REQUEST/RESPONSE ==========
+    class Request {
+        -get array
+        -post array
+        -server array
+        -headers array
+        -cookies array
+        -files array
+        -input string
+        +__construct(array get, array post, array server, array cookies, array files, string input)
+        +get(string key, mixed default) mixed
+        +post(string key, mixed default) mixed
+        +server(string key, mixed default) mixed
+        +header(string key, mixed default) mixed
+        +cookie(string key, mixed default) mixed
+        +file(string key) mixed
+        +method() string
+        +path() string
+        +isGet() bool
+        +isPost() bool
+        +isPut() bool
+        +isDelete() bool
+        +isAjax() bool
+        +isSecure() bool
+        +ip() string
+        +userAgent() string
+        +getInput() string
+        +json() array
+        +has(string type, string key) bool
+        +all(string type) array
+    }
+
+    class Response {
+        -content string
+        -statusCode int
+        -headers array
+        +__construct(string content, int statusCode, array headers)
+        +setContent(string content) self
+        +setStatusCode(int statusCode) self
+        +setHeader(string name, string value) self
+        +json(array data, int statusCode) self
+        +redirect(string url, int statusCode) self
+        +send() void
+        +getContent() string
+        +getStatusCode() int
+        +getHeaders() array
+    }
+
+    class JsonResponse {
+        -data array
+        -statusCode int
+        -headers array
+        +__construct(array data, int statusCode, array headers)
+        +setData(array data) self
+        +setStatusCode(int statusCode) self
+        +setHeader(string name, string value) self
+        +send() void
+        +getData() array
+        +getStatusCode() int
+        +getHeaders() array
+        +static success(array data, string message) JsonResponse
+        +static error(string message, array errors) JsonResponse
+    }
+
+    %% ========== MIDDLEWARE ==========
+    class AuthMiddleware {
+        -tokenService ITokenService
+        -excludedRoutes array
+        +__construct(ITokenService tokenService, array excludedRoutes)
+        +handle(Request request, callable next) Response
+        -extractToken(Request request) string|null
+        -shouldExclude(Request request) bool
+    }
+
+    class RateLimitingMiddleware {
+        -maxRequests int
+        -windowSeconds int
+        -storage array
+        +__construct(int maxRequests, int windowSeconds)
+        +handle(Request request, callable next) Response
+        -getClientIdentifier(Request request) string
+        -isRateLimited(string identifier) bool
+        -incrementRequestCount(string identifier) void
+        -cleanupExpiredEntries() void
+    }
+
+    %% ========== RELATIONSHIPS ==========
+    IService <|.. IInventoryService
+    IService <|.. IUserService
+    IInventoryService <|.. InventoryService
+    IUserService <|.. UserService
+    IAIService <|.. AIService
+
+    BaseController <|-- DashboardController
+
+    DashboardController --> DashboardService : uses
+
+    DashboardService --> InventoryMetrics : uses
+    DashboardService --> UserMetrics : uses
+    DashboardService --> AIMetrics : uses
+    DashboardService --> SystemMetrics : uses
+
+    InventoryMetrics --> IInventoryService : uses
+    InventoryMetrics --> MetricsCalculator : uses
+
+    UserMetrics --> IUserService : uses
+    UserMetrics --> MetricsCalculator : uses
+
+    AIMetrics --> IAIService : uses
+    AIMetrics --> MetricsCalculator : uses
+
+    SystemMetrics --> MongoDBManager : uses
+    SystemMetrics --> PerformanceBenchmark : uses
+    SystemMetrics --> MetricsCalculator : uses
+
+    DashboardMetrics --> HealthStatus : contains
+    DashboardMetrics --> TrendData : contains
+    DashboardMetrics --> Alert : contains
+
+    AuthMiddleware --> ITokenService : uses

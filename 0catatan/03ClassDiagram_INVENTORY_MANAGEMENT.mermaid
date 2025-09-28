@@ -1,0 +1,499 @@
+classDiagram
+    note for InventoryService "Mengelola operasi inventory core dengan stock tracking dan validation"
+
+    %% ========== INTERFACES ==========
+    class IRepository {
+        <<interface>>
+        +findById(string id) array|null
+        +find(array filter = [], array options = []) array
+        +create(array data) string
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter = []) int
+        +findOne(array filter = []) array|null
+    }
+
+    class IInventoryRepository {
+        <<interface>>
+        +find(array filter = [], array options = []) array
+        +findById(string id) array|null
+        +findOne(array filter = []) array|null
+        +create(array data) string
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter = []) int
+        +findLowStock(int threshold = 0) array
+        +findOutOfStock() array
+        +updateQuantity(string id, int quantityChange) bool
+        +getStats() array
+        +aggregate(array pipeline) array
+        +findByCategory(string categoryId) array
+        +findBySupplier(string supplierId) array
+        +searchItems(string query) array
+    }
+
+    class IService {
+        <<interface>>
+        +findById(string id) array|null
+        +find(array filter = [], array options = []) array
+        +create(array data) array
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter = []) int
+        +validate(array data) bool
+        +findOne(array filter = []) array|null
+    }
+
+    class IInventoryService {
+        <<interface>>
+        +getItem(string id) array|null
+        +listItems(array filter = [], array options = []) array
+        +createItem(array data) array
+        +updateItem(string id, array data) array
+        +deleteItem(string id) bool
+        +getLowStockItems(int threshold = 0) array
+        +getOutOfStockItems() array
+        +updateItemQuantity(string id, int quantityChange) array
+        +getInventoryStats() array
+        +searchItems(string query, array options = []) array
+        +validateItemData(array data, bool isCreate = true) array
+        +getItemsByCategory(string categoryId, array options = []) array
+        +getItemsBySupplier(string supplierId, array options = []) array
+    }
+
+    class Middleware {
+        <<interface>>
+        +handle(Request request, callable next) Response
+    }
+
+    %% ========== DOMAIN MODELS ==========
+    class Inventory {
+        -id string|null
+        -name string
+        -description string
+        -quantity int
+        -price float
+        -categoryId string|null
+        -supplierId string|null
+        -minStockLevel int
+        -maxStockLevel int|null
+        -sku string
+        -barcode string|null
+        -location string|null
+        -createdAt DateTime
+        -updatedAt DateTime
+        +__construct(string name, string description, int quantity, float price, string categoryId, string supplierId, int minStockLevel, string id, DateTime createdAt, DateTime updatedAt, string sku, string barcode, string location, int maxStockLevel)
+        +getId() string|null
+        +getName() string
+        +getDescription() string
+        +getQuantity() int
+        +getPrice() float
+        +getCategoryId() string|null
+        +getSupplierId() string|null
+        +getMinStockLevel() int
+        +getMaxStockLevel() int|null
+        +getSku() string
+        +getBarcode() string|null
+        +getLocation() string|null
+        +getCreatedAt() DateTime
+        +getUpdatedAt() DateTime
+        +setName(string name) void
+        +setDescription(string description) void
+        +setQuantity(int quantity) void
+        +setPrice(float price) void
+        +setCategoryId(string categoryId) void
+        +setSupplierId(string supplierId) void
+        +setMinStockLevel(int minStockLevel) void
+        +setMaxStockLevel(int maxStockLevel) void
+        +setSku(string sku) void
+        +setBarcode(string barcode) void
+        +setLocation(string location) void
+        +setUpdatedAt(DateTime updatedAt) void
+        +isLowStock() bool
+        +isOutOfStock() bool
+        +isOverstocked() bool
+        +getStockStatus() string
+        +getTotalValue() float
+        +toDocument() array
+        +fromDocument(mixed document) Inventory
+        -parseDate(mixed dateValue) DateTime
+        +validate() void
+        +__toString() string
+        +toArray() array
+        -validateSku(string sku) void
+        -validateQuantity(int quantity) void
+        -validatePrice(float price) void
+    }
+
+    class StockMovement {
+        -id string
+        -itemId string
+        -type string
+        -quantityChange int
+        -previousQuantity int
+        -newQuantity int
+        -reason string
+        -referenceId string|null
+        -userId string|null
+        -timestamp DateTime
+        +TYPE_RESTOCK = 'restock'
+        +TYPE_SALE = 'sale'
+        +TYPE_ADJUSTMENT = 'adjustment'
+        +TYPE_TRANSFER = 'transfer'
+        +TYPE_WRITE_OFF = 'write_off'
+        +__construct(string itemId, string type, int quantityChange, int previousQuantity, int newQuantity, string reason, string referenceId, string userId, DateTime timestamp, string id)
+        +getId() string
+        +getItemId() string
+        +getType() string
+        +getQuantityChange() int
+        +getPreviousQuantity() int
+        +getNewQuantity() int
+        +getReason() string
+        +getReferenceId() string|null
+        +getUserId() string|null
+        +getTimestamp() DateTime
+        +toArray() array
+        +isIncoming() bool
+        +isOutgoing() bool
+        +static createRestock(string itemId, int quantity, int previousQuantity, string reason, string referenceId, string userId) StockMovement
+        +static createSale(string itemId, int quantity, int previousQuantity, string referenceId, string userId) StockMovement
+    }
+
+    class InventoryStats {
+        -totalItems int
+        -totalValue float
+        -lowStockCount int
+        -outOfStockCount int
+        -overstockedCount int
+        -categoryDistribution array
+        -supplierDistribution array
+        -valueByCategory array
+        -generatedAt DateTime
+        +__construct(int totalItems, float totalValue, int lowStockCount, int outOfStockCount, int overstockedCount, array categoryDistribution, array supplierDistribution, array valueByCategory, DateTime generatedAt)
+        +getTotalItems() int
+        +getTotalValue() float
+        +getLowStockCount() int
+        +getOutOfStockCount() int
+        +getOverstockedCount() int
+        +getCategoryDistribution() array
+        +getSupplierDistribution() array
+        +getValueByCategory() array
+        +getGeneratedAt() DateTime
+        +getHealthScore() float
+        +toArray() array
+        +static calculateFromItems(array items) InventoryStats
+    }
+
+    %% ========== REPOSITORY LAYER ==========
+    class InventoryRepository {
+        -collection Collection
+        -logger Logger
+        -movementCollection Collection
+        +__construct(Logger logger)
+        +createIndexes() array
+        +findById(string id) array|null
+        +find(array filter, array options) array
+        +findOne(array filter) array|null
+        +create(array data) string
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter) int
+        +findLowStock(int threshold) array
+        +findOutOfStock() array
+        +updateQuantity(string id, int quantityChange) bool
+        +getStats() array
+        +aggregate(array pipeline) array
+        +findByCategory(string categoryId) array
+        +findBySupplier(string supplierId) array
+        +searchItems(string query) array
+        +recordStockMovement(StockMovement movement) bool
+        +getItemMovementHistory(string itemId, DateRange range) array
+        +getCategoryStats(string categoryId) array
+        +getSupplierStats(string supplierId) array
+        +bulkUpdateQuantities(array updates) bool
+        -documentToArray(mixed document) array
+        -normalizeToUTCDateTime(mixed value) UTCDateTime
+        -buildInventoryFilter(array filter) array
+        -validateInventoryData(array data) void
+    }
+
+    %% ========== SERVICE LAYER ==========
+    class InventoryService {
+        -inventoryRepo IInventoryRepository
+        -logger Logger
+        -categoryService CategoryService
+        -supplierService SupplierService
+        +__construct(IInventoryRepository inventoryRepo, Logger logger, CategoryService categoryService, SupplierService supplierService)
+        +getItem(string id) array|null
+        +listItems(array filter, array options) array
+        +createItem(array data) array
+        +updateItem(string id, array data) array
+        +deleteItem(string id) bool
+        +getLowStockItems(int threshold) array
+        +getOutOfStockItems() array
+        +updateItemQuantity(string id, int quantityChange) array
+        +getInventoryStats() array
+        +searchItems(string query, array options) array
+        +validateItemData(array data, bool isCreate) array
+        +getItemsByCategory(string categoryId, array options) array
+        +getItemsBySupplier(string supplierId, array options) array
+        +bulkUpdateItems(array updates) array
+        +importItems(array items, bool overwrite) array
+        +exportItems(array options) array
+        +getItemHistory(string itemId, DateRange range) array
+        +restockItem(string itemId, int quantity, string reason, string referenceId) array
+        +sellItem(string itemId, int quantity, string referenceId) array
+        +adjustStock(string itemId, int newQuantity, string reason) array
+        -calculateInventoryHealth(array stats) string
+        -validateStockOperation(string itemId, int quantityChange, string operation) void
+        -recordStockMovement(string itemId, string type, int quantityChange, int previousQuantity, string reason, string referenceId) void
+        -updateItemStock(string itemId, int quantityChange) array
+        -generateSku(array itemData) string
+        -validateCategory(string categoryId) void
+        -validateSupplier(string supplierId) void
+        -calculateItemValue(array item) float
+    }
+
+    class InventoryValidationService {
+        -inventoryService InventoryService
+        -categoryService CategoryService
+        -supplierService SupplierService
+        -logger Logger
+        +__construct(InventoryService inventoryService, CategoryService categoryService, SupplierService supplierService, Logger logger)
+        +validateItemCreation(array data) array
+        +validateItemUpdate(string id, array data) array
+        +validateStockOperation(string itemId, int quantity, string operation) array
+        +validateBulkOperation(array operations) array
+        +validateImportData(array items) array
+        +validateQuantityChange(int currentQuantity, int change, string operation) array
+        -validateRequiredFields(array data) array
+        -validateSku(string sku, string excludeId) array
+        -validateBarcode(string barcode, string excludeId) array
+        -validatePrice(float price) array
+        -validateQuantity(int quantity) array
+        -validateStockLevels(int minStock, int maxStock) array
+        -validateCategoryExists(string categoryId) bool
+        -validateSupplierExists(string supplierId) bool
+    }
+
+    class StockManagementService {
+        -inventoryRepo IInventoryRepository
+        -logger Logger
+        +__construct(IInventoryRepository inventoryRepo, Logger logger)
+        +processRestock(string itemId, int quantity, string reason, string referenceId, string userId) array
+        +processSale(string itemId, int quantity, string referenceId, string userId) array
+        +processAdjustment(string itemId, int newQuantity, string reason, string userId) array
+        +processTransfer(string fromItemId, string toItemId, int quantity, string reason, string userId) array
+        +getStockMovementHistory(string itemId, DateRange range) array
+        +getLowStockAlerts(int threshold) array
+        +getStockLevelReport(DateRange range) array
+        +calculateTurnoverRate(string itemId, DateRange range) float
+        -validateStockAvailability(string itemId, int quantity) bool
+        -calculateNewQuantity(int currentQuantity, int change, string operation) int
+        -recordMovement(string itemId, string type, int quantityChange, int previousQuantity, string reason, string referenceId, string userId) void
+    }
+
+    %% ========== INFRASTRUCTURE ==========
+    class MongoDBManager {
+        -static Client client
+        -static Database database
+        -static LoggerInterface logger
+        +initialize(LoggerInterface logger) void
+        +getClient() Client
+        +getDatabase() Database
+        +getCollection(string name) Collection
+        +ping() bool
+        +startSession() Session|null
+        +getConnectionInfo() array
+        +createIndexes(string collectionName, array indexes) array
+        +collectionExists(string collectionName) bool
+        +getStats() array
+    }
+
+    class Logger {
+        -logFile string
+        -defaultLevel string
+        +__construct(string logFile, string defaultLevel)
+        +log(mixed level, string|Stringable message, array context) void
+        +debug(string|Stringable message, array context) void
+        +info(string|Stringable message, array context) void
+        +error(string|Stringable message, array context) void
+        +warning(string|Stringable message, array context) void
+        +getLogFile() string
+    }
+
+    %% ========== CONTROLLER LAYER ==========
+    class BaseController {
+        #logger Logger
+        #requestData array
+        #testMode bool
+        #lastResponse array|null
+        +__construct(Logger logger)
+        +enableTestMode() void
+        +setRequestData(array data) void
+        #parseRequestData() void
+        #getRequestValue(string key, mixed default) mixed
+        #getRequestData() array
+        #jsonResponse(array data, int statusCode) array|null
+        #successResponse(array data, string message, int statusCode) array|null
+        #errorResponse(string message, array errors, int statusCode) array|null
+        #notFoundResponse(string message) array|null
+        #unauthorizedResponse(string message) array|null
+        #validationErrorResponse(array errors, string message) array|null
+        #getAuthUserId() string|null
+        #isAuthenticated() bool
+        #validateRequiredFields(array fields) array
+        #logAction(string action, array context) void
+        #getPaginationParams() array
+        #getSortingParams() array
+        +buildTestResponse(array data, int statusCode, bool success, string message) array
+        +getLastResponse() array
+    }
+
+    class InventoryController {
+        -inventoryService InventoryService
+        -validationService InventoryValidationService
+        -stockService StockManagementService
+        -logger Logger
+        +__construct(InventoryService inventoryService, InventoryValidationService validationService, StockManagementService stockService, Logger logger)
+        +listItems(Request request) JsonResponse
+        +getItem(Request request) JsonResponse
+        +createItem(Request request) JsonResponse
+        +updateItem(Request request) JsonResponse
+        +deleteItem(Request request) JsonResponse
+        +getLowStock(Request request) JsonResponse
+        +getOutOfStock(Request request) JsonResponse
+        +getStats(Request request) JsonResponse
+        +searchItems(Request request) JsonResponse
+        +updateQuantity(Request request) JsonResponse
+        +restockItem(Request request) JsonResponse
+        +sellItem(Request request) JsonResponse
+        +adjustStock(Request request) JsonResponse
+        +getItemHistory(Request request) JsonResponse
+        +bulkUpdate(Request request) JsonResponse
+        +importItems(Request request) JsonResponse
+        +exportItems(Request request) JsonResponse
+        -buildFilterFromRequest(Request request) array
+        -buildInventoryResponse(array item) array
+        -buildStatsResponse(InventoryStats stats) array
+        -buildMovementResponse(array movements) array
+        -validateItemId(string id) void
+        -logInventoryAction(string action, array context) void
+        -handleInventoryException(Exception e, string operation) JsonResponse
+    }
+
+    %% ========== REQUEST/RESPONSE ==========
+    class Request {
+        -get array
+        -post array
+        -server array
+        -headers array
+        -cookies array
+        -files array
+        -input string
+        +__construct(array get, array post, array server, array cookies, array files, string input)
+        +get(string key, mixed default) mixed
+        +post(string key, mixed default) mixed
+        +server(string key, mixed default) mixed
+        +header(string key, mixed default) mixed
+        +cookie(string key, mixed default) mixed
+        +file(string key) mixed
+        +method() string
+        +path() string
+        +isGet() bool
+        +isPost() bool
+        +isPut() bool
+        +isDelete() bool
+        +isAjax() bool
+        +isSecure() bool
+        +ip() string
+        +userAgent() string
+        +getInput() string
+        +json() array
+        +has(string type, string key) bool
+        +all(string type) array
+    }
+
+    class JsonResponse {
+        -data array
+        -statusCode int
+        -headers array
+        +__construct(array data, int statusCode, array headers)
+        +setData(array data) self
+        +setStatusCode(int statusCode) self
+        +setHeader(string name, string value) self
+        +send() void
+        +getData() array
+        +getStatusCode() int
+        +getHeaders() array
+    }
+
+    %% ========== MIDDLEWARE ==========
+    class AuthMiddleware {
+        -tokenService ITokenService
+        -excludedRoutes array
+        +__construct(ITokenService tokenService, array excludedRoutes)
+        +handle(Request request, callable next) Response
+        -extractToken(Request request) string|null
+        -shouldExclude(Request request) bool
+    }
+
+    class ValidationMiddleware {
+        -rules array
+        +__construct(array rules)
+        +handle(Request request, callable next) Response
+        +setRules(array rules) void
+        -validate(Request request) array
+        -validateField(mixed value, string rules) array
+    }
+
+    %% ========== EXCEPTIONS ==========
+    class InventoryException {
+        -errorCode string
+        -itemId string|null
+        +ITEM_NOT_FOUND = 'INV_001'
+        +INSUFFICIENT_STOCK = 'INV_002'
+        +DUPLICATE_SKU = 'INV_003'
+        +INVALID_QUANTITY = 'INV_004'
+        +VALIDATION_ERROR = 'INV_005'
+        +STOCK_MOVEMENT_ERROR = 'INV_006'
+        +__construct(string message, string errorCode, string itemId, int code, Throwable previous)
+        +getErrorCode() string
+        +getItemId() string|null
+        +static notFound(string itemId) InventoryException
+        +static insufficientStock(string itemId, int requested, int available) InventoryException
+        +static duplicateSku(string sku) InventoryException
+        +static invalidQuantity(string itemId, int quantity) InventoryException
+    }
+
+    %% ========== RELATIONSHIPS ==========
+    IRepository <|.. IInventoryRepository
+    IInventoryRepository <|.. InventoryRepository
+    
+    IService <|.. IInventoryService
+    IInventoryService <|.. InventoryService
+    
+    BaseController <|-- InventoryController
+    
+    InventoryController --> InventoryService : uses
+    InventoryController --> InventoryValidationService : uses
+    InventoryController --> StockManagementService : uses
+    
+    InventoryService --> IInventoryRepository : uses
+    InventoryService --> CategoryService : uses
+    InventoryService --> SupplierService : uses
+    
+    InventoryValidationService --> InventoryService : uses
+    InventoryValidationService --> CategoryService : uses
+    InventoryValidationService --> SupplierService : uses
+    
+    StockManagementService --> IInventoryRepository : uses
+    
+    InventoryRepository --> MongoDBManager : uses
+    InventoryRepository --> Inventory : converts to/from
+    InventoryRepository --> StockMovement : records
+    
+    Inventory --> InventoryStats : contributes to
+    StockMovement --> Inventory : tracks changes
+    
+    AuthMiddleware --> ITokenService : uses

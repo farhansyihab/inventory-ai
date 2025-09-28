@@ -1,0 +1,852 @@
+classDiagram
+    note for ReportingService "Orchestrator utama dengan caching, queue integration, dan real-time capabilities"
+
+    %% ========== CORE INTERFACES (Enhanced) ==========
+    class IReportBuilder {
+        <<interface>>
+        +buildReport(ReportDefinition definition) ReportResult
+        +buildComparativeReport(ReportDefinition definition, array comparisonData) ReportResult
+        +buildPredictiveReport(ReportDefinition definition, int forecastDays) ReportResult
+        +buildRealTimeReport(ReportDefinition definition) ReportResult
+        +generateAIInsights(array data) AIAnalysis
+        +calculateTrends(array historicalData) array
+    }
+
+    class IReportingService {
+        <<interface>>
+        +generateReport(ReportDefinition definition) ReportResult
+        +generateRealTimeReport(string type, array filters) ReportResult
+        +scheduleReport(ReportSchedule schedule) string
+        +cancelSchedule(string scheduleId) bool
+        +getReportHistory(string reportType, DateRange range) array
+        +exportReport(ReportResult result, ExportFormat format) ExportJob
+        +exportToMultipleFormats(ReportResult result, array formats) array
+        +streamExport(ReportResult result, ExportFormat format) void
+        +getExportStatus(string jobId) ExportJob
+        +analyzeReportTrends(ReportResult current, ReportResult previous) TrendAnalysis
+        +generatePredictiveReport(string type, int forecastPeriod) PredictiveReport
+        +getAvailableReportTypes() array
+        +validateReportDefinition(ReportDefinition definition) array
+        +testReportGeneration(ReportDefinition definition) ReportResult
+        +createCustomExport(ReportDefinition definition, array formats) ExportJob
+    }
+
+    class IReportExporter {
+        <<interface>>
+        +export(ReportResult result) string
+        +supportsFormat(ExportFormat format) bool
+        +getSupportedFormats() array
+    }
+
+    class IService {
+        <<interface>>
+        +findById(string id) array|null
+        +find(array filter = [], array options = []) array
+        +create(array data) array
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter = []) int
+        +validate(array data) bool
+        +findOne(array filter = []) array|null
+    }
+
+    class IInventoryService {
+        <<interface>>
+        +getItem(string id) array|null
+        +listItems(array filter = [], array options = []) array
+        +createItem(array data) array
+        +updateItem(string id, array data) array
+        +deleteItem(string id) bool
+        +getLowStockItems(int threshold = 0) array
+        +getOutOfStockItems() array
+        +updateItemQuantity(string id, int quantityChange) array
+        +getInventoryStats() array
+        +searchItems(string query, array options = []) array
+        +validateItemData(array data, bool isCreate = true) array
+        +getItemsByCategory(string categoryId, array options = []) array
+        +getItemsBySupplier(string supplierId, array options = []) array
+    }
+
+    class ISupplierService {
+        <<interface>>
+        +getSupplier(string id) array|null
+        +listSuppliers(array filter = [], array options = []) array
+        +createSupplier(array data) array
+        +updateSupplier(string id, array data) array
+        +deleteSupplier(string id) bool
+        +getSuppliersByCategory(string categoryId) array
+        +getSupplierPerformance(string supplierId) array
+        +getActiveSuppliers() array
+        +getSupplierStats() array
+        +validateSupplierData(array data, bool isCreate = true) array
+    }
+
+    class IAIService {
+        <<interface>>
+        +analyzeInventory(array inventoryData, string analysisType) array
+        +generateReport(array inventoryData, string reportType) array
+        +predictStockNeeds(array items, int forecastDays) array
+        +detectAnomalies(array inventoryData) array
+        +setStrategy(string strategyName) bool
+        +getAvailableStrategies() array
+        +isAvailable() bool
+    }
+
+    class Middleware {
+        <<interface>>
+        +handle(Request request, callable next) Response
+    }
+
+    %% ========== SERVICE LAYER ==========
+    class InventoryService {
+        -inventoryRepo IInventoryRepository
+        -logger Logger
+        +__construct(IInventoryRepository inventoryRepo, Logger logger)
+        +getItem(string id) array|null
+        +listItems(array filter, array options) array
+        +createItem(array data) array
+        +updateItem(string id, array data) array
+        +deleteItem(string id) bool
+        +getLowStockItems(int threshold) array
+        +getOutOfStockItems() array
+        +updateItemQuantity(string id, int quantityChange) array
+        +getInventoryStats() array
+        +searchItems(string query, array options) array
+        +validateItemData(array data, bool isCreate) array
+        +getItemsByCategory(string categoryId, array options) array
+        +getItemsBySupplier(string supplierId, array options) array
+        -calculateInventoryHealth(array stats) string
+    }
+
+    class SupplierService {
+        -supplierRepo ISupplierRepository
+        -logger Logger
+        +__construct(ISupplierRepository supplierRepo, Logger logger)
+        +getSupplier(string id) array|null
+        +listSuppliers(array filter, array options) array
+        +createSupplier(array data) array
+        +updateSupplier(string id, array data) array
+        +deleteSupplier(string id) bool
+        +getSuppliersByCategory(string categoryId) array
+        +getSupplierPerformance(string supplierId) array
+        +getActiveSuppliers() array
+        +getSupplierStats() array
+        +validateSupplierData(array data, bool isCreate) array
+    }
+
+    class CategoryService {
+        -categoryRepo ICategoryRepository
+        -logger Logger
+        +__construct(ICategoryRepository categoryRepo, Logger logger)
+        +findById(string id) array|null
+        +find(array filter, array options) array
+        +create(array data) array
+        +update(string id, array data) bool
+        +delete(string id) bool
+        +count(array filter) int
+        +validate(array data) bool
+        +findOne(array filter) array|null
+        +getCategoryTree() array
+        +getSubcategories(string parentId) array
+        +getRootCategories() array
+        +getCategoryPath(string categoryId) array
+        +moveCategory(string categoryId, string newParentId) array
+        +validateCategoryData(array data, bool isUpdate) array
+        +bulkUpdateStatus(array categoryIds, bool active) array
+        +getCategoryStatistics() array
+        +categoryExists(string id) bool
+        +slugExists(string slug, string excludeId) bool
+        +findBySlug(string slug) array|null
+        -updateCategoryTree(string categoryId) void
+    }
+
+    class AIService {
+        -strategies array
+        -activeStrategy AIStrategy|null
+        -logger Logger
+        -enabled bool
+        +__construct(Logger logger, bool enabled)
+        +registerStrategy(string name, AIStrategy strategy) void
+        +setStrategy(string strategyName) bool
+        +analyzeInventory(array inventoryData, string analysisType) array
+        +generateReport(array inventoryData, string reportType) array
+        +predictStockNeeds(array items, int forecastDays) array
+        +detectAnomalies(array inventoryData) array
+        +getAvailableStrategies() array
+        +isAvailable() bool
+        +analyzeSalesTrends(array salesData, int periodDays) array
+        +predictInventoryTurnover(array items) array
+        +optimizeStockLevels(array inventoryData) array
+        +generatePurchaseRecommendations(array supplierData) array
+        +calculateSafetyStock(array itemHistory) array
+        +analyzeInventoryWithStats(array inventoryData, string analysisType) array
+        -validateInventoryData(array data) void
+        -getFallbackAnalysis(array inventoryData, string analysisType) array
+        -getFallbackReport(array inventoryData, string reportType) array
+    }
+
+    %% ========== ENHANCED REPORT MODELS ==========
+    class ExportFormat {
+        <<enumeration>>
+        JSON
+        CSV
+        PDF
+        EXCEL
+        XML
+    }
+
+    class TrendAnalysis {
+        -periodComparison array
+        -movingAverages array
+        -correlationAnalysis array
+        -seasonalityPatterns array
+        +getComparativeAnalysis() array
+        +getTrendDirection() string
+        +getConfidenceScore() float
+        +toArray() array
+    }
+
+    class PredictiveReport {
+        -forecastPeriod int
+        -confidenceLevel float
+        -predictions array
+        -riskAssessment string
+        -scenarios array
+        +get30DayProjection() array
+        +getRiskAssessment() string
+        +getBestCaseScenario() array
+        +getWorstCaseScenario() array
+    }
+
+    class AIAnalysis {
+        -analysisType string
+        -findings array
+        -confidenceScores array
+        -modelVersion string
+        -computationTime float
+        +getKeyInsights() array
+        +getRecommendations() array
+        +getConfidenceLevel() float
+    }
+
+    class ValidationResult {
+        -isValid bool
+        -errors array
+        -warnings array
+        -suggestions array
+        +addError(string field, string message) void
+        +addWarning(string field, string message) void
+        +hasErrors() bool
+        +toArray() array
+    }
+
+    class ReportDefinition {
+        -id string|null
+        -type string
+        -name string
+        -description string
+        -filters array
+        -columns array
+        -sorting array
+        -dateRange DateRangeFilter|null
+        -createdBy string|null
+        -createdAt DateTime
+        -updatedAt DateTime
+        -metadata array
+        +__construct(string type, string name, string description, array filters, array columns, array sorting, DateRangeFilter dateRange, string createdBy, string id, DateTime createdAt, DateTime updatedAt, array metadata)
+        +getId() string|null
+        +getType() string
+        +getName() string
+        +getDescription() string
+        +getFilters() array
+        +getColumns() array
+        +getSorting() array
+        +getDateRange() DateRangeFilter|null
+        +getCreatedBy() string|null
+        +getCreatedAt() DateTime
+        +getUpdatedAt() DateTime
+        +getMetadata() array
+        +setType(string type) self
+        +setName(string name) self
+        +setDescription(string description) self
+        +setFilters(array filters) self
+        +setColumns(array columns) self
+        +setSorting(array sorting) self
+        +setDateRange(DateRangeFilter dateRange) self
+        +setCreatedBy(string createdBy) self
+        +setMetadata(array metadata) self
+        +validate() bool
+        +getFilteredColumns() array
+        +toArray() array
+        +jsonSerialize() array
+        +static fromArray(array data) ReportDefinition
+        +static createSimple(string type, string name, DateRangeFilter dateRange, array filters) ReportDefinition
+        +isValidForExecution() bool
+        +getSummary() string
+        +__toString() string
+    }
+
+    class ReportResult {
+        -id string
+        -definition ReportDefinition
+        -summary array
+        -details array
+        -insights array
+        -recommendations array
+        -metadata Metadata
+        -generatedAt DateTime
+        -errorMessage string|null
+        -pagination array
+        +__construct(ReportDefinition definition, array summary, array details, array insights, array recommendations, Metadata metadata, DateTime generatedAt, string errorMessage, string id, array pagination)
+        +getId() string
+        +getDefinition() ReportDefinition
+        +getSummary() array
+        +getDetails(int page, int perPage) PaginatedResult
+        +getAllDetails() array
+        +getInsights() array
+        +getRecommendations() array
+        +getMetadata() Metadata
+        +getGeneratedAt() DateTime
+        +getErrorMessage() string|null
+        +getPagination() array
+        +setSummary(array summary) self
+        +setDetails(array details) self
+        +setInsights(array insights) self
+        +setRecommendations(array recommendations) self
+        +setMetadata(Metadata metadata) self
+        +setErrorMessage(string errorMessage) self
+        +setPagination(array pagination) self
+        +validate() bool
+        +isSuccess() bool
+        +hasData() bool
+        +getRecordCount() int
+        +getExecutionTime() float
+        +toArray() array
+        +jsonSerialize() array
+        +static fromArray(array data) ReportResult
+        +static createSuccess(ReportDefinition definition, array summary, array details, array insights, array recommendations, float executionTime) ReportResult
+        +static createError(ReportDefinition definition, string errorMessage, float executionTime) ReportResult
+        +getSummaryText() string
+        +__toString() string
+    }
+
+    class ReportSchedule {
+        -id string
+        -definition ReportDefinition
+        -frequency string
+        -recipients array
+        -formats array
+        -enabled bool
+        -lastRun DateTime|null
+        -nextRun DateTime|null
+        -metadata array
+        -createdAt DateTime
+        -updatedAt DateTime
+        +__construct(ReportDefinition definition, string frequency, array recipients, array formats, bool enabled, DateTime lastRun, DateTime nextRun, array metadata, string id, DateTime createdAt, DateTime updatedAt)
+        +getId() string
+        +getDefinition() ReportDefinition
+        +getFrequency() string
+        +getRecipients() array
+        +getFormats() array
+        +isEnabled() bool
+        +getLastRun() DateTime|null
+        +getNextRun() DateTime|null
+        +getMetadata() array
+        +getCreatedAt() DateTime
+        +getUpdatedAt() DateTime
+        +setFrequency(string frequency) self
+        +setRecipients(array recipients) self
+        +setFormats(array formats) self
+        +setEnabled(bool enabled) self
+        +setMetadata(array metadata) self
+        +addRecipient(string email, string name) self
+        +removeRecipient(string email) self
+        +validate() void
+        +calculateNextRun() DateTime
+        +shouldRun() bool
+        +markAsRun() self
+        +skipNextRun() self
+        +getScheduleDescription() string
+        +getStatus() string
+        +toArray() array
+        +jsonSerialize() array
+        +static fromArray(array data) ReportSchedule
+        +static createSimple(ReportDefinition definition, string frequency, array recipients, bool enabled) ReportSchedule
+        +static createCustom(ReportDefinition definition, int interval, string unit, array recipients, bool enabled) ReportSchedule
+        +getSummary() string
+        +__toString() string
+    }
+
+    class ExportJob {
+        -id string
+        -format string
+        -status string
+        -filePath string|null
+        -fileSize int|null
+        -createdAt DateTime
+        -startedAt DateTime|null
+        -completedAt DateTime|null
+        -errorMessage string|null
+        -metadata array
+        -progress float
+        -downloadUrl string|null
+        +__construct(string id, string format, string status, string filePath, int fileSize, DateTime createdAt, DateTime startedAt, DateTime completedAt, string errorMessage, array metadata, float progress, string downloadUrl)
+        +getId() string
+        +getFormat() string
+        +getStatus() string
+        +getFilePath() string|null
+        +getFileSize() int|null
+        +getCreatedAt() DateTime
+        +getStartedAt() DateTime|null
+        +getCompletedAt() DateTime|null
+        +getErrorMessage() string|null
+        +getMetadata() array
+        +getProgress() float
+        +getDownloadUrl() string|null
+        +setStatus(string status) self
+        +setFilePath(string filePath) self
+        +setFileSize(int fileSize) self
+        +setStartedAt(DateTime startedAt) self
+        +setCompletedAt(DateTime completedAt) self
+        +setErrorMessage(string errorMessage) self
+        +setMetadata(array metadata) self
+        +setProgress(float progress) self
+        +setDownloadUrl(string downloadUrl) self
+        +addMetadata(string key, mixed value) self
+        +validate() void
+        +isFinished() bool
+        +isProcessing() bool
+        +isSuccess() bool
+        +getEstimatedTimeRemaining() int|null
+        +getDuration() int|null
+        +toArray() array
+        +jsonSerialize() array
+        +static fromArray(array data) ExportJob
+        +static create(string format, array metadata) ExportJob
+        +markAsStarted() self
+        +updateProgress(float progress, array metadata) self
+        +markAsCompleted(string filePath, int fileSize, string downloadUrl) self
+        +markAsFailed(string errorMessage) self
+        +getSummary() string
+        +__toString() string
+    }
+
+    %% ========== ENHANCED REPORT BUILDERS ==========
+    class InventoryReportBuilder {
+        -inventoryService IInventoryService
+        -aiService AIService
+        -trendCalculator TrendCalculator
+        -predictiveEngine PredictiveEngine
+        -logger LoggerInterface
+        +buildReport(ReportDefinition definition) ReportResult
+        +buildComparativeReport(DateRange current, DateRange previous) ComparativeReport
+        +buildPredictiveReport(int daysAhead) PredictiveReport
+        +generateAIInsights(array inventoryData) AIAnalysis
+        -calculateInventoryHealth(array items) HealthScore
+        -identifyTrends(array historicalData) array
+        -generateRecommendations(array analysis) array
+        -performABCAnalysis(array items) array
+        -calculateAgingAnalysis(array items) array
+    }
+
+    class SupplierReportBuilder {
+        -supplierService ISupplierService
+        -categoryService CategoryService
+        -logger LoggerInterface
+        +buildReport(ReportDefinition definition) ReportResult
+        +buildSupplierPerformanceReport(array supplierIds, DateRange range) ReportResult
+        +buildSupplierComparisonReport(array suppliers) ReportResult
+        -analyzeSupplierPerformance(array supplierData) array
+        -calculateDeliveryMetrics(array orders) array
+        -generateSupplierRecommendations(array performanceData) array
+        -buildCostAnalysis(array supplierData) array
+    }
+
+    class CategoryReportBuilder {
+        -categoryService CategoryService
+        -inventoryService IInventoryService
+        -logger LoggerInterface
+        +buildReport(ReportDefinition definition) ReportResult
+        +buildCategoryTreeReport() ReportResult
+        +buildCategoryPerformanceReport(DateRange range) ReportResult
+        -analyzeCategoryMetrics(array categoryData) array
+        -calculateInventoryByCategory(array items) array
+        -generateCategoryInsights(array metrics) array
+        -buildCategoryTrends(array historicalData) array
+    }
+
+    class AIReportBuilder {
+        -aiService AIService
+        -dashboardService DashboardService
+        +buildReport(ReportDefinition definition) ReportResult
+        -analyzeModelPerformance(array metrics) array
+        -calculateCostAnalysis(array usageData) array
+        -generateAccuracyReport(array predictions) array
+    }
+
+    class SystemReportBuilder {
+        -systemMetrics SystemMetrics
+        -performanceBenchmark PerformanceBenchmark
+        +buildReport(ReportDefinition definition) ReportResult
+        -analyzeSystemHealth(array metrics) array
+        -generateSecurityReport(array logs) array
+        -calculatePerformanceTrends(array benchmarks) array
+    }
+
+    %% ========== MULTI-FORMAT EXPORTERS ==========
+    class ReportExporter {
+        -exporters IReportExporter[]
+        -logger LoggerInterface
+        +export(ReportResult result, ExportFormat format) string
+        +exportToMultipleFormats(ReportResult result, array formats) array
+        +streamExport(ReportResult result, ExportFormat format) void
+        +createExportJob(ReportResult result, ExportFormat format) ExportJob
+        -getExporterForFormat(ExportFormat format) IReportExporter
+    }
+
+    class PdfExporter {
+        -templateEngine TemplateEngine
+        -pdfGenerator PdfGenerator
+        +export(ReportResult result) string
+        +generateStyledPdf(array data, string template) string
+        +addWatermark(string pdfContent, string watermark) string
+    }
+
+    class CsvExporter {
+        -delimiter string
+        -enclosure string
+        +export(ReportResult result) string
+        +streamLargeDataset(ReportResult result, int chunkSize) void
+        +formatSpecialCharacters(array data) array
+    }
+
+    class ExcelExporter {
+        -spreadsheetLibrary SpreadsheetLibrary
+        +export(ReportResult result) string
+        +createMultiSheetReport(array datasets) string
+        +addChartsAndGraphs(array data) string
+    }
+
+    class JsonExporter {
+        -prettyPrint bool
+        -unicodeSupport bool
+        +export(ReportResult result) string
+        +streamJson(ReportResult result, int depth) void
+    }
+
+    %% ========== ADVANCED SCHEDULING SYSTEM ==========
+    class ReportScheduler {
+        -schedulers array
+        -queueService QueueService
+        -logger LoggerInterface
+        +schedule(ReportSchedule schedule) string
+        +cancel(string scheduleId) bool
+        +listActiveSchedules() array
+        +processScheduledReports() void
+        -getSchedulerForFrequency(string frequency) IScheduler
+    }
+
+    class CronScheduler {
+        -cronParser CronParser
+        +schedule(ReportSchedule schedule) string
+        +shouldRun(ReportSchedule schedule) bool
+        +getNextRunTime(string cronExpression) DateTime
+    }
+
+    class QueueScheduler {
+        -queueService QueueService
+        -jobDispatcher JobDispatcher
+        +schedule(ReportSchedule schedule) string
+        +dispatchReportJob(ReportSchedule schedule) string
+        +monitorQueueStatus() array
+    }
+
+    class IScheduler {
+        <<interface>>
+        +schedule(ReportSchedule schedule) string
+        +cancel(string scheduleId) bool
+        +shouldRun(ReportSchedule schedule) bool
+    }
+
+    %% ========== ANALYTICS & PREDICTIVE ENGINE ==========
+    class ReportAnalyzer {
+        -trendCalculator TrendCalculator
+        -predictiveEngine PredictiveEngine
+        -statisticalLibrary StatisticalLibrary
+        +analyzeTrends(ReportResult current, ReportResult previous) TrendAnalysis
+        +calculateCorrelations(array datasets) array
+        +detectAnomalies(array data) array
+        +generateForecast(array historicalData, int periods) array
+    }
+
+    class TrendCalculator {
+        +calculateMovingAverage(array data, int period) float
+        +calculateGrowthRate(array values) float
+        +detectSeasonality(array timeSeries) array
+        +calculateTrendLine(array data) array
+    }
+
+    class PredictiveEngine {
+        -mlModels array
+        -trainingService TrainingService
+        +predictInventoryTrends(array historicalData) array
+        +forecastDemand(array items, int days) array
+        +calculateRiskScores(array metrics) array
+        +generateWhatIfScenarios(array parameters) array
+    }
+
+    %% ========== CONTROLLER LAYER ==========
+    class BaseController {
+        #logger Logger
+        #requestData array
+        #testMode bool
+        #lastResponse array|null
+        +__construct(Logger logger)
+        +enableTestMode() void
+        +setRequestData(array data) void
+        #parseRequestData() void
+        #getRequestValue(string key, mixed default) mixed
+        #getRequestData() array
+        #jsonResponse(array data, int statusCode) array|null
+        #successResponse(array data, string message, int statusCode) array|null
+        #errorResponse(string message, array errors, int statusCode) array|null
+        #notFoundResponse(string message) array|null
+        #unauthorizedResponse(string message) array|null
+        #validationErrorResponse(array errors, string message) array|null
+        #getAuthUserId() string|null
+        #isAuthenticated() bool
+        #validateRequiredFields(array fields) array
+        #logAction(string action, array context) void
+        #getPaginationParams() array
+        #getSortingParams() array
+        +buildTestResponse(array data, int statusCode, bool success, string message) array
+        +getLastResponse() array
+    }
+
+    class ReportingController {
+        -reportingService IReportingService
+        -notificationService ReportNotificationService
+        -validator ReportValidator
+        -logger Logger
+        
+        +__construct(IReportingService reportingService, ReportNotificationService notificationService, ReportValidator validator, Logger logger)
+        
+        # Core reporting endpoints
+        +getInventoryReport(Request request) JsonResponse
+        +getAdvancedInventoryReport(Request request) JsonResponse
+        +getSupplierReport(Request request) JsonResponse
+        +getCategoryReport(Request request) JsonResponse
+        +getUserActivityReport(Request request) JsonResponse
+        +getAIPerformanceReport(Request request) JsonResponse
+        +getSystemAuditReport(Request request) JsonResponse
+        
+        # Custom reporting
+        +createCustomReport(Request request) JsonResponse
+        +generateCustomReport(string id, Request request) JsonResponse
+        +updateCustomReport(string id, Request request) JsonResponse
+        +deleteCustomReport(string id) JsonResponse
+        
+        # Scheduling
+        +createSchedule(Request request) JsonResponse
+        +listSchedules(Request request) JsonResponse
+        +updateSchedule(string id, Request request) JsonResponse
+        +deleteSchedule(string id) JsonResponse
+        
+        # Data export
+        +exportInventoryData(Request request) JsonResponse
+        +createCustomExport(Request request) JsonResponse
+        +getExportStatus(string id) JsonResponse
+        +downloadExport(string id) Response
+        
+        # Real-time reporting
+        +streamInventoryReports(ConnectionInterface connection) void
+        +streamSystemMetrics(ConnectionInterface connection) void
+        
+        # Utility methods
+        -validateReportParameters(array params) ValidationResult
+        -buildReportDefinitionFromRequest(Request request) ReportDefinition
+        -handleExportDownload(ExportJob job) Response
+        -formatStreamingResponse(array data) array
+        -logReportAction(string action, array context) void
+    }
+
+    %% ========== ROUTING ==========
+    class Router {
+        -routes array
+        -routeGroups array
+        -notFoundHandler callable
+        -currentGroupPrefix string
+        -testMode bool
+        +__construct()
+        +enableTestMode() void
+        +get(string path, mixed handler) self
+        +post(string path, mixed handler) self
+        +put(string path, mixed handler) self
+        +delete(string path, mixed handler) self
+        +patch(string path, mixed handler) self
+        +options(string path, mixed handler) self
+        +any(string path, mixed handler) self
+        +addRoute(string method, string path, mixed handler) self
+        +group(string prefix, callable callback) self
+        +setNotFoundHandler(callable handler) self
+        +dispatch(string method, string path) mixed
+        -executeHandler(mixed handler, array params) mixed
+        -matchRoute(string routePath, string requestPath, array& params) bool
+        -handleNotFound() mixed
+        -normalizePath(string path) string
+        +getRoutes() array
+        +clearRoutes() void
+    }
+
+    class Request {
+        -get array
+        -post array
+        -server array
+        -headers array
+        -cookies array
+        -files array
+        -input string
+        +__construct(array get, array post, array server, array cookies, array files, string input)
+        +get(string key, mixed default) mixed
+        +post(string key, mixed default) mixed
+        +server(string key, mixed default) mixed
+        +header(string key, mixed default) mixed
+        +cookie(string key, mixed default) mixed
+        +file(string key) mixed
+        +method() string
+        +path() string
+        +isGet() bool
+        +isPost() bool
+        +isPut() bool
+        +isDelete() bool
+        +isAjax() bool
+        +isSecure() bool
+        +ip() string
+        +userAgent() string
+        +getInput() string
+        +json() array
+        +has(string type, string key) bool
+        +all(string type) array
+    }
+
+    class Response {
+        -content string
+        -statusCode int
+        -headers array
+        +__construct(string content, int statusCode, array headers)
+        +setContent(string content) self
+        +setStatusCode(int statusCode) self
+        +setHeader(string name, string value) self
+        +json(array data, int statusCode) self
+        +redirect(string url, int statusCode) self
+        +send() void
+        +getContent() string
+        +getStatusCode() int
+        +getHeaders() array
+    }
+
+    %% ========== ENHANCED REPORTING SERVICE ==========
+    class ReportingService {
+        -builders array
+        -exporter ReportExporter
+        -scheduler ReportScheduler
+        -analyzer ReportAnalyzer
+        -streamer ReportStreamer
+        -notificationService ReportNotificationService
+        -cacheService CacheService
+        -queueService QueueService
+        -logger LoggerInterface
+        -cache array
+        -cacheTtl int
+        
+        +__construct(
+            IInventoryService inventoryService, 
+            ISupplierService supplierService,
+            CategoryService categoryService,
+            AIService aiService,
+            LoggerInterface logger, 
+            int cacheTtl
+        )
+        
+        +generateReport(ReportDefinition definition) ReportResult
+        +generateRealTimeReport(string type, array filters) ReportResult
+        +scheduleReport(ReportSchedule schedule) string
+        +cancelSchedule(string scheduleId) bool
+        +exportReport(ReportResult result, ExportFormat format) ExportJob
+        +exportToMultipleFormats(ReportResult result, array formats) array
+        +streamExport(ReportResult result, ExportFormat format) void
+        +analyzeReportTrends(ReportResult current, ReportResult previous) TrendAnalysis
+        +generatePredictiveReport(string type, int forecastPeriod) PredictiveReport
+        +createCustomExport(ReportDefinition definition, array formats) ExportJob
+        +getAvailableReportTypes() array
+        +validateReportDefinition(ReportDefinition definition) array
+        +testReportGeneration(ReportDefinition definition) ReportResult
+        
+        -initializeBuilders(
+            IInventoryService inventoryService,
+            ISupplierService supplierService,
+            CategoryService categoryService,
+            AIService aiService
+        ) void
+        -getBuilderForType(string type) IReportBuilder
+        -processReportInBackground(ReportDefinition definition) string
+        -cacheReportResult(string key, ReportResult result) void
+        -getCachedReport(string key) ReportResult|null
+        -generateCacheKey(ReportDefinition definition) string
+    }
+
+    %% ========== RELATIONSHIPS ==========
+    IReportBuilder <|.. InventoryReportBuilder
+    IReportBuilder <|.. SupplierReportBuilder
+    IReportBuilder <|.. CategoryReportBuilder
+    IReportBuilder <|.. AIReportBuilder
+    IReportBuilder <|.. SystemReportBuilder
+    
+    IReportingService <|.. ReportingService
+    IReportExporter <|.. PdfExporter
+    IReportExporter <|.. CsvExporter
+    IReportExporter <|.. ExcelExporter
+    IReportExporter <|.. JsonExporter
+    
+    IService <|.. IInventoryService
+    IService <|.. ISupplierService
+    IInventoryService <|.. InventoryService
+    ISupplierService <|.. SupplierService
+    IAIService <|.. AIService
+    
+    IScheduler <|.. CronScheduler
+    IScheduler <|.. QueueScheduler
+
+    BaseController <|-- ReportingController
+    
+    ReportingController --> ReportingService : uses
+    ReportingController --> ReportNotificationService : uses
+    
+    ReportingService --> InventoryReportBuilder : uses
+    ReportingService --> SupplierReportBuilder : uses
+    ReportingService --> CategoryReportBuilder : uses
+    ReportingService --> ReportExporter : uses
+    ReportingService --> ReportScheduler : uses
+    ReportingService --> ReportAnalyzer : uses
+    
+    InventoryReportBuilder --> IInventoryService : uses
+    InventoryReportBuilder --> AIService : uses
+    
+    SupplierReportBuilder --> ISupplierService : uses
+    SupplierReportBuilder --> CategoryService : uses
+    
+    CategoryReportBuilder --> CategoryService : uses
+    CategoryReportBuilder --> IInventoryService : uses
+    
+    ReportExporter --> PdfExporter : delegates
+    ReportExporter --> CsvExporter : delegates
+    ReportExporter --> ExcelExporter : delegates
+    ReportExporter --> JsonExporter : delegates
+    
+    ReportScheduler --> CronScheduler : uses
+    ReportScheduler --> QueueScheduler : uses
+    
+    ReportAnalyzer --> TrendCalculator : uses
+    ReportAnalyzer --> PredictiveEngine : uses
+    
+    Router --> ReportingController : routes to
